@@ -16,7 +16,6 @@ admin.initializeApp({
 })
 
 app.use(express.json());
-
 app.use(express.static(path.join(__dirname, 'app')));
 
 app.get('/', (req, res) => {
@@ -35,14 +34,11 @@ app.post('/login', async (req, res) => {
   }
 
   try {
-    // Verify user credentials with Firebase Authentication
     const userRecord = await admin.auth().getUserByEmail(email);
     const token = await admin.auth().createCustomToken(userRecord.uid);
 
-    // Respond with success and token
     res.status(200).json({ message: 'Login successful', token });
   } catch (error) {
-    // Handle errors (e.g., user not found)
     res.status(401).json({ message: 'Login failed', error: error.message });
   }
 });
