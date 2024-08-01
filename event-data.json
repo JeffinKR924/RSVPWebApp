@@ -18,8 +18,15 @@
         "name": "Jeffin",
         "email": "",
         "phone": ""
+      },
+      {
+        "name": "The Prof",
+        "email": "professor@professorson.com",
+        "phone": ""
       }
     ],
-    "giftList": null
+    "giftList": [
+      "an A"
+    ]
   }
 ]

@@ -17,6 +17,7 @@ admin.initializeApp({
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'app')));
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'app', 'index.html'));
@@ -43,9 +44,6 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Parse JSON bodies
-app.use(bodyParser.json());
-
 // Saves the event to `event-data.json`
 app.post('/save-event', (req, res) => {
     const newEvent = req.body;
@@ -64,7 +62,6 @@ app.post('/save-event', (req, res) => {
             // Modify existing event
             events[existingEventIndex] = newEvent;
         } else {
-            // Append new event
             events.push(newEvent);
         }
 

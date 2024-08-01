@@ -20,6 +20,7 @@ getById('eventForm').addEventListener('submit', function (event) {
 
     const action = document.querySelector('input[name="action"]:checked').value;
 
+    // Event Data
     const eventData = {
         eventTitle: getById('eventTitle').value,
         eventDate: getById('eventDate').value,
@@ -49,16 +50,15 @@ getById('eventForm').addEventListener('submit', function (event) {
     });
 });
 
+// Create vs. Modify Event behavior
 function toggleAction() {
     const action = document.querySelector('input[name="action"]:checked').value;
     const eventSelectContainer = getById('eventSelectContainer');
     
     if (action === 'modify') {
-        // Show the dropdown and fetch events
         eventSelectContainer.style.display = 'block';
         fetchAndPopulateEvents();
     } else {
-        // Hide the dropdown and clear the form
         eventSelectContainer.style.display = 'none';
         clearForm();
         getById('eventTitle').removeAttribute('disabled');
@@ -70,7 +70,7 @@ function fetchAndPopulateEvents() {
         .then(response => response.json())
         .then(events => {
             const eventSelect = getById('eventSelect');
-            eventSelect.innerHTML = '<option value="">-- Select an Event --</option>'; // Reset options
+            eventSelect.innerHTML = '<option value="">-- Select an Event --</option>';
 
             events.forEach(event => {
                 const option = document.createElement('option');
@@ -87,12 +87,10 @@ function fetchAndPopulateEvents() {
 
 function fillEventData() {
     const selectedTitle = getById('eventSelect').value;
-
     if (!selectedTitle) {
         clearForm();
         return;
     }
-
     fetch('/get-events')
         .then(response => response.json())
         .then(events => {
@@ -108,6 +106,7 @@ function fillEventData() {
         });
 }
 
+// Populates Fields with Event Data for Modification
 function populateFormWithEventData(event) {
     getById('eventTitle').value = event.eventTitle;
     getById('eventDate').value = event.eventDate;
@@ -115,14 +114,11 @@ function populateFormWithEventData(event) {
     getById('eventTitle').setAttribute('disabled', 'true');
 
     const guestListContainer = getById('guestListContainer');
-    guestListContainer.innerHTML = ''; // Clear existing guests
-
+    guestListContainer.innerHTML = '';
     event.guestList.forEach(guest => addGuestEntry(guest));
 
-    // Populate gift list
     getById('giftList').value = event.giftList ? event.giftList.join('\n') : '';
 
-    // Update remove button visibility
     updateRemoveButtonsVisibility();
 }
 
@@ -145,10 +141,7 @@ function addGuestEntry(guest = {}) {
 
     guestListContainer.appendChild(guestEntry);
 
-    // Highlight the newly added guest entry
     highlightElement(guestEntry, 'success');
-
-    // Update remove button visibility
     updateRemoveButtonsVisibility();
 }
 
@@ -161,12 +154,12 @@ function getGuestList() {
     }));
 }
 
+// Checks for valid date, guest name, number, and email
 function validateForm() {
     let isValid = true;
     const guestEntries = document.querySelectorAll('.guest-entry');
     const eventDate = getById('eventDate').value;
 
-    // Validate event date
     if (!validateFutureDate(eventDate)) {
         alert('Please select a date in the future.');
         highlightElement(getById('eventDate'), 'error');
@@ -205,13 +198,11 @@ function validateForm() {
     return isValid;
 }
 
+// Validates set date
 function validateFutureDate(dateString) {
     const selectedDate = new Date(dateString);
     const today = new Date();
-    // Clear the time for comparison
     today.setHours(0, 0, 0, 0);
-
-    // Ensure the selected date is greater than or equal to today's date
     return selectedDate > today;
 }
 
@@ -243,8 +234,6 @@ function updateRemoveButtonsVisibility() {
     // Show remove buttons only if there's more than one guest entry
     removeButtons.forEach((button, index) => {
         button.style.display = guestEntries.length > 1 ? 'inline-block' : 'none';
-
-        // Ensure the remove button functionality works for all guests
         button.onclick = () => {
             if (guestEntries.length > 1) {
                 guestEntries[index].remove();
@@ -258,7 +247,6 @@ function clearForm() {
     ['eventTitle', 'eventDate', 'eventLocation', 'giftList'].forEach(id => {
         getById(id).value = '';
     });
-
     const guestListContainer = getById('guestListContainer');
     guestListContainer.innerHTML = '';
 
