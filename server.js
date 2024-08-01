@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const admin = require('firebase-admin');
 const fs = require('fs');
+const bodyParser = require('body-parser');
 
 let hostname = "localhost";
 let port = 3000;
@@ -46,6 +47,60 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Parse JSON bodies
+app.use(bodyParser.json());
+
+// Saves the event to `event-data.json`
+app.post('/save-event', (req, res) => {
+    const newEvent = req.body;
+    const filePath = path.join(__dirname, 'event-data.json');
+
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err && err.code !== 'ENOENT') {
+            console.error('Error reading file:', err);
+            return res.status(500).send('Server Error');
+        }
+
+        const events = data ? JSON.parse(data) : [];
+        const existingEventIndex = events.findIndex(event => event.eventTitle === newEvent.eventTitle);
+
+        if (existingEventIndex !== -1) {
+            // Modify existing event
+            events[existingEventIndex] = newEvent;
+        } else {
+            // Append new event
+            events.push(newEvent);
+        }
+
+        // Write updated events back to the file
+        fs.writeFile(filePath, JSON.stringify(events, null, 2), (err) => {
+            if (err) {
+                console.error('Error writing event file:', err);
+                return res.status(500).send('Server Error');
+            }
+            console.log('JSON data saved to event-data.json');
+            res.status(200).send('Data saved successfully');
+        });
+    });
+});
+
+// Returns event json for event modification
+app.get('/get-events', (req, res) => {
+    const filePath = path.join(__dirname, 'event-data.json');
+
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+            if (err.code === 'ENOENT') {
+                return res.json([]);
+            }
+            console.error('Error reading file:', err);
+            return res.status(500).send('Server Error');
+        }
+
+        const events = JSON.parse(data);
+        res.json(events);
+    });
+});
 
 app.get('/signup-page', (req, res) => {
   res.sendFile(path.join(__dirname, "app", "signup-page", "signup.html"));

@@ -3,20 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Project</title>
-    <link rel="stylesheet" href="../styles.css">
+    <title>Create or Modify Event</title>
+    <link rel="stylesheet" href="event-form.css">
 </head>
 <body>
-    <header>
-        <h1>Event Form</h1>
-    </header>
-    <main>
-        <p>This is the main content area.</p>
-        <button id="myButton">Click me</button>
-    </main>
-    <footer>
-        <p>&copy; 2024 My Project</p>
-    </footer>
-    <script src="script.js"></script>
+    <div class="event-form-container">
+        <h1 class="form-title">Event Management</h1>
+        <div>
+            <label>
+                <input type="radio" name="action" value="create" checked>Create New Event
+            </label>
+            <label>
+                <input type="radio" name="action" value="modify">Modify Existing Event
+            </label>
+        </div>
+        <div id="eventSelectContainer" style="display: none;">
+            <label for="eventSelect">Select Event</label>
+            <select id="eventSelect">
+                <option value="">-- Select an Event --</option>
+            </select>
+        </div>
+        <form id="eventForm">
+            <input type="hidden" id="originalEventTitle" name="originalEventTitle">
+            <div class="form-group">
+                <label for="eventTitle">Event Title</label>
+                <input type="text" id="eventTitle" name="eventTitle" required>
+            </div>
+            <div class="form-group">
+                <label for="eventDate">Date</label>
+                <input type="date" id="eventDate" name="eventDate" required>
+            </div>
+            <div class="form-group">
+                <label for="eventLocation">Location</label>
+                <input type="text" id="eventLocation" name="eventLocation" required>
+            </div>
+            <div class="form-group">
+                <label>Guest List</label>
+                <div id="guestListContainer">
+                    <div class="guest-entry">
+                        <input type="text" placeholder="Name" class="guest-name" required>
+                        <input type="email" placeholder="Email (optional)" class="guest-email">
+                        <input type="tel" placeholder="Phone (optional)" class="guest-phone">
+                        <button type="button" class="remove-guest-button" style="display: none;">Remove</button>
+                    </div>
+                </div>
+                <button type="button" id="addGuestButton">Add Guest</button>
+            </div>
+            <div class="form-group">
+                <label for="giftList">Gift List (optional, one per line)</label>
+                <textarea id="giftList" name="giftList" rows="4"></textarea>
+            </div>
+            <button type="submit" class="submit-button">Save Event</button>
+        </form>
+    </div>
+    <script src="event-form.js"></script>
 </body>
 </html>

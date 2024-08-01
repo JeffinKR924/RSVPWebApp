@@ -1,0 +1,25 @@
+[
+  {
+    "eventTitle": "fun times",
+    "eventDate": "2024-08-28",
+    "eventLocation": "my place",
+    "guestList": [
+      {
+        "name": "Camden Cahoon",
+        "email": "camden399@gmail.com",
+        "phone": "4049716308"
+      },
+      {
+        "name": "Josh ",
+        "email": "",
+        "phone": ""
+      },
+      {
+        "name": "Jeffin",
+        "email": "",
+        "phone": ""
+      }
+    ],
+    "giftList": null
+  }
+]
