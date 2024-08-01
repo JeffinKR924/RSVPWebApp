@@ -23,10 +23,51 @@
         "name": "The Prof",
         "email": "professor@professorson.com",
         "phone": ""
+      },
+      {
+        "name": "The TA",
+        "email": "",
+        "phone": ""
       }
     ],
     "giftList": [
       "an A"
     ]
+  },
+  {
+    "eventTitle": "Camden's New Event",
+    "eventDate": "2024-08-10",
+    "eventLocation": "Your mom's",
+    "guestList": [
+      {
+        "name": "Camden Cahoon",
+        "email": "camden399@gmail.com",
+        "phone": ""
+      },
+      {
+        "name": "Camden",
+        "email": "",
+        "phone": "4049716308"
+      }
+    ],
+    "giftList": null
+  },
+  {
+    "eventTitle": "Camden's New Event 2",
+    "eventDate": "2024-08-10",
+    "eventLocation": "Your mom's",
+    "guestList": [
+      {
+        "name": "Camden Cahoon",
+        "email": "camden399@gmail.com",
+        "phone": ""
+      },
+      {
+        "name": "Camden",
+        "email": "",
+        "phone": "4049716308"
+      }
+    ],
+    "giftList": null
   }
 ]

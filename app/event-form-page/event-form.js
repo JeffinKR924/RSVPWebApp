@@ -1,5 +1,4 @@
 const getById = id => document.getElementById(id);
-
 getById('addGuestButton').addEventListener('click', addGuestEntry);
 
 document.querySelectorAll('input[name="action"]').forEach(radio => {
@@ -54,7 +53,6 @@ getById('eventForm').addEventListener('submit', function (event) {
 function toggleAction() {
     const action = document.querySelector('input[name="action"]:checked').value;
     const eventSelectContainer = getById('eventSelectContainer');
-    
     if (action === 'modify') {
         eventSelectContainer.style.display = 'block';
         fetchAndPopulateEvents();
@@ -127,18 +125,43 @@ function addGuestEntry(guest = {}) {
     const guestEntry = document.createElement('div');
     guestEntry.className = 'guest-entry';
 
-    guestEntry.innerHTML = `
-        <input type="text" placeholder="Name" class="guest-name" value="${guest.name || ''}" required>
-        <input type="email" placeholder="Email (optional)" class="guest-email" value="${guest.email || ''}">
-        <input type="tel" placeholder="Phone (optional)" class="guest-phone" value="${guest.phone || ''}">
-        <button type="button" class="remove-guest-button">Remove</button>
-    `;
+    // Create Name input
+    const nameInput = document.createElement('input');
+    nameInput.type = 'text';
+    nameInput.placeholder = 'Name';
+    nameInput.className = 'guest-name';
+    nameInput.value = guest.name || '';
+    nameInput.required = true;
 
-    guestEntry.querySelector('.remove-guest-button').addEventListener('click', function () {
+    // Create Email input
+    const emailInput = document.createElement('input');
+    emailInput.type = 'email';
+    emailInput.placeholder = 'Email (optional)';
+    emailInput.className = 'guest-email';
+    emailInput.value = guest.email || '';
+
+    // Create Phone input
+    const phoneInput = document.createElement('input');
+    phoneInput.type = 'tel';
+    phoneInput.placeholder = 'Phone (optional)';
+    phoneInput.className = 'guest-phone';
+    phoneInput.value = guest.phone || '';
+
+    // Create Remove button
+    const removeButton = document.createElement('button');
+    removeButton.type = 'button';
+    removeButton.className = 'remove-guest-button';
+    removeButton.textContent = 'Remove';
+    removeButton.addEventListener('click', function () {
         guestListContainer.removeChild(guestEntry);
         updateRemoveButtonsVisibility();
     });
 
+    // Append all elements to guest entry
+    guestEntry.appendChild(nameInput);
+    guestEntry.appendChild(emailInput);
+    guestEntry.appendChild(phoneInput);
+    guestEntry.appendChild(removeButton);
     guestListContainer.appendChild(guestEntry);
 
     highlightElement(guestEntry, 'success');
@@ -218,7 +241,7 @@ function removeHighlight(element) {
 }
 
 function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const re = /^[^\s@]+@[^\s@]+.[^\s@]+$/;
     return re.test(email);
 }
 
@@ -231,7 +254,7 @@ function updateRemoveButtonsVisibility() {
     const guestEntries = document.querySelectorAll('.guest-entry');
     const removeButtons = document.querySelectorAll('.remove-guest-button');
 
-    // Show remove buttons only if there's more than one guest entry
+    // Show `remove buttons` only if there's more than one guest entry
     removeButtons.forEach((button, index) => {
         button.style.display = guestEntries.length > 1 ? 'inline-block' : 'none';
         button.onclick = () => {
