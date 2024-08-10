@@ -18,35 +18,77 @@ getById('eventForm').addEventListener('submit', function (event) {
     }
 
     const action = document.querySelector('input[name="action"]:checked').value;
+    const userId = localStorage.getItem('userId');
+    
+
+    if(!userId) {
+        alert('User is not logged in.');
+        return;
+    }
 
     // Event Data
     const eventData = {
-        eventTitle: getById('eventTitle').value,
-        eventDate: getById('eventDate').value,
-        eventLocation: getById('eventLocation').value,
-        guestList: getGuestList(),
-        giftList: getById('giftList').value ? getById('giftList').value.split('\n').map(gift => gift.trim()) : null
+        userId: userId,
+        event: {
+            eventTitle: getById('eventTitle').value,
+            eventDate: getById('eventDate').value,
+            eventLocation: getById('eventLocation').value,
+            guestList: getGuestList(),
+            giftList: getById('giftList').value ? getById('giftList').value.split('\n').map(gift => gift.trim()) : null
+        }
     };
 
-    // Sends JSON data to the server
-    fetch('/save-event', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(eventData)
-    })
-    .then(response => {
-        if (response.ok) {
-            alert('Event data saved successfully!');
-        } else {
+    if(action === 'create') {
+        // Sends JSON data to the server
+        fetch('/save-event', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(eventData)
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Event data saved successfully!');
+                clearForm();
+            } else {
+                alert('Error saving event data.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
             alert('Error saving event data.');
+        });
+    }else if(action === 'modify') {
+        const eventId = getById('eventSelect').value;
+
+        if (!eventId) {
+            alert('Please select an event to modify.');
+            return;
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error saving event data.');
-    });
+
+        // Sends JSON data to the server to update the existing event
+        fetch(`/update-event?id=${encodeURIComponent(eventId)}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(eventData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Event updated successfully!') {
+                alert('Event data updated successfully!');
+                clearForm();
+            } else {
+                alert('Error updating event data.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error updating event data.');
+        });
+    }
 });
 
 // Create vs. Modify Event behavior
@@ -64,7 +106,14 @@ function toggleAction() {
 }
 
 function fetchAndPopulateEvents() {
-    fetch('/get-events')
+    const userId = localStorage.getItem('userId');
+
+    if (!userId) {
+        alert('User is not logged in.');
+        return;
+    }
+
+    fetch(`/get-events?userId=${encodeURIComponent(userId)}`)
         .then(response => response.json())
         .then(events => {
             const eventSelect = getById('eventSelect');
@@ -72,7 +121,7 @@ function fetchAndPopulateEvents() {
 
             events.forEach(event => {
                 const option = document.createElement('option');
-                option.value = event.eventTitle;
+                option.value = event.id;
                 option.textContent = event.eventTitle;
                 eventSelect.appendChild(option);
             });
@@ -84,18 +133,23 @@ function fetchAndPopulateEvents() {
 }
 
 function fillEventData() {
-    const selectedTitle = getById('eventSelect').value;
-    if (!selectedTitle) {
+    const eventSelect = getById('eventSelect');
+    const selectedOption = eventSelect.options[eventSelect.selectedIndex];
+    const selectedTitle = selectedOption.textContent;
+    const userId = localStorage.getItem('userId');
+
+    if (selectedTitle =="-- Select an Event --" || !userId) {
         clearForm();
         return;
     }
-    fetch('/get-events')
-        .then(response => response.json())
-        .then(events => {
-            const event = events.find(event => event.eventTitle === selectedTitle);
 
+    fetch(`/get-event?userId=${encodeURIComponent(userId)}&eventTitle=${encodeURIComponent(selectedTitle)}`)
+        .then(response => response.json())
+        .then(event => {
             if (event) {
                 populateFormWithEventData(event);
+            } else {
+                alert('Event not found.');
             }
         })
         .catch(error => {

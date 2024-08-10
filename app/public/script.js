@@ -1,3 +1,3 @@
 document.getElementById('myButton').addEventListener('click', function() {
-    alert('Button clicked!');
+    window.location.href = '/event-form-page';
 });

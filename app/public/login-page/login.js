@@ -1,6 +1,3 @@
-import { auth } from "../firebase-config.js"
-import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
-
 const userSignIn = async() => {
     event.preventDefault();
 
@@ -23,16 +20,16 @@ const userSignIn = async() => {
             const result = await response.json();
 
             if (response.ok) {
-                const { token } = result;
+                const { token, userId } = result;
 
                 localStorage.setItem('authToken', token);
+                localStorage.setItem('userId', userId);
                 window.location.href = "../index.html";
             } else {
                 alert(result.message || "Login failed. Please try again.");
                 console.error('Server Response Error:', result);
             }
         } catch (error) {
-            // Handle network or other errors
             alert("An error occurred. Please try again.");
             console.error('Error:', error);
         }
@@ -41,5 +38,5 @@ const userSignIn = async() => {
 
 document.getElementById('login-form').addEventListener('submit', userSignIn);
 document.getElementById('signup-button').addEventListener('click', function() {
-    console.log("hello")
+    window.location.href = '/signup-page';
 });
