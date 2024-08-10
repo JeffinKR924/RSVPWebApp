@@ -10,7 +10,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const giftList = document.getElementById('giftList');
     const confirmedGiftList = document.getElementById('confirmedGiftList');
 
-    // Fetch and populate the events
+    function clearList(listElement) {
+        while (listElement.firstChild) {
+            listElement.removeChild(listElement.firstChild);
+        }
+    }
+
     fetch('/get-events?userId=' + encodeURIComponent(localStorage.getItem('userId')))
         .then(response => response.json())
         .then(events => {
@@ -26,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Error fetching events.');
         });
 
-    // Display event details when an event is selected
     eventSelect.addEventListener('change', function () {
         const eventId = eventSelect.value;
 
@@ -38,32 +42,26 @@ document.addEventListener('DOMContentLoaded', function () {
                     eventDate.textContent = event.eventDate;
                     eventLocation.textContent = event.eventLocation;
 
-                    // Calculate and display number of confirmed guests
                     const confirmedGuestsCount = event.guestList.filter(guest => guest.confirmed === true).length;
                     confirmedGuests.textContent = confirmedGuestsCount;
 
-                    // Display total number of guests
                     totalGuests.textContent = event.guestList.length;
 
-                    // Populate guest list
-                    guestList.innerHTML = '';
+                    clearList(guestList);
                     event.guestList.forEach(guest => {
                         const li = document.createElement('li');
-                        li.textContent = guest.name + (guest.email ? ` (Email: ${guest.email})` : '') + (guest.phone ? ` (Phone: ${guest.phone})` : '');
-                        li.textContent += guest.confirmed ? ' - Confirmed' : ' - Not Confirmed';
+                        li.textContent = `${guest.name} ${guest.email ? `(Email: ${guest.email})` : ''} ${guest.phone ? `(Phone: ${guest.phone})` : ''} ${guest.confirmed ? '- Confirmed' : '- Not Confirmed'}`;
                         guestList.appendChild(li);
                     });
 
-                    // Populate gift list
-                    giftList.innerHTML = '';
-                    confirmedGiftList.innerHTML = '';
+                    clearList(giftList);
+                    clearList(confirmedGiftList);
                     if (event.giftList) {
                         event.giftList.forEach(gift => {
                             const li = document.createElement('li');
                             li.textContent = gift.name;
                             giftList.appendChild(li);
 
-                            // If the gift is claimed, add it to the confirmed gift list
                             if (gift.claimedBy) {
                                 const claimedLi = document.createElement('li');
                                 claimedLi.textContent = `${gift.name} (Claimed by: ${gift.claimedBy})`;
@@ -72,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         });
                     }
 
-                    // Show event details section
                     eventDetails.style.display = 'block';
                 })
                 .catch(error => {
