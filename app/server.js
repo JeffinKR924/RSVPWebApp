@@ -16,7 +16,7 @@ admin.initializeApp({
 })
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'app')));
+app.use(express.static(path.join(__dirname, 'app', 'public')));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
@@ -96,8 +96,13 @@ app.get('/get-events', (req, res) => {
 });
 
 app.get('/signup-page', (req, res) => {
-  res.sendFile(path.join(__dirname, "app", "signup-page", "signup.html"));
+  res.sendFile(path.join(__dirname, "public", "signup-page", "signup.html"));
 });
+
+app.get('/home-page', (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "home-page", "homepage.html"));
+});
+
 
 app.listen(port, hostname, () => {
   console.log(`http://${hostname}:${port}`);
