@@ -1,32 +1,39 @@
-// import { auth } from "../firebase-config.js"
-// import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+// signup.js
+document.getElementById('signup-form').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-// const userSignUp = async() => {
-//     event.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const confPassword = document.getElementById('confPassword').value;
 
-//     const username = document.getElementById('username').value;
-//     const password = document.getElementById('password').value;
-//     const confPassword = document.getElementById('confPassword').value;
+    // Basic validation
+    if (password !== confPassword) {
+        alert("Passwords do not match!");
+        return;
+    }
 
-//     if (username === '' || password === '' || confPassword === '') {
-//         alert('Please fill in all fields.');
-//     } else if (password != confPassword) {
-//         alert('Passwords need to match');
-//     } else {
-//         signInWithEmailAndPassword(auth, username, password)
-//         .then((userCredential) => {
-//             const user = userCredential.user;
-//             alert("You have signed in successfully");
-//         }).catch((error) => {
-//             const errorCode = error.code;
-//             const errorMessage = error.message;
-//             alert("Incorrect username or password");
-//             console.log(errorCode + errorMessage);
-//         })
-//     }
-// }
+    fetch('/signup', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.token) {
+            alert("Signup Successful")
+            window.location.href = '/login-page';
+        } else {
+            console.error('Signup failed:', data.message);
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
 
-// document.getElementById('signup-form').addEventListener('submit', userSignUp);
-// document.getElementById('login-button').addEventListener('click', function() {
-//     console.log("hello")
-// });
+document.getElementById('login-button').addEventListener('click', function() {
+    window.location.href = '/login-page';
+});

@@ -19,13 +19,23 @@ getById('eventForm').addEventListener('submit', function (event) {
 
     const action = document.querySelector('input[name="action"]:checked').value;
 
+
+    const userId = localStorage.getItem('userId');
+    if(!userId) {
+        alert('User is not logged in.');
+        return;
+    }
+
     // Event Data
     const eventData = {
-        eventTitle: getById('eventTitle').value,
-        eventDate: getById('eventDate').value,
-        eventLocation: getById('eventLocation').value,
-        guestList: getGuestList(),
-        giftList: getById('giftList').value ? getById('giftList').value.split('\n').map(gift => gift.trim()) : null
+        userId: userId,
+        event: {
+            eventTitle: getById('eventTitle').value,
+            eventDate: getById('eventDate').value,
+            eventLocation: getById('eventLocation').value,
+            guestList: getGuestList(),
+            giftList: getById('giftList').value ? getById('giftList').value.split('\n').map(gift => gift.trim()) : null
+        }
     };
 
     // Sends JSON data to the server
@@ -39,6 +49,7 @@ getById('eventForm').addEventListener('submit', function (event) {
     .then(response => {
         if (response.ok) {
             alert('Event data saved successfully!');
+            clearForm();
         } else {
             alert('Error saving event data.');
         }
@@ -64,7 +75,14 @@ function toggleAction() {
 }
 
 function fetchAndPopulateEvents() {
-    fetch('/get-events')
+    const userId = localStorage.getItem('userId');
+
+    if (!userId) {
+        alert('User is not logged in.');
+        return;
+    }
+
+    fetch(`/get-events?userId=${encodeURIComponent(userId)}`)
         .then(response => response.json())
         .then(events => {
             const eventSelect = getById('eventSelect');
@@ -85,17 +103,20 @@ function fetchAndPopulateEvents() {
 
 function fillEventData() {
     const selectedTitle = getById('eventSelect').value;
-    if (!selectedTitle) {
+    const userId = localStorage.getItem('userId');
+
+    if (!selectedTitle || !userId) {
         clearForm();
         return;
     }
-    fetch('/get-events')
-        .then(response => response.json())
-        .then(events => {
-            const event = events.find(event => event.eventTitle === selectedTitle);
 
+    fetch(`/get-event?userId=${encodeURIComponent(userId)}&eventTitle=${encodeURIComponent(selectedTitle)}`)
+        .then(response => response.json())
+        .then(event => {
             if (event) {
                 populateFormWithEventData(event);
+            } else {
+                alert('Event not found.');
             }
         })
         .catch(error => {
