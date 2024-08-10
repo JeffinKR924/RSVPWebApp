@@ -16,15 +16,19 @@ admin.initializeApp({
 })
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'app')));
+app.use(express.static(path.join(__dirname,'public')));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'app', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.get('/login-page', (req, res) => {
-  res.sendFile(path.join(__dirname, "app", "login-page", "login.html"));
+  res.sendFile(path.join(__dirname,'public', "login-page", "login.html"));
+});
+
+app.get('/event-form-page', (req, res) => {
+  res.sendFile(path.join(__dirname,'public', "event-form-page", "event-form.html"));
 });
 
 app.post('/login', async (req, res) => {
@@ -95,8 +99,9 @@ app.get('/get-events', (req, res) => {
     });
 });
 
+
 app.get('/signup-page', (req, res) => {
-  res.sendFile(path.join(__dirname, "app", "signup-page", "signup.html"));
+  res.sendFile(path.join(__dirname, "public", "signup-page", "signup.html"));
 });
 
 app.listen(port, hostname, () => {
