@@ -1,0 +1,98 @@
+/* General container styling */
+.event-form-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: 40%;
+    min-width: 400px;
+    text-align: center;
+    border: 2px solid #4CAF50;
+    margin: 20px auto;
+}
+
+/* Form title */
+.form-title {
+    font-size: 24px;
+    color: #4CAF50;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+/* Label and select styling */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+}
+
+/* Event details section styling */
+#eventDetails {
+    margin-top: 20px;
+    text-align: left;
+}
+
+h2, h3 {
+    color: #4CAF50;
+}
+
+p {
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+ul {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+
+ul li {
+    font-size: 16px;
+}
+
+/* Updated styles for additional fields */
+p {
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+h2, h3 {
+    color: #4CAF50;
+}
+
+ul {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+
+ul li {
+    font-size: 16px;
+}
+/* Additional styling for the confirmed gift list */
+h3 {
+    color: #4CAF50;
+}
+
+ul {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+
+ul li {
+    font-size: 16px;
+}

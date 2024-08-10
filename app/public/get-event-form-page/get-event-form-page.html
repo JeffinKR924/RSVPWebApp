@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event (Host View)</title>
+    <link rel="stylesheet" href="get-event-form-page.css">
+</head>
+<body>
+    <div class="event-form-container">
+        <h1 class="form-title">Event (Host View)</h1>
+        <div class="form-group">
+            <label for="eventSelect">Select Event</label>
+            <select id="eventSelect">
+                <option value="">-- Select an Event --</option>
+            </select>
+        </div>
+        <div id="eventDetails" style="display: none;">
+            <h2>Event Details</h2>
+            <p><strong>Title:</strong> <span id="eventTitle"></span></p>
+            <p><strong>Date:</strong> <span id="eventDate"></span></p>
+            <p><strong>Location:</strong> <span id="eventLocation"></span></p>
+            <p><strong>Number of Confirmed Guests:</strong> <span id="confirmedGuests"></span></p>
+            <p><strong>Total Guests Invited:</strong> <span id="totalGuests"></span></p>
+            <h3>Guest List:</h3>
+            <ul id="guestList"></ul>
+            <h3>Gift List:</h3>
+            <ul id="giftList"></ul>
+            <h3>Gift List (Confirmed):</h3>
+            <ul id="confirmedGiftList"></ul>
+        </div>
+    </div>
+    <script src="get-event-form-page.js"></script>
+</body>
+</html>
