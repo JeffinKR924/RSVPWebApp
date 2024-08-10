@@ -13,16 +13,30 @@
         }
 
         header {
-            background-color: #ff6b6b;
+            background-color: #98fb98; /* Light Green */
             color: white;
             padding: 20px;
             text-align: center;
+            position: relative;
+        }
+
+        header .login-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: white;
+            color: #98fb98;
+            padding: 10px 20px;
+            border: 2px solid #98fb98;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
         }
 
         nav {
             display: flex;
             justify-content: space-around;
-            background-color: #ff8787;
+            background-color: #90ee90; /* Light Green variant */
             padding: 10px;
         }
 
@@ -47,6 +61,8 @@
         .hero h1 {
             font-size: 3em;
             margin: 0;
+            color: #98fb98; /* Light Green */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .container {
@@ -72,11 +88,11 @@
 
         .feature-box h3 {
             margin-top: 0;
-            color: #ff6b6b;
+            color: #98fb98; /* Light Green */
         }
 
         footer {
-            background-color: #ff6b6b;
+            background-color: #98fb98; /* Light Green */
             color: white;
             text-align: center;
             padding: 10px;
@@ -89,6 +105,7 @@
 <body>
     <header>
         <h1>Welcome to Wedding Organizer</h1>
+        <a href="/login-page" class="login-btn">Login</a>
     </header>
 
     <nav>
