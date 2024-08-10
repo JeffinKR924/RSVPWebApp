@@ -159,7 +159,7 @@ app.put('/update-event', async (req, res) => {
   const { userId, event } = req.body;
 
   if (!id || !userId || !event) {
-      return res.status(400).json({ message: 'ID, User ID, and event data are required.' });
+      return res.status(400).json({ message: 'ID, User ID, and event data are required.'});
   }
 
   try {
