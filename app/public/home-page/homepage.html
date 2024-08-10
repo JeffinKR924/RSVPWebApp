@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Organizer</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background-color: #98fb98; /* Light Green */
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        header .login-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: white;
+            color: #98fb98;
+            padding: 10px 20px;
+            border: 2px solid #98fb98;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #90ee90; /* Light Green variant */
+            padding: 10px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .hero {
+            background-image: url('wedding-background.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin: 0;
+            color: #98fb98; /* Light Green */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .features {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+        }
+
+        .feature-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 30%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .feature-box h3 {
+            margin-top: 0;
+            color: #98fb98; /* Light Green */
+        }
+
+        footer {
+            background-color: #98fb98; /* Light Green */
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Wedding Organizer</h1>
+        <a href="/login-page" class="login-btn">Login</a>
+    </header>
+
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Create Event</a>
+        <a href="#">RSVP</a>
+        <a href="#">Gifts</a>
+        <a href="#">Budget Tracker</a>
+        <a href="#">Calendar</a>
+        <a href="#">Contact</a>
+    </nav>
+
+    <section class="hero">
+        <div>
+            <h1>Your Dream Wedding, Perfectly Organized</h1>
+            <p>Plan, manage, and enjoy your special day</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="features">
+            <div class="feature-box">
+                <h3>Create & Manage Events</h3>
+                <p>Effortlessly create and manage your wedding events with all the details in one place.</p>
+            </div>
+            <div class="feature-box">
+                <h3>RSVP Tracking</h3>
+                <p>Keep track of who’s attending, who’s not, and who still needs to respond.</p>
+            </div>
+            <div class="feature-box">
+                <h3>Gift Planning</h3>
+                <p>Organize gift registries and manage gift lists seamlessly.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Wedding Organizer. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>
