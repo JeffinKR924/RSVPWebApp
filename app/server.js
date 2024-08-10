@@ -33,6 +33,11 @@ app.get('/signup-page', (req, res) => {
   res.sendFile(path.join(__dirname, "public", "signup-page", "signup.html"));
 });
 
+app.get('/home-page', (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "home-page", "homepage.html"));
+});
+
+
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
