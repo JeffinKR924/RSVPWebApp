@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname,'public')));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, "public", "home-page", "homepage.html"));
 });
 
 app.get('/login-page', (req, res) => {
@@ -33,29 +33,6 @@ app.get('/signup-page', (req, res) => {
   res.sendFile(path.join(__dirname, "public", "signup-page", "signup.html"));
 });
 
-app.get('/home-page', (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "home-page", "homepage.html"));
-});
-
-
-app.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required.' });
-  }
-
-  try {
-    const userRecord = await admin.auth().getUserByEmail(email);
-    const userId = userRecord.uid;
-
-    const token = await admin.auth().createCustomToken(userId);
-
-    res.status(200).json({ message: 'Login successful', token, userId });
-  } catch (error) {
-    res.status(401).json({ message: 'Login failed', error: error.message });
-  }
-});
 
 //This is for creating new users
 app.post('/signup', async (req, res) => {
@@ -107,8 +84,6 @@ app.post('/save-event', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
-
-
 
 // Returns all events that can selected for modification
 app.get('/get-events', async (req, res) => {

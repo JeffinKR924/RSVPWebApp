@@ -5,16 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wedding Organizer</title>
     <link rel="stylesheet" href="/home-page/homepage.css">
+    <script src="/home-page/homepage.js" type="module"></script>
 </head>
 <body>
     <header>
         <h1>Welcome to Wedding Organizer</h1>
-        <a href="/login-page" class="login-btn">Login</a>
+        <a href="/login-page" class="login-button" id="login-button">Login</a>
+        <div id="user-info" class="user-info">
+            <div id="user-email" class="user-email"></div>
+            <button id="logout-button" class="logout-button">Logout</button>
+        </div>
     </header>
 
     <nav>
         <a href="#">Home</a>
-        <a href="#">Create Event</a>
+        <a href="/event-form-page">Create Event</a>
         <a href="#">RSVP</a>
         <a href="#">Gifts</a>
         <a href="#">Budget Tracker</a>
@@ -47,7 +52,7 @@
     </div>
 
     <footer>
-        <p>&copy; 2024 Wedding Organizer. All Rights Reserved.</p>
+        <p>&copy; 2024 RSVPlease. All Rights Reserved.</p>
     </footer>
 </body>
 </html>

@@ -1,4 +1,3 @@
-// signup.js
 document.getElementById('signup-form').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -6,7 +5,6 @@ document.getElementById('signup-form').addEventListener('submit', function(event
     const password = document.getElementById('password').value;
     const confPassword = document.getElementById('confPassword').value;
 
-    // Basic validation
     if (password !== confPassword) {
         alert("Passwords do not match!");
         return;
@@ -36,4 +34,8 @@ document.getElementById('signup-form').addEventListener('submit', function(event
 
 document.getElementById('login-button').addEventListener('click', function() {
     window.location.href = '/login-page';
+});
+
+document.getElementById('close-button').addEventListener('click', function() {
+    window.location.href = '/';
 });

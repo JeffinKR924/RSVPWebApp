@@ -330,3 +330,8 @@ function clearForm() {
     // Adds the first guest entry
     addGuestEntry();
 }
+
+
+document.getElementById('close-button').addEventListener('click', function() {
+    window.location.href = '/';
+});
