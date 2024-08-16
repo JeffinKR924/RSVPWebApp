@@ -1,0 +1,102 @@
+/* Container for the guest view form */
+.event-form-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: 40%;
+    min-width: 400px;
+    text-align: center;
+    border: 2px solid #4CAF50;
+    margin: 20px auto;
+}
+
+/* Title of the form */
+.form-title {
+    font-size: 24px;
+    color: #4CAF50;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+}
+
+#giftOption {
+    margin-top: 20px;
+    text-align: left;
+}
+
+h3 {
+    color: #4CAF50;
+}
+
+/* Submit Button */
+.submit-button {
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(16, 92, 6);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: rgb(7, 48, 2);
+}
+
+/* Close Button (if you add one) */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+    font-size: 50px;
+    cursor: pointer;
+    color: #888;
+}
+
+.close-button:hover {
+    color: red;
+}
+
+/* Success and Error highlights */
+.success {
+    border-color: #4CAF50;
+}
+
+.error {
+    border-color: #f44336; 
+    animation: shake 0.3s;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}

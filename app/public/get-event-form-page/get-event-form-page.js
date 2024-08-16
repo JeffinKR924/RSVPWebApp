@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     eventDate.textContent = event.eventDate;
                     eventLocation.textContent = event.eventLocation;
 
-                    const confirmedGuestsCount = event.guestList.filter(guest => guest.confirmed === true).length;
+                    const confirmedGuestsCount = event.guestList.filter(guest => guest.bringingGift === true).length;
                     confirmedGuests.textContent = confirmedGuestsCount;
 
                     totalGuests.textContent = event.guestList.length;
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     clearList(guestList);
                     event.guestList.forEach(guest => {
                         const li = document.createElement('li');
-                        li.textContent = `${guest.name} ${guest.email ? `(Email: ${guest.email})` : ''} ${guest.phone ? `(Phone: ${guest.phone})` : ''} ${guest.confirmed ? '- Confirmed' : '- Not Confirmed'}`;
+                        li.textContent = `${guest.name} ${guest.email ? `(Email: ${guest.email})` : ''} ${guest.phone ? `(Phone: ${guest.phone})` : ''} ${guest.bringingGift ? '- Bringing Gift' : '- Not Bringing Gift'}`;
                         guestList.appendChild(li);
                     });
 
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             if (gift.claimedBy) {
                                 const claimedLi = document.createElement('li');
-                                claimedLi.textContent = `${gift.name} (Claimed by: ${gift.claimedBy})`;
+                                claimedLi.textContent = `${gift.name} (Claimed)`;
                                 confirmedGiftList.appendChild(claimedLi);
                             }
                         });
@@ -81,7 +81,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
-
 
 document.getElementById('close-button').addEventListener('click', function() {
     window.location.href = '/';

@@ -1,4 +1,7 @@
+// Helper function to get element by ID
 const getById = id => document.getElementById(id);
+
+// Event listeners for buttons and form actions
 getById('addGuestButton').addEventListener('click', addGuestEntry);
 
 document.querySelectorAll('input[name="action"]').forEach(radio => {
@@ -7,11 +10,23 @@ document.querySelectorAll('input[name="action"]').forEach(radio => {
 
 getById('eventSelect').addEventListener('change', fillEventData);
 
+getById('generateLinkButton').addEventListener('click', function() {
+    const eventTitle = getById('eventTitle').value;
+    const userId = localStorage.getItem('userId');
+
+    if (!eventTitle) {
+        alert('Please provide an event title first.');
+        return;
+    }
+
+    // Generate a guest link based on the event title and user ID
+    const guestLink = `${window.location.origin}/event-form-guest-view.html?eventId=${encodeURIComponent(userId)}-${encodeURIComponent(eventTitle)}`;
+    getById('guestLink').value = guestLink;
+});
+
 getById('eventForm').addEventListener('submit', function (event) {
-    // Prevents form submission before validating info
     event.preventDefault();
 
-    // Validates the form before submission
     if (!validateForm()) {
         alert('Please correct the errors in the form.');
         return;
@@ -19,14 +34,23 @@ getById('eventForm').addEventListener('submit', function (event) {
 
     const action = document.querySelector('input[name="action"]:checked').value;
     const userId = localStorage.getItem('userId');
-    
 
     if(!userId) {
         alert('User is not logged in.');
         return;
     }
 
-    // Event Data
+    // Collect event data including the generated guest link
+    let giftList = getById('giftList').value ? getById('giftList').value.split('\n').map(gift => gift.trim()) : null;
+    
+    // Transform giftList into an array of objects
+    if (giftList) {
+        giftList = giftList.map(gift => ({
+            name: gift,
+            claimedBy: null
+        }));
+    }
+
     const eventData = {
         userId: userId,
         event: {
@@ -34,64 +58,55 @@ getById('eventForm').addEventListener('submit', function (event) {
             eventDate: getById('eventDate').value,
             eventLocation: getById('eventLocation').value,
             guestList: getGuestList(),
-            giftList: getById('giftList').value ? getById('giftList').value.split('\n').map(gift => gift.trim()) : null
+            giftList: giftList,
+            guestLink: getById('guestLink').value // Add the guest link here
         }
     };
 
     if(action === 'create') {
-        // Sends JSON data to the server
+        // Handle creating a new event
         fetch('/save-event', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(eventData)
-        })
-        .then(response => {
+        }).then(response => {
             if (response.ok) {
                 alert('Event data saved successfully!');
                 clearForm();
             } else {
                 alert('Error saving event data.');
             }
-        })
-        .catch(error => {
+        }).catch(error => {
             console.error('Error:', error);
             alert('Error saving event data.');
         });
-    }else if(action === 'modify') {
+    } else if(action === 'modify') {
+        // Handle modifying an existing event
         const eventId = getById('eventSelect').value;
-
         if (!eventId) {
             alert('Please select an event to modify.');
             return;
         }
-
-        // Sends JSON data to the server to update the existing event
         fetch(`/update-event?id=${encodeURIComponent(eventId)}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(eventData)
-        })
-        .then(response => response.json())
-        .then(data => {
+        }).then(response => response.json()).then(data => {
             if (data.message === 'Event updated successfully!') {
                 alert('Event data updated successfully!');
                 clearForm();
             } else {
                 alert('Error updating event data.');
             }
-        })
-        .catch(error => {
+        }).catch(error => {
             console.error('Error:', error);
             alert('Error updating event data.');
         });
     }
 });
 
-// Create vs. Modify Event behavior
+
+// Toggle between create and modify actions
 function toggleAction() {
     const action = document.querySelector('input[name="action"]:checked').value;
     const eventSelectContainer = getById('eventSelectContainer');
@@ -105,6 +120,7 @@ function toggleAction() {
     }
 }
 
+// Fetch and populate events in the select dropdown for modification
 function fetchAndPopulateEvents() {
     const userId = localStorage.getItem('userId');
 
@@ -132,13 +148,13 @@ function fetchAndPopulateEvents() {
         });
 }
 
+// Fill the form with event data when an event is selected
 function fillEventData() {
     const eventSelect = getById('eventSelect');
-    const selectedOption = eventSelect.options[eventSelect.selectedIndex];
-    const selectedTitle = selectedOption.textContent;
+    const selectedTitle = eventSelect.options[eventSelect.selectedIndex].textContent;
     const userId = localStorage.getItem('userId');
 
-    if (selectedTitle =="-- Select an Event --" || !userId) {
+    if (selectedTitle === "-- Select an Event --" || !userId) {
         clearForm();
         return;
     }
@@ -148,6 +164,7 @@ function fillEventData() {
         .then(event => {
             if (event) {
                 populateFormWithEventData(event);
+                getById('guestLink').value = event.guestLink || ''; // Populate the guest link
             } else {
                 alert('Event not found.');
             }
@@ -158,7 +175,7 @@ function fillEventData() {
         });
 }
 
-// Populates Fields with Event Data for Modification
+// Populate form fields with event data
 function populateFormWithEventData(event) {
     getById('eventTitle').value = event.eventTitle;
     getById('eventDate').value = event.eventDate;
@@ -174,6 +191,7 @@ function populateFormWithEventData(event) {
     updateRemoveButtonsVisibility();
 }
 
+// Add a new guest entry to the form
 function addGuestEntry(guest = {}) {
     const guestListContainer = getById('guestListContainer');
     const guestEntry = document.createElement('div');
@@ -222,6 +240,7 @@ function addGuestEntry(guest = {}) {
     updateRemoveButtonsVisibility();
 }
 
+// Get guest list data from the form
 function getGuestList() {
     const guestEntries = document.querySelectorAll('.guest-entry');
     return Array.from(guestEntries).map(entry => ({
@@ -231,7 +250,7 @@ function getGuestList() {
     }));
 }
 
-// Checks for valid date, guest name, number, and email
+// Validate the form before submission
 function validateForm() {
     let isValid = true;
     const guestEntries = document.querySelectorAll('.guest-entry');
@@ -275,7 +294,7 @@ function validateForm() {
     return isValid;
 }
 
-// Validates set date
+// Validate the event date to ensure it's in the future
 function validateFutureDate(dateString) {
     const selectedDate = new Date(dateString);
     const today = new Date();
@@ -283,6 +302,7 @@ function validateFutureDate(dateString) {
     return selectedDate > today;
 }
 
+// Highlight elements with error or success classes
 function highlightElement(element, className) {
     element.classList.add(className);
     setTimeout(() => {
@@ -304,6 +324,7 @@ function validatePhone(phone) {
     return re.test(phone);
 }
 
+// Update visibility of remove buttons based on guest entries
 function updateRemoveButtonsVisibility() {
     const guestEntries = document.querySelectorAll('.guest-entry');
     const removeButtons = document.querySelectorAll('.remove-guest-button');
@@ -320,8 +341,9 @@ function updateRemoveButtonsVisibility() {
     });
 }
 
+// Clear the form fields
 function clearForm() {
-    ['eventTitle', 'eventDate', 'eventLocation', 'giftList'].forEach(id => {
+    ['eventTitle', 'eventDate', 'eventLocation', 'giftList', 'guestLink'].forEach(id => {
         getById(id).value = '';
     });
     const guestListContainer = getById('guestListContainer');
@@ -331,7 +353,7 @@ function clearForm() {
     addGuestEntry();
 }
 
-
-document.getElementById('close-button').addEventListener('click', function() {
+// Close button functionality
+getById('close-button').addEventListener('click', function() {
     window.location.href = '/';
 });

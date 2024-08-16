@@ -1,0 +1,35 @@
+<!-- event-form-guest-view.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Guest View</title>
+    <link rel="stylesheet" href="event-form-guest-view/event-form-guest-view.css">
+</head>
+<body>
+    <div class="event-form-container">
+        <h1 class="form-title">RSVP</h1>
+        <div class="form-group">
+            <label for="guestSelect">Select Your Name</label>
+            <select id="guestSelect">
+                <option value="">-- Select Your Name --</option>
+            </select>
+        </div>
+        <div id="giftOption" style="display: none;">
+            <h3>Will you bring a gift?</h3>
+            <label>
+                <input type="checkbox" id="bringGift"> Yes, I will bring a gift.
+            </label>
+            <div id="giftSelectContainer" style="display: none;">
+                <label for="giftSelect">Select a Gift</label>
+                <select id="giftSelect">
+                    <option value="">-- Select a Gift --</option>
+                </select>
+            </div>
+            <button id="submitResponse" class="submit-button">Submit Response</button>
+        </div>
+    </div>
+    <script src="event-form-guest-view/event-form-guest-view.js"></script>
+</body>
+</html>
