@@ -34,13 +34,19 @@ app.get('/signup-page', (req, res) => {
 });
 
 // Serve event-form-guest-view page
-app.get('/event-form-guest-view.html', (req, res) => {
+app.get('/event-form-guest-view-page', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'event-form-guest-view', 'event-form-guest-view.html'));
 });
 
 app.get('/event-form-page', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', "event-form-page", "event-form.html"));
 });
+
+
+app.get('/meal-creation-page', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', "meal-creation-page", "meal-creation.html"));
+});
+
 
 app.post('/signup', async (req, res) => {
   const { email, password } = req.body;

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Creation</title>
+    <link rel="stylesheet" href="meal-creation.css">
+</head>
+<body>
+    <button id="close-button" class="close-button">&times;</button>
+    <div class="meal-form-container">
+        <h1 class="form-title">Meal Creation</h1>
+        <form id="mealForm">
+            <div class="form-group">
+                <label>Appetizer Options</label>
+                <div id="appetizerContainer"></div>
+                <button type="button" onclick="addOption('appetizer')">Add Appetizer Option</button>
+            </div>
+
+            <div class="form-group">
+                <label>Main Course Options</label>
+                <div id="mainCourseContainer"></div>
+                <button type="button" onclick="addOption('mainCourse')">Add Main Course Option</button>
+            </div>
+
+            <div class="form-group">
+                <label>Dessert Options</label>
+                <div id="dessertContainer"></div>
+                <button type="button" onclick="addOption('dessert')">Add Dessert Option</button>
+            </div>
+
+            <button type="submit" id="submit-button">Submit</button>
+        </form>
+    </div>
+    <script src="meal-creation.js"></script>
+</body>
+</html>

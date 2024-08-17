@@ -1,0 +1,98 @@
+.meal-form-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: 40%;
+    min-width: 400px;
+    text-align: center;
+    border: 2px solid #4CAF50;
+    margin: 20px auto;
+    position: relative;
+}
+
+.form-title {
+    font-size: 24px;
+    color: #4CAF50;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"], input[type="number"], textarea, select {
+    width: 95%;  /* Adjusted width to 95% to avoid going to the edge */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    margin: 0 auto; /* Center the input fields */
+    display: block; /* Ensure block display for centering */
+}
+
+textarea {
+    resize: vertical;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:not(.close-button):hover {
+    background-color: #45a049;
+}
+
+#mealDetails {
+    margin-top: 20px;
+    text-align: left;
+}
+
+h2, h3 {
+    color: #4CAF50;
+}
+
+p {
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+ul {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+
+ul li {
+    font-size: 16px;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+    font-size: 50px;
+    cursor: pointer;
+    color: #888;
+}
+
+.close-button:hover {
+    color: red;
+}
