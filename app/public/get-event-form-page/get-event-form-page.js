@@ -59,12 +59,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (event.giftList) {
                         event.giftList.forEach(gift => {
                             const li = document.createElement('li');
-                            li.textContent = gift.name;
+                            li.textContent = gift.name; // Access the name property of the gift object
                             giftList.appendChild(li);
 
                             if (gift.claimedBy) {
                                 const claimedLi = document.createElement('li');
-                                claimedLi.textContent = `${gift.name} (Claimed)`;
+                                claimedLi.textContent = `${gift.name} (Claimed)`; // Display the name of the claimed gift
                                 confirmedGiftList.appendChild(claimedLi);
                             }
                         });

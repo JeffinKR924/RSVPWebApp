@@ -34,7 +34,7 @@ app.get('/signup-page', (req, res) => {
 });
 
 // Serve event-form-guest-view page
-app.get('/event-form-guest-view-page', (req, res) => {
+app.get('/event-form-guest-view.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'event-form-guest-view', 'event-form-guest-view.html'));
 });
 
@@ -241,8 +241,6 @@ app.post('/update-guest-response', async (req, res) => {
       res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
-
-
 
 
 app.listen(port, hostname, () => {
