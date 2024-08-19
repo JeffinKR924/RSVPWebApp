@@ -5,7 +5,7 @@ const admin = require('firebase-admin');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 
-let hostname = "localhost";
+let hostname = "0.0.0.0";
 let port = 3000;
 
 const serviceAccountPath = path.join(__dirname, 'service-account-key.json');
