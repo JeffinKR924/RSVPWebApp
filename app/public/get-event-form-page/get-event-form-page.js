@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const guestList = document.getElementById('guestList');
     const giftList = document.getElementById('giftList');
     const confirmedGiftList = document.getElementById('confirmedGiftList');
+    const appetizersList = document.getElementById('appetizers');
+    const mainMealList = document.getElementById('mainMeal');
+    const dessertsList = document.getElementById('desserts');
 
     function clearList(listElement) {
         while (listElement.firstChild) {
@@ -69,6 +72,29 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         });
                     }
+
+                     clearList(appetizersList);
+                     clearList(mainMealList);
+                     clearList(dessertsList);
+                     if (event.mealOptions) {
+                         event.mealOptions.appetizers.forEach(option => {
+                             const li = document.createElement('li');
+                             li.textContent = option;
+                             appetizersList.appendChild(li);
+                         });
+ 
+                         event.mealOptions.mainCourses.forEach(option => {
+                             const li = document.createElement('li');
+                             li.textContent = option;
+                             mainMealList.appendChild(li);
+                         });
+ 
+                         event.mealOptions.desserts.forEach(option => {
+                             const li = document.createElement('li');
+                             li.textContent = option;
+                             dessertsList.appendChild(li);
+                         });
+                     }
 
                     eventDetails.style.display = 'block';
                 })

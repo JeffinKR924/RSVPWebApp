@@ -33,6 +33,10 @@ app.get('/signup-page', (req, res) => {
   res.sendFile(path.join(__dirname, "public", "signup-page", "signup.html"));
 });
 
+app.get('/meal-creation-page', (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "meal-creation-page", "meal-creation.html"));
+});
+
 app.get('/calendar-page', (req, res) => {
   res.sendFile(path.join(__dirname, "public", "calendar-page", "calendar.html"));
 });
@@ -46,10 +50,38 @@ app.get('/event-form-page', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', "event-form-page", "event-form.html"));
 });
 
+app.get('/get-event-form-page', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', "get-event-form-page", "get-event-form-page.html"));
+});
 
 app.get('/meal-creation-page', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', "meal-creation-page", "meal-creation.html"));
 });
+
+app.post('/save-meal', async (req, res) => {
+  const { userId, eventId, appetizers, mainCourses, desserts } = req.body;
+
+  if (!userId || !eventId || !appetizers || !mainCourses || !desserts) {
+      return res.status(400).json({ message: 'User ID, Event ID, and meal options are required.' });
+  }
+
+  try {
+      const eventRef = db.collection('users').doc(userId).collection('events').doc(eventId);
+      await eventRef.set({
+          mealOptions: {
+              appetizers,
+              mainCourses,
+              desserts
+          }
+      }, { merge: true });
+
+      res.status(200).send('Meal options saved successfully');
+  } catch (error) {
+      console.error('Error saving meal options:', error);
+      res.status(500).send('Server Error');
+  }
+});
+
 
 
 app.post('/signup', async (req, res) => {
