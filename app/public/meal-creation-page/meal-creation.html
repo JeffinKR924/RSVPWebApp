@@ -12,6 +12,13 @@
         <h1 class="form-title">Meal Creation</h1>
         <form id="mealForm">
             <div class="form-group">
+                <label for="eventSelect">Select Event</label>
+                <select id="eventSelect" name="eventSelect">
+                    <option value="">Select an event</option>
+                </select>
+            </div>
+
+            <div class="form-group">
                 <label>Appetizer Options</label>
                 <div id="appetizerContainer"></div>
                 <button type="button" onclick="addOption('appetizer')">Add Appetizer Option</button>

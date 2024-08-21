@@ -13,7 +13,7 @@
         <a href="/login-page" class="login-button" id="login-button">Login</a>
         <div id="user-info" class="user-info">
             <div id="user-email" class="user-email"></div>
-            <div id="dropdown" class="dropdown">
+            <div id="dropdown-logout" class="dropdown-logout">
                 <a href="#" id="logout-button" class="logout-button">Logout</a>
             </div>
         </div>
@@ -21,11 +21,18 @@
 
     <nav>
         <a href="#">Home</a>
-        <a href="/event-form-page">Create Event</a>
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Manage Event</a>
+            <div class="dropdown-content">
+                <a href="/event-form-page">Create Event</a>
+                <a href="/meal-creation-page">Meal Creation</a>
+                <a href="/get-event-form-page">View Events</a>
+            </div>
+        </div>
         <a href="#">RSVP</a>
         <a href="#">Gifts</a>
         <a href="#">Budget Tracker</a>
-        <a href="#">Calendar</a>
+        <a href="/calendar-page">Calendar</a>
         <a href="#">Contact</a>
     </nav>
 

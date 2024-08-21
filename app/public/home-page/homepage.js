@@ -4,7 +4,7 @@ import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/
 const updateUI = (user) => {
     const loginButton = document.getElementById('login-button');
     const userEmailDisplay = document.getElementById('user-email');
-    const dropdown = document.getElementById('dropdown');
+    const dropdown = document.getElementById('dropdown-logout');
 
     if (user) {
         // User is signed in
