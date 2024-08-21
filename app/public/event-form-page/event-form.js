@@ -35,21 +35,16 @@ getById('eventForm').addEventListener('submit', function (event) {
     const action = document.querySelector('input[name="action"]:checked').value;
     const userId = localStorage.getItem('userId');
 
-    if(!userId) {
+    if (!userId) {
         alert('User is not logged in.');
         return;
     }
 
-    // Collect event data including the generated guest link
-    let giftList = getById('giftList').value ? getById('giftList').value.split('\n').map(gift => gift.trim()) : null;
-    
-    // Transform giftList into an array of objects
-    if (giftList) {
-        giftList = giftList.map(gift => ({
-            name: gift,
-            claimedBy: null
-        }));
-    }
+    // Split the gift list input into an array of objects
+    const giftList = getById('giftList').value ? 
+        getById('giftList').value.split('\n').map(giftName => {
+            return { name: giftName.trim(), claimedBy: null };
+        }) : [];
 
     const eventData = {
         userId: userId,
@@ -63,7 +58,7 @@ getById('eventForm').addEventListener('submit', function (event) {
         }
     };
 
-    if(action === 'create') {
+    if (action === 'create') {
         // Handle creating a new event
         fetch('/save-event', {
             method: 'POST',
@@ -80,7 +75,7 @@ getById('eventForm').addEventListener('submit', function (event) {
             console.error('Error:', error);
             alert('Error saving event data.');
         });
-    } else if(action === 'modify') {
+    } else if (action === 'modify') {
         // Handle modifying an existing event
         const eventId = getById('eventSelect').value;
         if (!eventId) {
@@ -104,6 +99,7 @@ getById('eventForm').addEventListener('submit', function (event) {
         });
     }
 });
+
 
 
 // Toggle between create and modify actions
@@ -186,10 +182,11 @@ function populateFormWithEventData(event) {
     guestListContainer.innerHTML = '';
     event.guestList.forEach(guest => addGuestEntry(guest));
 
-    getById('giftList').value = event.giftList ? event.giftList.join('\n') : '';
+    getById('giftList').value = event.giftList ? event.giftList.map(gift => gift.name).join('\n') : ''; // Extract gift names
 
     updateRemoveButtonsVisibility();
 }
+
 
 // Add a new guest entry to the form
 function addGuestEntry(guest = {}) {
