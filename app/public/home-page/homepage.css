@@ -1,211 +1,159 @@
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f5f5f5;
+    box-sizing: border-box;
+    background-color: #fef4f8; /* Light pink background */
 }
 
 header {
-    background-image: linear-gradient(to bottom, white, rgb(138, 221, 138)); /* Light Green */
-    color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 20px;
-    text-align: center;
-    position: relative;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-header .login-button {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: purple;
-    color: black;
-    padding: 10px 20px;
-    border: 2px solid #98fb98;
-    border-radius: 5px;
-    text-decoration: none;
+.logo {
+    font-size: 24px;
     font-weight: bold;
+    color: #b32d60; /* Darker pink for the logo */
 }
 
-.user-info {
-    position: absolute;
-    top: 20px; 
-    right: 20px;
+nav ul {
+    list-style: none;
     display: flex;
-    flex-direction: column; 
-    align-items: flex-end; 
+    gap: 20px;
 }
 
-.user-email {
-    display: none;
-    color: black;
-    font-size: 16px;
-    background-color: #e9ecef;
-    padding: 8px 16px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    font-weight: bold;
-    white-space: nowrap;
-}
-
-.logout-button {
-    margin-top: 10px;
-    background-color: white; 
-    color: black;
-    border: 1px solid white;
-    border-radius: 5px;
-    padding: 8px 12px;
-    font-size: 14px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.logout-button:hover {
-    background-color: #c0e7c0;
-    border-color: black;
-}
-
-nav {
-    display: flex;
-    justify-content: space-around;
-    background-color: #90ee90; /* Light Green variant */
-    padding: 10px;
-}
-
-nav a {
-    color: black;
+nav ul li a {
     text-decoration: none;
+    color: #b32d60; /* Darker pink for the navigation links */
     font-weight: bold;
 }
 
-/* Dropdown styles */
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropbtn {
-    background-color: #90ee90;
-    color: black;
+.get-started-btn {
+    background-color: #b32d60; /* Darker pink for the button */
+    color: #ffffff;
     padding: 10px 20px;
-    text-decoration: none;
-    display: block;
     border: none;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: white;
-    min-width: 160px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-    top: 100%;
-    left: 0;
-}
-
-/* Style dropdown links */
-.dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
     border-radius: 5px;
+    cursor: pointer;
 }
 
-/* Change color on hover */
-.dropdown-content a:hover {
-    background-color: #f1f1f1;
+.get-started-btn:hover {
+    background-color: #e63980; /* Slightly lighter pink on hover */
 }
-
-/* Show the dropdown menu when hovering */
-.dropdown:hover .dropdown-content {
-    display: block;
-}
-
 
 .hero {
-    background-image: url('wedding-background.jpg');
-    background-size: cover;
-    background-position: center;
-    height: 500px;
+    position: relative;
     display: flex;
-    justify-content: center;
     align-items: center;
-    color: black;
-    text-align: center;
+    justify-content: space-between;
+    padding: 50px;
+    background-color: #fde4eb; /* Light pink for the hero background */
+    height: 340px; /* Fixed height for the hero section */
+    overflow: hidden; /* Ensure circles and other elements don’t overflow outside the hero section */
 }
 
-.hero h1 {
-    font-size: 3em;
-    margin: 0;
-    color: #4dce4d;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+/* Circle Design */
+.circle-design {
+    position: absolute;
+    top: 20px;
+    left: -100px; /* Move circles slightly off-screen */
+    z-index: 1; /* Ensure circles are behind the content */
 }
 
-.container {
-    padding: 20px;
-    max-width: 1200px;
-    margin: auto;
+.circle-design::before,
+.circle-design::after,
+.circle-design .small-circle {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 182, 193, 0.5); /* Transparent pink */
 }
 
-.features {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 30px;
+.circle-design::before {
+    width: 300px;
+    height: 300px;
+    top: 50px;
+    left: 50px;
 }
 
-.feature-box {
-    background-color: rgb(67, 194, 67);
-    padding: 20px;
-    border-radius: 10px;
-    width: 30%;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
+.circle-design::after {
+    width: 200px;
+    height: 200px;
+    top: -50px;
+    left: 150px;
 }
 
-.feature-box h3 {
-    margin-top: 0;
-    color: black; /* Light Green */
+.circle-design .small-circle {
+    width: 100px;
+    height: 100px;
+    top: 200px;
+    left: 100px;
+    background-color: rgba(255, 192, 203, 0.7); /* Slightly darker pink */
+}
+
+/* Ensure content is above the circle design */
+.hero-content {
+    max-width: 50%;
+    z-index: 2; /* Ensure content is above the circle design */
+    position: relative;
+}
+
+.hero-content h1 {
+    font-size: 48px;
+    color: #b32d60; /* Darker pink for the heading */
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    font-size: 18px;
+    color: #707070;
+    margin-bottom: 30px;
+}
+
+.learn-more-btn {
+    background-color: #e63980; /* Darker pink for the "Learn More" button */
+    color: #ffffff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.learn-more-btn:hover {
+    background-color: #ff66a1; /* Lighter pink on hover */
+}
+
+/* Wedding Image Container */
+.wedding-image-container {
+    position: absolute;
+    right: 100px; /* Align to the right of the screen */
+    top: 60px; /* Adjust to position it relative to the top of the page */
+    z-index: 3; /* Make sure it appears above other elements */
+}
+
+#wedding-icon {
+    width: auto; /* Maintain the aspect ratio */
+    height: 490px; /* Set the height independently */
 }
 
 footer {
-    background-color:  rgb(67, 194, 67); /* Light Green */
-    color: black;
+    padding: 20px;
+    background-color: #ffffff;
     text-align: center;
-    padding: 10px;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
+    border-top: 1px solid #e0e0e0;
 }
 
-.dropdown-logout {
-    display: none; /* Hidden by default */
-    position: absolute;
-    top: 100%; /* Position below the email display */
-    left: 0;
-    background-color: white;
-    min-width: 150px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    z-index: 1;
-}
-
-.dropdown-logout a {
-    color: #333;
-    padding: 12px 16px;
+footer .social-media a {
+    color: #b32d60; /* Darker pink for footer links */
     text-decoration: none;
-    display: block;
-    border-radius: 5px;
+    margin: 0 10px;
 }
 
-.dropdown-logout a:hover {
-    background-color: #f1f1f1;
-}
-
-/* Show the dropdown when the user-email is clicked */
-.user-email.active + .dropdown-logout {
-    display: block;
+footer .social-media a:hover {
+    color: #e63980; /* Slightly lighter pink on hover */
 }

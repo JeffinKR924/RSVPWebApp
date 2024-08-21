@@ -3,65 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wedding Organizer</title>
+    <title>Wedding Organizer - Homepage</title>
     <link rel="stylesheet" href="/home-page/homepage.css">
-    <script src="/home-page/homepage.js" type="module"></script>
 </head>
 <body>
     <header>
-        <h1>Welcome to Wedding Organizer</h1>
-        <a href="/login-page" class="login-button" id="login-button">Login</a>
-        <div id="user-info" class="user-info">
-            <div id="user-email" class="user-email"></div>
-            <div id="dropdown-logout" class="dropdown-logout">
-                <a href="#" id="logout-button" class="logout-button">Logout</a>
-            </div>
-        </div>
+        <div class="logo">LOGO</div>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+            </ul>
+        </nav>
+        <button class="get-started-btn">Get Started</button>
     </header>
 
-    <nav>
-        <a href="#">Home</a>
-        <div class="dropdown">
-            <a href="#" class="dropbtn">Manage Event</a>
-            <div class="dropdown-content">
-                <a href="/event-form-page">Create Event</a>
-                <a href="/meal-creation-page">Meal Creation</a>
-                <a href="/get-event-form-page">View Events</a>
-            </div>
-        </div>
-        <a href="#">RSVP</a>
-        <a href="#">Gifts</a>
-        <a href="#">Budget Tracker</a>
-        <a href="/calendar-page">Calendar</a>
-        <a href="#">Contact</a>
-    </nav>
-
     <section class="hero">
-        <div>
-            <h1>Your Dream Wedding, Perfectly Organized</h1>
-            <p>Plan, manage, and enjoy your special day</p>
+        <div class="circle-design"></div> <!-- Circle design -->
+        <div class="hero-content">
+            <h1>Wedding Organizer</h1>
+            <p>Create and manage your dream wedding with ease!</p>
+            <a href="#learn-more" class="learn-more-btn">Learn More</a>
         </div>
     </section>
 
-    <div class="container">
-        <div class="features">
-            <div class="feature-box">
-                <h3>Create & Manage Events</h3>
-                <p>Effortlessly create and manage your wedding events with all the details in one place.</p>
-            </div>
-            <div class="feature-box">
-                <h3>RSVP Tracking</h3>
-                <p>Keep track of who’s attending, who’s not, and who still needs to respond.</p>
-            </div>
-            <div class="feature-box">
-                <h3>Gift Planning</h3>
-                <p>Organize gift registries and manage gift lists seamlessly.</p>
-            </div>
-        </div>
+    <!-- Wedding Image placed outside of the hero section -->
+    <div class="wedding-image-container">
+        <img id="wedding-icon" src="../assets/homepage/homepage_wedding_icon.png" alt="Wedding Illustration">
     </div>
 
     <footer>
-        <p>&copy; 2024 RSVPlease. All Rights Reserved.</p>
+        <div class="social-media">
+            <a href="#">Instagram</a>
+            <a href="#">Twitter</a>
+            <a href="#">Facebook</a>
+        </div>
     </footer>
 </body>
 </html>
