@@ -33,6 +33,10 @@ app.get('/signup-page', (req, res) => {
   res.sendFile(path.join(__dirname, "public", "signup-page", "signup.html"));
 });
 
+app.get('/calendar-page', (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "calendar-page", "calendar.html"));
+});
+
 // Serve event-form-guest-view page
 app.get('/event-form-guest-view.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'event-form-guest-view', 'event-form-guest-view.html'));
