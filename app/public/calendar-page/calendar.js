@@ -8,11 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    // Fetch events from the server
     fetch(`/get-events?userId=${encodeURIComponent(userId)}`)
       .then(response => response.json())
       .then(events => {
-        // Filter events to include only title and start (and optionally end)
         const filteredEvents = events.map(event => ({
           title: event.eventTitle,
           start: event.eventDate,
