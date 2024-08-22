@@ -38,6 +38,5 @@ import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/
 // });
 
 document.getElementById('get-started-btn').addEventListener('click', () => {
-    console.log('Get Started button clicked');
     window.location.href = "/login-page";
 });
