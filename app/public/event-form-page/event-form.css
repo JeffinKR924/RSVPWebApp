@@ -7,13 +7,13 @@
     width: 35%;
     min-width: 400px;
     text-align: center;
-    border: 2px solid #4CAF50;
+    border: 2px solid #b32d60; /* Darker pink border */
     margin: 20px auto;
 }
 
 .form-title {
     font-size: 24px;
-    color: #4CAF50;
+    color: #b32d60; /* Darker pink */
     margin-bottom: 20px;
     font-weight: bold;
 }
@@ -27,6 +27,7 @@ label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    color: #b32d60; /* Darker pink */
 }
 
 input[type="text"],
@@ -50,7 +51,7 @@ input[type="email"]:focus,
 input[type="tel"]:focus,
 textarea:focus {
     outline: none;
-    border-color: #4CAF50;
+    border-color: #b32d60; /* Darker pink focus color */
 }
 
 input[disabled] {
@@ -79,7 +80,7 @@ input[disabled] {
 
 .remove-guest-button {
     padding: 8px 12px;
-    background-color: #f44336;
+    background-color: #e63980; /* Lighter pink for remove button */
     color: white;
     border: none;
     border-radius: 5px;
@@ -89,13 +90,13 @@ input[disabled] {
 }
 
 .remove-guest-button:hover {
-    background-color: #c62828;
+    background-color: #b32d60; /* Darker pink on hover */
 }
 
 #addGuestButton {
     margin-top: 10px;
     padding: 10px;
-    background-color: #4CAF50;
+    background-color: #b32d60; /* Darker pink for add guest button */
     color: white;
     border: none;
     border-radius: 5px;
@@ -105,14 +106,14 @@ input[disabled] {
 }
 
 #addGuestButton:hover {
-    background-color: #388E3C;
+    background-color: #e63980; /* Lighter pink on hover */
 }
 
 /* Submit Button */
 .submit-button {
     width: 100%;
     padding: 10px;
-    background-color: rgb(16, 92, 6);
+    background-color: #b32d60; /* Darker pink for submit button */
     color: white;
     border: none;
     border-radius: 5px;
@@ -123,16 +124,16 @@ input[disabled] {
 }
 
 .submit-button:hover {
-    background-color: rgb(7, 48, 2);
+    background-color: #e63980; /* Lighter pink on hover */
 }
 
 .success {
-    border-color: #4CAF50;
+    border-color: #b32d60; /* Darker pink success border */
 }
 
 /* Supposed to change border color and do a cool shake when there's an error*/
 .error {
-    border-color: #f44336; 
+    border-color: #e63980; /* Lighter pink for error */
     animation: shake 0.3s;
 }
 
@@ -143,7 +144,6 @@ input[disabled] {
     75% { transform: translateX(-5px); }
     100% { transform: translateX(0); }
 }
-
 
 .close-button {
     position: absolute;
@@ -157,5 +157,5 @@ input[disabled] {
 }
 
 .close-button:hover {
-    color: red;
+    color: #e63980; /* Lighter pink on hover */
 }

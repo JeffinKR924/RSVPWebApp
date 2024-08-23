@@ -89,22 +89,26 @@ app.post('/save-meal', async (req, res) => {
 
 
 app.post('/signup', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, firstName, lastName } = req.body;
 
-  if (!email || !password) {
+  if (!email || !password || !firstName || !lastName) {
     return res.status(400).json({ message: 'Email and password are required.' });
   }
 
   try {
     const userRecord = await admin.auth().createUser({
       email,
-      password
+      password,
+      firstName,
+      lastName
     });
 
     const userId = userRecord.uid;
 
-    await db.collection('users').doc(userRecord.uid).set({
+    await db.collection('userAccounts').doc(userRecord.uid).set({
       email: email,
+      firstName: firstName,
+      lastName: lastName,
       createdAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
@@ -132,7 +136,7 @@ app.post('/save-event', async (req, res) => {
           }));
       }
 
-      await db.collection('users').doc(userId).collection('events').add(event);
+      await db.collection('userAccounts').doc(userId).collection('eventsOwner').add(event);
       res.status(200).send('Event saved successfully');
   } catch (error) {
       console.error('Error saving event:', error);
@@ -150,7 +154,7 @@ app.get('/get-events', async (req, res) => {
   }
 
   try {
-      const eventsSnapshot = await db.collection('users').doc(userId).collection('events').get();
+      const eventsSnapshot = await db.collection('userAccounts').doc(userId).collection('eventsOwner').get();
       if (eventsSnapshot.empty) {
           return res.json([]);
       }
@@ -173,7 +177,7 @@ app.get('/get-event', async (req, res) => {
   }
 
   try {
-      const snapshot = await db.collection('users').doc(userId).collection('events')
+      const snapshot = await db.collection('userAccounts').doc(userId).collection('eventsOwner')
           .where('eventTitle', '==', eventTitle)
           .get();
 
@@ -200,7 +204,7 @@ app.put('/update-event', async (req, res) => {
   }
 
   try {
-      const eventRef = db.collection('users').doc(userId).collection('events').doc(id);
+      const eventRef = db.collection('users').doc(userId).collection('eventsOwner').doc(id);
       await eventRef.update(event);
       res.status(200).json({ message: 'Event updated successfully!' });
   } catch (error) {

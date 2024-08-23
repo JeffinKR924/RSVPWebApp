@@ -19,7 +19,7 @@ const userSignIn = async() => {
 
             localStorage.setItem('authToken', token);
             localStorage.setItem('userId', userId);
-            window.location.href = "/";
+            window.location.href = "/dashboard-page";
         } catch (error) {
             alert("Incorrect Username or Password");
         }

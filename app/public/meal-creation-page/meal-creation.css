@@ -6,14 +6,14 @@
     width: 40%;
     min-width: 400px;
     text-align: center;
-    border: 2px solid #4CAF50;
+    border: 2px solid #b32d60; /* Darker pink border */
     margin: 20px auto;
     position: relative;
 }
 
 .form-title {
     font-size: 24px;
-    color: #4CAF50;
+    color: #b32d60; /* Darker pink */
     margin-bottom: 20px;
     font-weight: bold;
 }
@@ -27,6 +27,7 @@ label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    color: #b32d60; /* Darker pink */
 }
 
 input[type="text"], input[type="number"], textarea, select {
@@ -47,7 +48,7 @@ textarea {
 button {
     margin-top: 10px;
     padding: 10px 20px;
-    background-color: #4CAF50;
+    background-color: #b32d60; /* Darker pink */
     color: white;
     border: none;
     border-radius: 5px;
@@ -56,7 +57,7 @@ button {
 }
 
 button:not(.close-button):hover {
-    background-color: #45a049;
+    background-color: #e63980; /* Lighter pink on hover */
 }
 
 #mealDetails {
@@ -65,12 +66,13 @@ button:not(.close-button):hover {
 }
 
 h2, h3 {
-    color: #4CAF50;
+    color: #b32d60; /* Darker pink */
 }
 
 p {
     font-size: 18px;
     margin: 5px 0;
+    color: #333; /* Neutral text color */
 }
 
 ul {
@@ -83,7 +85,7 @@ ul li {
 }
 
 .remove-button {
-    background-color: red !important;
+    background-color: #e63980 !important; /* Lighter pink */
     color: white;
     border: none;
     border-radius: 4px;
@@ -93,9 +95,8 @@ ul li {
 }
 
 .remove-button:hover {
-    background-color: darkred !important;
+    background-color: #b32d60 !important; /* Darker pink on hover */
 }
-
 
 .close-button {
     position: absolute;
@@ -109,5 +110,5 @@ ul li {
 }
 
 .close-button:hover {
-    color: red;
+    color: #e63980; /* Lighter pink on hover */
 }
