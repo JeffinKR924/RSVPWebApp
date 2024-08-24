@@ -10,22 +10,8 @@ document.querySelectorAll('input[name="action"]').forEach(radio => {
 
 getById('eventSelect').addEventListener('change', fillEventData);
 
-getById('generateLinkButton').addEventListener('click', function() {
-    const eventTitle = getById('eventTitle').value;
-    const userId = localStorage.getItem('userId');
-
-    if (!eventTitle) {
-        alert('Please provide an event title first.');
-        return;
-    }
-
-    // Generate a guest link based on the event title and user ID
-    const guestLink = `${window.location.origin}/event-form-guest-view.html?eventId=${encodeURIComponent(userId)}-${encodeURIComponent(eventTitle)}`;
-    getById('guestLink').value = guestLink;
-});
-
 getById('eventForm').addEventListener('submit', function (event) {
-    event.preventDefault();
+    event.preventDefault(); // Prevent the form from submitting and refreshing the page
 
     if (!validateForm()) {
         alert('Please correct the errors in the form.');
@@ -41,21 +27,17 @@ getById('eventForm').addEventListener('submit', function (event) {
     }
 
     // Split the gift list input into an array of objects
-    const giftList = getById('giftList').value ? 
+    const giftList = getById('giftList').value ?
         getById('giftList').value.split('\n').map(giftName => {
             return { name: giftName.trim(), claimedBy: null };
         }) : [];
 
     const eventData = {
-        userId: userId,
-        event: {
-            eventTitle: getById('eventTitle').value,
-            eventDate: getById('eventDate').value,
-            eventLocation: getById('eventLocation').value,
-            guestList: getGuestList(),
-            giftList: giftList,
-            guestLink: getById('guestLink').value // Add the guest link here
-        }
+        eventTitle: getById('eventTitle').value,
+        eventDate: getById('eventDate').value,
+        eventLocation: getById('eventLocation').value,
+        guestList: getGuestList(),
+        giftList: giftList
     };
 
     if (action === 'create') {
@@ -63,18 +45,38 @@ getById('eventForm').addEventListener('submit', function (event) {
         fetch('/save-event', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(eventData)
-        }).then(response => {
-            if (response.ok) {
-                alert('Event data saved successfully!');
-                clearForm();
-            } else {
+            body: JSON.stringify({ userId, event: eventData })
+        }).then(response => response.json())
+            .then(data => {
+                if (data.id) {
+                    const eventId = data.id; // Get the generated eventId from the response
+                    // Generate the guest link using the generated eventId and userId
+                    const guestLink = `${window.location.origin}/event-form-guest-view.html?userId=${encodeURIComponent(userId)}&eventId=${encodeURIComponent(eventId)}`;
+                    getById('guestLink').value = guestLink;
+
+                    // Now update the event with the guestLink
+                    fetch(`/update-event?id=${encodeURIComponent(eventId)}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId, event: { guestLink } })
+                    }).then(response => response.json())
+                        .then(updateData => {
+                            if (updateData.message === 'Event updated successfully!') {
+                                alert('Event data and guest link saved successfully!');
+                            } else {
+                                alert('Error updating event data.');
+                            }
+                        }).catch(error => {
+                            console.error('Error updating event data:', error);
+                            alert('Error updating event data.');
+                        });
+                } else {
+                    alert('Error saving event data.');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
                 alert('Error saving event data.');
-            }
-        }).catch(error => {
-            console.error('Error:', error);
-            alert('Error saving event data.');
-        });
+            });
     } else if (action === 'modify') {
         // Handle modifying an existing event
         const eventId = getById('eventSelect').value;
@@ -82,23 +84,44 @@ getById('eventForm').addEventListener('submit', function (event) {
             alert('Please select an event to modify.');
             return;
         }
+
+        // Update the event data including the guestLink
         fetch(`/update-event?id=${encodeURIComponent(eventId)}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(eventData)
+            body: JSON.stringify({ userId, event: eventData })
         }).then(response => response.json()).then(data => {
             if (data.message === 'Event updated successfully!') {
-                alert('Event data updated successfully!');
-                clearForm();
+                // Generate the guest link using the existing eventId and userId
+                const guestLink = `${window.location.origin}/event-form-guest-view.html?userId=${encodeURIComponent(userId)}&eventId=${encodeURIComponent(eventId)}`;
+                getById('guestLink').value = guestLink;
+
+                // Now update the event with the guestLink
+                fetch(`/update-event?id=${encodeURIComponent(eventId)}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, event: { guestLink } })
+                }).then(response => response.json())
+                    .then(updateData => {
+                        if (updateData.message === 'Event updated successfully!') {
+                            alert('Event data updated successfully!');
+                        } else {
+                            alert('Error updating event data.');
+                        }
+                    }).catch(error => {
+                        console.error('Error updating event data:', error);
+                        alert('Error updating event data.');
+                    });
             } else {
                 alert('Error updating event data.');
             }
         }).catch(error => {
-            console.error('Error:', error);
+            console.error('Error updating event data:', error);
             alert('Error updating event data.');
         });
     }
 });
+
 
 
 
@@ -147,15 +170,15 @@ function fetchAndPopulateEvents() {
 // Fill the form with event data when an event is selected
 function fillEventData() {
     const eventSelect = getById('eventSelect');
-    const selectedTitle = eventSelect.options[eventSelect.selectedIndex].textContent;
+    const selectedEventId = eventSelect.value; // Use the event ID instead of title
     const userId = localStorage.getItem('userId');
 
-    if (selectedTitle === "-- Select an Event --" || !userId) {
+    if (!selectedEventId || !userId) {
         clearForm();
         return;
     }
 
-    fetch(`/get-event?userId=${encodeURIComponent(userId)}&eventTitle=${encodeURIComponent(selectedTitle)}`)
+    fetch(`/get-event?userId=${encodeURIComponent(userId)}&eventId=${encodeURIComponent(selectedEventId)}`)
         .then(response => response.json())
         .then(event => {
             console.log(event);
@@ -171,6 +194,7 @@ function fillEventData() {
             alert('Error fetching event data.');
         });
 }
+
 
 // Populate form fields with event data
 function populateFormWithEventData(event) {
@@ -350,6 +374,6 @@ function clearForm() {
 }
 
 // Close button functionality
-getById('close-button').addEventListener('click', function() {
+getById('close-button').addEventListener('click', function () {
     window.location.href = '/dashboard-page';
 });

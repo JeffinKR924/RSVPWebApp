@@ -136,11 +136,12 @@ app.post('/save-event', async (req, res) => {
           }));
       }
 
-      await db.collection('userAccounts').doc(userId).collection('eventsOwner').add(event);
-      res.status(200).send('Event saved successfully');
+      const eventRef = await db.collection('userAccounts').doc(userId).collection('eventsOwner').add(event);
+      console.log('eventRef:', eventRef);
+      res.status(200).json({ message: 'Event saved successfully', event: event, id: eventRef.id});
   } catch (error) {
       console.error('Error saving event:', error);
-      res.status(500).send('Server Error');
+      res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
 
@@ -170,28 +171,29 @@ app.get('/get-events', async (req, res) => {
 
 // Returns a single event to be modified
 app.get('/get-event', async (req, res) => {
-  const { userId, eventTitle } = req.query;
+  const { userId, eventId } = req.query;
 
-  if (!userId || !eventTitle) {
-      return res.status(400).json({ message: 'User ID and event title are required.' });
+  if (!userId || !eventId) {
+      return res.status(400).json({ message: 'User ID and event ID are required.' });
   }
 
   try {
-      const snapshot = await db.collection('userAccounts').doc(userId).collection('eventsOwner')
-          .where('eventTitle', '==', eventTitle)
-          .get();
+      const eventRef = db.collection('userAccounts').doc(userId).collection('eventsOwner').doc(eventId);
+      const eventDoc = await eventRef.get();
+      console.log('eventDoc:', eventDoc);
 
-      if (snapshot.empty) {
+      if (!eventDoc.exists) {
           return res.status(404).json({ message: 'Event not found.' });
       }
 
-      const event = snapshot.docs[0].data();
+      const event = eventDoc.data();
       res.status(200).json(event);
   } catch (error) {
       console.error('Error fetching event:', error);
       res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
+
 
 
 // Updates an event
@@ -204,7 +206,7 @@ app.put('/update-event', async (req, res) => {
   }
 
   try {
-      const eventRef = db.collection('users').doc(userId).collection('eventsOwner').doc(id);
+      const eventRef = db.collection('userAccounts').doc(userId).collection('eventsOwner').doc(id);
       await eventRef.update(event);
       res.status(200).json({ message: 'Event updated successfully!' });
   } catch (error) {
@@ -285,6 +287,28 @@ app.post('/update-guest-response', async (req, res) => {
       res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
+
+app.post('/add-event-attendee', async (req, res) => {
+  const { userId, eventId } = req.body;
+
+  if (!userId || !eventId) {
+      return res.status(400).json({ message: 'User ID and Event ID are required.' });
+  }
+
+  try {
+      const userRef = db.collection('userAccounts').doc(userId);
+      console.log('event id:', eventId);
+      // Create a document in the eventsAttendee sub-collection with the eventId as its ID
+      await userRef.collection('eventsAttendee').doc(eventId).set({});
+
+      res.status(200).json({ message: 'Event added to attendee list successfully!' });
+  } catch (error) {
+      console.error('Error adding event to attendee list:', error);
+      res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+});
+
+
 
 
 app.listen(port, hostname, () => {

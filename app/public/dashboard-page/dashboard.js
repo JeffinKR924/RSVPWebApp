@@ -1,36 +1,51 @@
-// Wait until the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Get the Calendar button element by ID
+    const authToken = localStorage.getItem('authToken');
+    const userId = localStorage.getItem('userId');
+
+    if (!authToken || !userId) {
+        window.location.href = '/';
+        return; 
+    }
+
     const calendarButton = document.getElementById('calendarButton');
     const homeButton = document.getElementById('homeButton');
+    const logoutButton = document.getElementById('logoutButton');
 
     const createEventButton = document.getElementById('create-event-link');
     const mealCreationButton = document.getElementById('meal-creation-link');
     const viewEventsButton = document.getElementById('view-events-link');
 
-    // Add a click event listener to the Calendar button
     calendarButton.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent the default action
-        window.location.href = '/calendar-page'; // Redirect to the calendar page
+        event.preventDefault(); 
+        window.location.href = '/calendar-page'; 
     });
 
     homeButton.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent the default action
-        window.location.href = '/dashboard-page'; // Redirect to the calendar page
+        event.preventDefault(); 
+        window.location.href = '/dashboard-page'; 
     });
 
     createEventButton.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent the default action
-        window.location.href = '/event-form-page'; // Redirect to the calendar page
+        event.preventDefault(); 
+        window.location.href = '/event-form-page'; 
     });
 
     mealCreationButton.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent the default action
-        window.location.href = '/meal-creation-page'; // Redirect to the calendar page
+        event.preventDefault(); 
+        window.location.href = '/meal-creation-page'; 
     });
 
     viewEventsButton.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent the default action
-        window.location.href = '/get-event-form-page'; // Redirect to the calendar page
+        event.preventDefault(); 
+        window.location.href = '/get-event-form-page'; 
+    });
+
+    logoutButton.addEventListener('click', async (event) => {
+        event.preventDefault(); 
+    
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userId');
+    
+        window.location.href = '/';
     });
 });

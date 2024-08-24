@@ -1,4 +1,3 @@
-<!-- event-form-guest-view.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,12 +9,17 @@
 <body>
     <div class="event-form-container">
         <h1 class="form-title">RSVP</h1>
-        <div class="form-group">
+        <div id="userStatus">
+            <!-- This section will display user status or prompt to log in -->
+            <p>Please log in to RSVP for this event.</p>
+            <button id="loginButton" class="login-button">Log In / Sign Up</button>
+        </div>
+        <div id="rsvpSection" class="form-group" style="display:none;">
             <label for="guestSelect">Select Your Name</label>
             <select id="guestSelect">
                 <option value="">-- Select Your Name --</option>
             </select>
-        </div>
+        </div>        
         <div id="giftOption" style="display: none;">
             <h3>Will you bring a gift?</h3>
             <label>

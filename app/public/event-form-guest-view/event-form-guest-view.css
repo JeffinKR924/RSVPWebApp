@@ -1,22 +1,52 @@
 /* Container for the guest view form */
+body {
+    font-family: 'Arial', sans-serif;
+    background: url('../assets/loginpage/background2.jpg') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #333;
+}
+
 .event-form-container {
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.95); /* Slightly more opaque white */
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     width: 40%;
     min-width: 400px;
     text-align: center;
-    border: 2px solid #4CAF50;
+    border: 2px solid #FF69B4; /* Soft pink border */
     margin: 20px auto;
 }
 
 /* Title of the form */
 .form-title {
     font-size: 24px;
-    color: #4CAF50;
+    color: #FF69B4; /* Soft pink color */
     margin-bottom: 20px;
     font-weight: bold;
+}
+
+/* Login Button */
+.login-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #FF69B4; /* Soft pink background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: #FF1493; /* Darker pink on hover */
 }
 
 /* Form group styling */
@@ -29,31 +59,33 @@ label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    color: #FF69B4; /* Soft pink label color */
 }
 
 select {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #FF69B4; /* Soft pink border */
     border-radius: 5px;
     font-size: 16px;
     background-color: #f9f9f9;
 }
 
+/* Gift Option Section */
 #giftOption {
     margin-top: 20px;
     text-align: left;
 }
 
 h3 {
-    color: #4CAF50;
+    color: #FF69B4; /* Soft pink color */
 }
 
 /* Submit Button */
 .submit-button {
     width: 100%;
     padding: 10px;
-    background-color: rgb(16, 92, 6);
+    background-color: #FF69B4; /* Soft pink background */
     color: white;
     border: none;
     border-radius: 5px;
@@ -64,10 +96,10 @@ h3 {
 }
 
 .submit-button:hover {
-    background-color: rgb(7, 48, 2);
+    background-color: #FF1493; /* Darker pink on hover */
 }
 
-/* Close Button (if you add one) */
+/* Close Button */
 .close-button {
     position: absolute;
     top: 10px;
@@ -76,16 +108,16 @@ h3 {
     border: none;
     font-size: 50px;
     cursor: pointer;
-    color: #888;
+    color: #FF69B4; /* Soft pink color */
 }
 
 .close-button:hover {
-    color: red;
+    color: #FF1493; /* Darker pink on hover */
 }
 
 /* Success and Error highlights */
 .success {
-    border-color: #4CAF50;
+    border-color: #FF69B4; /* Soft pink success border */
 }
 
 .error {
