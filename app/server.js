@@ -185,12 +185,24 @@ app.get('/get-event', async (req, res) => {
       }
 
       const event = eventDoc.data();
-      res.status(200).json(event);
+      
+      // Ensure meal options are included in the response
+      const mealOptions = event.mealOptions || {
+          appetizers: [],
+          mainCourses: [],
+          desserts: []
+      };
+      
+      res.status(200).json({
+          ...event,
+          mealOptions
+      });
   } catch (error) {
       console.error('Error fetching event:', error);
       res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
+
 
 
 
@@ -238,7 +250,7 @@ app.get('/get-event', async (req, res) => {
 
 app.post('/update-guest-response', async (req, res) => {
   const { eventId } = req.query;
-  const { guestName, bringGift, selectedGift } = req.body;
+  const { guestName, bringGift, selectedGift, selectedAppetizer, selectedMainCourse, selectedDessert } = req.body;
 
   const [userId, eventTitle] = eventId.split('-');
 
@@ -247,7 +259,7 @@ app.post('/update-guest-response', async (req, res) => {
   }
 
   try {
-      const eventsRef = db.collection('users').doc(userId).collection('events');
+      const eventsRef = db.collection('userAccounts').doc(userId).collection('eventsOwner');
       const snapshot = await eventsRef.where('eventTitle', '==', eventTitle).get();
 
       if (snapshot.empty) {
@@ -264,6 +276,9 @@ app.post('/update-guest-response', async (req, res) => {
 
       // Update the guest's response
       eventData.guestList[guestIndex].bringingGift = bringGift;
+      eventData.guestList[guestIndex].selectedAppetizer = selectedAppetizer;
+      eventData.guestList[guestIndex].selectedMainCourse = selectedMainCourse;
+      eventData.guestList[guestIndex].selectedDessert = selectedDessert;
 
       // Mark the selected gift as claimed, but hide who claimed it
       if (bringGift && selectedGift) {
@@ -273,7 +288,7 @@ app.post('/update-guest-response', async (req, res) => {
           }
       }
 
-      // Update the event document with the new guest and gift data
+      // Update the event document with the new guest, gift, and meal data
       await eventsRef.doc(eventDoc.id).update({ 
           guestList: eventData.guestList, 
           giftList: eventData.giftList 
@@ -285,6 +300,7 @@ app.post('/update-guest-response', async (req, res) => {
       res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
+
 
 app.post('/add-event-attendee', async (req, res) => {
   const { userId, eventId, eventData } = req.body;

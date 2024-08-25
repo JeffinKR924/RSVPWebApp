@@ -38,9 +38,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const eventId = eventSelect.value;
 
         if (eventId) {
-            fetch('/get-event?userId=' + encodeURIComponent(localStorage.getItem('userId')) + '&eventTitle=' + encodeURIComponent(eventSelect.options[eventSelect.selectedIndex].text))
+            fetch(`/get-event?userId=${encodeURIComponent(localStorage.getItem('userId'))}&eventId=${encodeURIComponent(eventId)}`)
                 .then(response => response.json())
                 .then(event => {
+                    console.log('Fetched event:', event);  // Debugging line
+
+                    if (!event || !Array.isArray(event.guestList)) {
+                        alert('Event data is missing or invalid.');
+                        return;
+                    }
+
                     eventTitle.textContent = event.eventTitle;
                     eventDate.textContent = event.eventDate;
                     eventLocation.textContent = event.eventLocation;
@@ -73,28 +80,28 @@ document.addEventListener('DOMContentLoaded', function () {
                         });
                     }
 
-                     clearList(appetizersList);
-                     clearList(mainMealList);
-                     clearList(dessertsList);
-                     if (event.mealOptions) {
-                         event.mealOptions.appetizers.forEach(option => {
-                             const li = document.createElement('li');
-                             li.textContent = option;
-                             appetizersList.appendChild(li);
-                         });
- 
-                         event.mealOptions.mainCourses.forEach(option => {
-                             const li = document.createElement('li');
-                             li.textContent = option;
-                             mainMealList.appendChild(li);
-                         });
- 
-                         event.mealOptions.desserts.forEach(option => {
-                             const li = document.createElement('li');
-                             li.textContent = option;
-                             dessertsList.appendChild(li);
-                         });
-                     }
+                    clearList(appetizersList);
+                    clearList(mainMealList);
+                    clearList(dessertsList);
+                    if (event.mealOptions) {
+                        event.mealOptions.appetizers.forEach(option => {
+                            const li = document.createElement('li');
+                            li.textContent = option;
+                            appetizersList.appendChild(li);
+                        });
+
+                        event.mealOptions.mainCourses.forEach(option => {
+                            const li = document.createElement('li');
+                            li.textContent = option;
+                            mainMealList.appendChild(li);
+                        });
+
+                        event.mealOptions.desserts.forEach(option => {
+                            const li = document.createElement('li');
+                            li.textContent = option;
+                            dessertsList.appendChild(li);
+                        });
+                    }
 
                     eventDetails.style.display = 'block';
                 })
