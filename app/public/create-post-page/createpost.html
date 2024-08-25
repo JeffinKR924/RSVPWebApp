@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post</title>
+    <link rel="stylesheet" href="createpost.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-left">
+            <img src="logo.png" alt="Logo" class="navbar-logo">
+            <input type="text" placeholder="Search..." class="search-bar">
+        </div>
+        <div class="nav-center">
+            <img src="/assets/dashboardpage/home-icon.svg" alt="Home" class="nav-icon" id="homeButton">
+            <img src="/assets/dashboardpage/calendar-icon.svg" alt="Calendar" class="nav-icon" id="calendarButton">
+            <img src="/assets/dashboardpage/profile-icon.svg" alt="Profile" class="nav-icon">
+        </div>
+        <div class="nav-right">
+            <img src="/assets/dashboardpage/logout-icon.svg" alt="Logout" class="nav-icon" id="logoutButton">
+        </div>
+    </header>
+
+    <div class="form-container">
+        <button id="close-button" class="close-button">&times;</button>
+        <h2>Create a New Post</h2>
+        <form id="postForm">
+            <label for="weddingSelect">Select Wedding:</label>
+            <select id="weddingSelect" name="weddingSelect" required>
+                <option value="">-- Select a Wedding --</option>
+                <!-- Wedding options will be populated here dynamically -->
+            </select>
+
+            <label for="postText">Post Content:</label>
+            <textarea id="postText" name="postText" placeholder="Write your post..." rows="5" required></textarea>
+
+            <label for="postImage">Attach Image:</label>
+            <input type="file" id="postImage" name="postImage" accept="image/*">
+
+            <button type="submit" class="submit-button">Submit Post</button>
+        </form>
+    </div>
+
+    <script type="module" src="/create-post-page/createpost.js"></script>
+</body>
+</html>

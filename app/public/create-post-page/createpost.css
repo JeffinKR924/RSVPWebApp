@@ -1,0 +1,175 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #fef4f8; 
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+}
+
+.navbar {
+    background-color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-logo {
+    width: 40px;
+    margin-right: 20px;
+}
+
+.search-bar {
+    padding: 8px;
+    border-radius: 20px;
+    border: none;
+    width: 300px;
+    background-color: #f1f1f1;
+}
+
+.nav-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    margin-right: 150px;
+}
+
+.nav-center .nav-icon {
+    width: 30px;
+    margin: 0 20px;
+    cursor: pointer;
+    filter: invert(35%) sepia(55%) saturate(3000%) hue-rotate(310deg) brightness(90%) contrast(95%);
+}
+
+.nav-center .nav-icon:hover {
+    filter: invert(25%) sepia(65%) saturate(1500%) hue-rotate(310deg) brightness(105%) contrast(85%);
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    margin-right: 45px;
+}
+
+.nav-right .nav-icon {
+    width: 30px;
+    margin-left: 15px;
+    cursor: pointer;
+    filter: invert(35%) sepia(55%) saturate(3000%) hue-rotate(310deg) brightness(90%) contrast(95%);
+}
+
+.nav-right .nav-icon:hover {
+    filter: invert(25%) sepia(65%) saturate(1500%) hue-rotate(310deg) brightness(105%) contrast(85%);
+}
+
+.form-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    margin-top: 100px;
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative; /* Ensure the close button is positioned relative to this container */
+}
+
+.form-container h2 {
+    margin-bottom: 20px;
+    color: #b32d60;
+}
+
+.form-container label {
+    font-size: 16px;
+    color: #b32d60;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    display: block;
+    text-align: left;
+    width: 100%;
+}
+
+.form-container input[type="text"],
+.form-container input[type="file"],
+.form-container textarea,
+.form-container select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.submit-button {
+    background-color: #e63980;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.submit-button:hover {
+    background-color: #d02870;
+}
+
+.close-button {
+    position: absolute;
+    top: -8px;
+    right: 1px;
+    background-color: transparent;
+    border: none;
+    font-size: 40px; /* Increase the font size for a larger 'X' */
+    padding: 10px; /* Increase the padding for a larger clickable area */
+    cursor: pointer;
+    color: #888;
+}
+
+.close-button:hover {
+    color: #e63980; /* Lighter pink on hover */
+}
+
+.post-card {
+    background-color: #fde4eb; 
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.post-card .post-top {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #b32d60;
+}
+
+.post-card .post-middle {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.post-card .post-bottom img {
+    max-width: 100%; 
+    max-height: 300px; 
+    object-fit: cover; 
+    border-radius: 10px;
+}

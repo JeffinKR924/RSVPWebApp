@@ -1,7 +1,7 @@
 /* Global Styles */
 body {
     font-family: 'Arial', sans-serif;
-    background: url('../assets/background.jpg') no-repeat center center fixed;
+    background: url('../assets/loginpage/background2.jpg') no-repeat center center fixed;
     background-size: cover;
     display: flex;
     justify-content: center;
@@ -20,13 +20,13 @@ body {
     width: 35%;
     min-width: 400px;
     text-align: center;
-    border: 2px solid #4CAF50;
+    border: 2px solid #b32d60; /* Darker pink border */
 }
 
 /* Slogan Style */
 .slogan {
     font-size: 28px;
-    color: #4CAF50;
+    color: #b32d60; /* Darker pink */
     margin-bottom: 10px;
     font-weight: bold;
 }
@@ -41,7 +41,7 @@ body {
 /* Login Header Style */
 .login-header {
     font-size: 20px;
-    color: #4CAF50;
+    color: #e07591; /* Lighter pink */
     margin-bottom: 20px;
     font-weight: normal;
 }
@@ -72,7 +72,7 @@ input[type="password"] {
 .login-button {
     width: 100%;
     padding: 10px;
-    background-color: rgb(16, 92, 6);
+    background-color: #b32d60; /* Darker pink */
     color: white;
     border: none;
     border-radius: 5px;
@@ -83,13 +83,13 @@ input[type="password"] {
 }
 
 .login-button:hover {
-    background-color:  rgb(7, 48, 2);
+    background-color: #e07591; /* Lighter pink on hover */
 }
 
 .signup-button {
     width: 100%;
     padding: 10px;
-    background-color: #28862c;
+    background-color: #e63980; /* Different pink shade for the signup button */
     color: white;
     border: none;
     border-radius: 5px;
@@ -100,7 +100,7 @@ input[type="password"] {
 }
 
 .signup-button:hover {
-    background-color: rgb(7, 48, 2);
+    background-color: #ff66a1; /* Lighter pink on hover */
 }
 
 .close-button {
@@ -115,5 +115,5 @@ input[type="password"] {
 }
 
 .close-button:hover {
-    color: red;
+    color: #b32d60; /* Change hover color to pink */
 }

@@ -176,5 +176,5 @@ document.getElementById('mealForm').addEventListener('submit', async function(ev
 });
 
 document.getElementById('close-button').addEventListener('click', function() {
-    window.location.href = '/';
+    window.location.href = '/dashboard-page';
 });

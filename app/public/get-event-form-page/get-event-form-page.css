@@ -1,3 +1,9 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: url('../assets/loginpage/background2.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
 .event-form-container {
     background-color: rgba(255, 255, 255, 0.9);
     padding: 20px;
@@ -6,13 +12,13 @@
     width: 40%;
     min-width: 400px;
     text-align: center;
-    border: 2px solid #4CAF50;
+    border: 2px solid #b32d60; /* Darker pink border */
     margin: 20px auto;
 }
 
 .form-title {
     font-size: 24px;
-    color: #4CAF50;
+    color: #b32d60; /* Darker pink */
     margin-bottom: 20px;
     font-weight: bold;
 }
@@ -26,6 +32,7 @@ label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    color: #b32d60; /* Darker pink */
 }
 
 select {
@@ -43,12 +50,13 @@ select {
 }
 
 h2, h3, h4 {
-    color: #4CAF50;
+    color: #b32d60; /* Darker pink */
 }
 
 p {
     font-size: 18px;
     margin: 5px 0;
+    color: #333; /* Neutral text color */
 }
 
 ul {
@@ -58,39 +66,8 @@ ul {
 
 ul li {
     font-size: 16px;
+    color: #333; /* Neutral text color */
 }
-
-p {
-    font-size: 18px;
-    margin: 5px 0;
-}
-
-h2, h3 {
-    color: #4CAF50;
-}
-
-ul {
-    list-style-type: disc;
-    margin-left: 20px;
-}
-
-ul li {
-    font-size: 16px;
-}
-
-h3 {
-    color: #4CAF50;
-}
-
-ul {
-    list-style-type: disc;
-    margin-left: 20px;
-}
-
-ul li {
-    font-size: 16px;
-}
-
 
 .close-button {
     position: absolute;
@@ -104,5 +81,5 @@ ul li {
 }
 
 .close-button:hover {
-    color: red;
+    color: #e63980; /* Lighter pink on hover */
 }
