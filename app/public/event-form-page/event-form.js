@@ -25,6 +25,7 @@ getById('eventForm').addEventListener('submit', function (event) {
     }
 
     const giftList = getById('giftList').value ?
+
         getById('giftList').value.split('\n').map(giftName => {
             return { name: giftName.trim(), claimedBy: null };
         }) : [];
@@ -111,7 +112,6 @@ getById('eventForm').addEventListener('submit', function (event) {
         });
     }
 });
-
 
 function toggleAction() {
     const action = document.querySelector('input[name="action"]:checked').value;
