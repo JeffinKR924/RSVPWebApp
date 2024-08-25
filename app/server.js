@@ -58,6 +58,10 @@ app.get('/get-event-form-page', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', "get-event-form-page", "get-event-form-page.html"));
 });
 
+app.get('/create-post-page', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', "create-post-page", "createpost.html"));
+});
+
 app.get('/meal-creation-page', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', "meal-creation-page", "meal-creation.html"));
 });
@@ -289,17 +293,19 @@ app.post('/update-guest-response', async (req, res) => {
 });
 
 app.post('/add-event-attendee', async (req, res) => {
-  const { userId, eventId } = req.body;
+  const { userId, eventId, eventData } = req.body;
 
-  if (!userId || !eventId) {
-      return res.status(400).json({ message: 'User ID and Event ID are required.' });
+  if (!userId || !eventId || !eventData) {
+      return res.status(400).json({ message: 'User ID, Event ID, and Event Data are required.' });
   }
 
   try {
       const userRef = db.collection('userAccounts').doc(userId);
       console.log('event id:', eventId);
+      
       // Create a document in the eventsAttendee sub-collection with the eventId as its ID
-      await userRef.collection('eventsAttendee').doc(eventId).set({});
+      // and include the full event details
+      await userRef.collection('eventsAttendee').doc(eventId).set(eventData);
 
       res.status(200).json({ message: 'Event added to attendee list successfully!' });
   } catch (error) {
@@ -309,6 +315,117 @@ app.post('/add-event-attendee', async (req, res) => {
 });
 
 
+app.get('/get-user-events', async (req, res) => {
+  const { userId, type } = req.query;
+
+
+  if (!userId || !type) {
+      return res.status(400).json({ message: 'User ID and type (owner/attendee) are required.' });
+  }
+
+  try {
+      const userRef = db.collection('userAccounts').doc(userId);
+      const eventsRef = userRef.collection(type === 'owner' ? 'eventsOwner' : 'eventsAttendee');
+      const snapshot = await eventsRef.get();
+
+      if (snapshot.empty) {
+          return res.status(200).json([]); // No events found
+      }
+
+      const events = [];
+      snapshot.forEach(doc => {
+          const eventData = doc.data();
+          eventData.id = doc.id; // Add the event ID to the data
+          events.push(eventData);
+      });
+
+      res.status(200).json(events);
+  } catch (error) {
+      console.error('Error fetching events:', error);
+      res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+});
+
+app.post('/save-post', async (req, res) => {
+  try {
+      const { weddingId, weddingName, postContent, posterName, imageUrl } = req.body;
+
+      if (!weddingId || !weddingName || !postContent || !posterName) {
+          return res.status(400).json({ message: 'Missing required fields' });
+      }
+
+      const weddingRef = db.collection('weddingPosts').doc(weddingId);
+      const postsCollectionRef = weddingRef.collection('posts');
+      const postSnapshot = await postsCollectionRef.get();
+
+      const postNumber = postSnapshot.size + 1;
+      const postRef = postsCollectionRef.doc(`Post ${postNumber}`);
+
+      await postRef.set({
+          weddingName,
+          postContent,
+          imageUrl,
+          posterName,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      res.status(200).json({ message: 'Post created successfully' });
+  } catch (error) {
+      console.error('Error creating post:', error);
+      res.status(500).json({ message: 'Failed to create post', error: error.message });
+  }
+});
+
+
+
+// Endpoint to get the user's full name based on userId
+app.get('/get-user-name', async (req, res) => {
+  const { userId } = req.query;
+
+  if (!userId) {
+      return res.status(400).json({ message: 'User ID is required.' });
+  }
+
+  try {
+      const userRef = db.collection('userAccounts').doc(userId);
+      const userDoc = await userRef.get();
+
+      if (!userDoc.exists) {
+          return res.status(404).json({ message: 'User not found.' });
+      }
+
+      const userData = userDoc.data();
+      const fullName = `${userData.firstName} ${userData.lastName}`;
+      res.status(200).json({ fullName });
+  } catch (error) {
+      console.error('Error fetching user name:', error);
+      res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+});
+
+app.get('/get-wedding-posts', async (req, res) => {
+  const { eventId } = req.query;
+
+  if (!eventId) {
+      return res.status(400).json({ message: 'Event ID is required.' });
+  }
+
+  try {
+      const postsRef = db.collection('weddingPosts').doc(eventId).collection('posts');
+      const postsSnapshot = await postsRef.get();
+
+      if (postsSnapshot.empty) {
+          return res.json([]); // No posts found
+      }
+
+      const posts = postsSnapshot.docs.map(doc => doc.data());
+
+      res.status(200).json(posts);
+  } catch (error) {
+      console.error('Error fetching posts:', error);
+      res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+});
 
 
 app.listen(port, hostname, () => {

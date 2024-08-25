@@ -112,7 +112,16 @@ document.addEventListener('DOMContentLoaded', async function () {
                 })
             });
     
-            // Add the event's unique ID (eventId) to the user's `eventsAttendee` collection
+            // Fetch the event details from the server to store in the attendee's collection
+            const eventResponse = await fetch(`/get-event?userId=${encodeURIComponent(userId)}&eventId=${encodeURIComponent(eventId)}`);
+            const eventData = await eventResponse.json();
+    
+            if (!eventData) {
+                alert('Event not found.');
+                return;
+            }
+    
+            // Add the full event details to the user's `eventsAttendee` collection
             await fetch(`/add-event-attendee`, {
                 method: 'POST',
                 headers: {
@@ -120,7 +129,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                 },
                 body: JSON.stringify({
                     userId: loggedInUserId,
-                    eventId: eventId // Store the event UID here
+                    eventId: eventId, // Store the event UID here
+                    eventData: eventData // Include full event details
                 })
             });
     

@@ -1,7 +1,5 @@
-// Helper function to get element by ID
 const getById = id => document.getElementById(id);
 
-// Event listeners for buttons and form actions
 getById('addGuestButton').addEventListener('click', addGuestEntry);
 
 document.querySelectorAll('input[name="action"]').forEach(radio => {
@@ -11,7 +9,7 @@ document.querySelectorAll('input[name="action"]').forEach(radio => {
 getById('eventSelect').addEventListener('change', fillEventData);
 
 getById('eventForm').addEventListener('submit', function (event) {
-    event.preventDefault(); // Prevent the form from submitting and refreshing the page
+    event.preventDefault(); 
 
     if (!validateForm()) {
         alert('Please correct the errors in the form.');
@@ -26,7 +24,6 @@ getById('eventForm').addEventListener('submit', function (event) {
         return;
     }
 
-    // Split the gift list input into an array of objects
     const giftList = getById('giftList').value ?
         getById('giftList').value.split('\n').map(giftName => {
             return { name: giftName.trim(), claimedBy: null };
@@ -41,7 +38,6 @@ getById('eventForm').addEventListener('submit', function (event) {
     };
 
     if (action === 'create') {
-        // Handle creating a new event
         fetch('/save-event', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -49,12 +45,10 @@ getById('eventForm').addEventListener('submit', function (event) {
         }).then(response => response.json())
             .then(data => {
                 if (data.id) {
-                    const eventId = data.id; // Get the generated eventId from the response
-                    // Generate the guest link using the generated eventId and userId
+                    const eventId = data.id; 
                     const guestLink = `${window.location.origin}/event-form-guest-view.html?userId=${encodeURIComponent(userId)}&eventId=${encodeURIComponent(eventId)}`;
                     getById('guestLink').value = guestLink;
 
-                    // Now update the event with the guestLink
                     fetch(`/update-event?id=${encodeURIComponent(eventId)}`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
@@ -78,25 +72,21 @@ getById('eventForm').addEventListener('submit', function (event) {
                 alert('Error saving event data.');
             });
     } else if (action === 'modify') {
-        // Handle modifying an existing event
         const eventId = getById('eventSelect').value;
         if (!eventId) {
             alert('Please select an event to modify.');
             return;
         }
 
-        // Update the event data including the guestLink
         fetch(`/update-event?id=${encodeURIComponent(eventId)}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId, event: eventData })
         }).then(response => response.json()).then(data => {
             if (data.message === 'Event updated successfully!') {
-                // Generate the guest link using the existing eventId and userId
                 const guestLink = `${window.location.origin}/event-form-guest-view.html?userId=${encodeURIComponent(userId)}&eventId=${encodeURIComponent(eventId)}`;
                 getById('guestLink').value = guestLink;
 
-                // Now update the event with the guestLink
                 fetch(`/update-event?id=${encodeURIComponent(eventId)}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
@@ -123,9 +113,6 @@ getById('eventForm').addEventListener('submit', function (event) {
 });
 
 
-
-
-// Toggle between create and modify actions
 function toggleAction() {
     const action = document.querySelector('input[name="action"]:checked').value;
     const eventSelectContainer = getById('eventSelectContainer');
@@ -139,7 +126,6 @@ function toggleAction() {
     }
 }
 
-// Fetch and populate events in the select dropdown for modification
 function fetchAndPopulateEvents() {
     const userId = localStorage.getItem('userId');
 
@@ -167,10 +153,9 @@ function fetchAndPopulateEvents() {
         });
 }
 
-// Fill the form with event data when an event is selected
 function fillEventData() {
     const eventSelect = getById('eventSelect');
-    const selectedEventId = eventSelect.value; // Use the event ID instead of title
+    const selectedEventId = eventSelect.value; 
     const userId = localStorage.getItem('userId');
 
     if (!selectedEventId || !userId) {
@@ -184,7 +169,7 @@ function fillEventData() {
             console.log(event);
             if (event) {
                 populateFormWithEventData(event);
-                getById('guestLink').value = event.guestLink || ''; // Populate the guest link
+                getById('guestLink').value = event.guestLink || ''; 
             } else {
                 alert('Event not found.');
             }
@@ -195,8 +180,6 @@ function fillEventData() {
         });
 }
 
-
-// Populate form fields with event data
 function populateFormWithEventData(event) {
     getById('eventTitle').value = event.eventTitle;
     getById('eventDate').value = event.eventDate;
@@ -211,13 +194,11 @@ function populateFormWithEventData(event) {
     updateRemoveButtonsVisibility();
 }
 
-// Add a new guest entry to the form
 function addGuestEntry(guest = {}) {
     const guestListContainer = getById('guestListContainer');
     const guestEntry = document.createElement('div');
     guestEntry.className = 'guest-entry';
 
-    // Create Name input
     const nameInput = document.createElement('input');
     nameInput.type = 'text';
     nameInput.placeholder = 'Name';
@@ -225,21 +206,18 @@ function addGuestEntry(guest = {}) {
     nameInput.value = guest.name || '';
     nameInput.required = true;
 
-    // Create Email input
     const emailInput = document.createElement('input');
     emailInput.type = 'email';
     emailInput.placeholder = 'Email (optional)';
     emailInput.className = 'guest-email';
     emailInput.value = guest.email || '';
 
-    // Create Phone input
     const phoneInput = document.createElement('input');
     phoneInput.type = 'tel';
     phoneInput.placeholder = 'Phone (optional)';
     phoneInput.className = 'guest-phone';
     phoneInput.value = guest.phone || '';
 
-    // Create Remove button
     const removeButton = document.createElement('button');
     removeButton.type = 'button';
     removeButton.className = 'remove-guest-button';
@@ -249,7 +227,6 @@ function addGuestEntry(guest = {}) {
         updateRemoveButtonsVisibility();
     });
 
-    // Append all elements to guest entry
     guestEntry.appendChild(nameInput);
     guestEntry.appendChild(emailInput);
     guestEntry.appendChild(phoneInput);
@@ -260,7 +237,6 @@ function addGuestEntry(guest = {}) {
     updateRemoveButtonsVisibility();
 }
 
-// Get guest list data from the form
 function getGuestList() {
     const guestEntries = document.querySelectorAll('.guest-entry');
     return Array.from(guestEntries).map(entry => ({
@@ -270,7 +246,6 @@ function getGuestList() {
     }));
 }
 
-// Validate the form before submission
 function validateForm() {
     let isValid = true;
     const guestEntries = document.querySelectorAll('.guest-entry');
@@ -314,7 +289,6 @@ function validateForm() {
     return isValid;
 }
 
-// Validate the event date to ensure it's in the future
 function validateFutureDate(dateString) {
     const selectedDate = new Date(dateString);
     const today = new Date();
@@ -322,7 +296,6 @@ function validateFutureDate(dateString) {
     return selectedDate > today;
 }
 
-// Highlight elements with error or success classes
 function highlightElement(element, className) {
     element.classList.add(className);
     setTimeout(() => {
@@ -344,12 +317,10 @@ function validatePhone(phone) {
     return re.test(phone);
 }
 
-// Update visibility of remove buttons based on guest entries
 function updateRemoveButtonsVisibility() {
     const guestEntries = document.querySelectorAll('.guest-entry');
     const removeButtons = document.querySelectorAll('.remove-guest-button');
 
-    // Show `remove buttons` only if there's more than one guest entry
     removeButtons.forEach((button, index) => {
         button.style.display = guestEntries.length > 1 ? 'inline-block' : 'none';
         button.onclick = () => {
@@ -361,7 +332,6 @@ function updateRemoveButtonsVisibility() {
     });
 }
 
-// Clear the form fields
 function clearForm() {
     ['eventTitle', 'eventDate', 'eventLocation', 'giftList', 'guestLink'].forEach(id => {
         getById(id).value = '';
@@ -369,11 +339,9 @@ function clearForm() {
     const guestListContainer = getById('guestListContainer');
     guestListContainer.innerHTML = '';
 
-    // Adds the first guest entry
     addGuestEntry();
 }
 
-// Close button functionality
 getById('close-button').addEventListener('click', function () {
     window.location.href = '/dashboard-page';
 });
