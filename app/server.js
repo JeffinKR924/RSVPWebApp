@@ -132,22 +132,16 @@ app.post('/save-event', async (req, res) => {
   }
 
   try {
-      // Transform the giftList from an array of strings to an array of objects
-      if (event.giftList) {
-          event.giftList = event.giftList.map(gift => ({
-              name: gift,
-              claimedBy: null
-          }));
-      }
 
       const eventRef = await db.collection('userAccounts').doc(userId).collection('eventsOwner').add(event);
       console.log('eventRef:', eventRef);
-      res.status(200).json({ message: 'Event saved successfully', event: event, id: eventRef.id});
+      res.status(200).json({ message: 'Event saved successfully', event: event, id: eventRef.id });
   } catch (error) {
       console.error('Error saving event:', error);
       res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
+
 
 
 // Returns all events that can be selected for modification
