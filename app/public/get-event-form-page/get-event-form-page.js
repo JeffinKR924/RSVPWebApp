@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const totalGuests = document.getElementById('totalGuests');
     const guestList = document.getElementById('guestList');
     const giftList = document.getElementById('giftList');
-    const confirmedGiftList = document.getElementById('confirmedGiftList');
     const appetizersList = document.getElementById('appetizers');
     const mainMealList = document.getElementById('mainMeal');
     const dessertsList = document.getElementById('desserts');
@@ -60,23 +59,38 @@ document.addEventListener('DOMContentLoaded', function () {
                     clearList(guestList);
                     event.guestList.forEach(guest => {
                         const li = document.createElement('li');
-                        li.textContent = `${guest.name} ${guest.email ? `(Email: ${guest.email})` : ''} ${guest.phone ? `(Phone: ${guest.phone})` : ''} ${guest.bringingGift ? '- Bringing Gift' : '- Not Bringing Gift'}`;
+                        li.textContent = `${guest.name} - Confirmed${guest.bringingGift ? ', Bringing Gift' : ''}`;
+
+                        // Append meal choice if available
+                        if (guest.selectedAppetizer || guest.selectedMainCourse || guest.selectedDessert) {
+                            const mealInfo = document.createElement('ul');
+                            if (guest.selectedAppetizer) {
+                                const appetizerLi = document.createElement('li');
+                                appetizerLi.textContent = `Appetizer: ${guest.selectedAppetizer}`;
+                                mealInfo.appendChild(appetizerLi);
+                            }
+                            if (guest.selectedMainCourse) {
+                                const mainCourseLi = document.createElement('li');
+                                mainCourseLi.textContent = `Main Course: ${guest.selectedMainCourse}`;
+                                mealInfo.appendChild(mainCourseLi);
+                            }
+                            if (guest.selectedDessert) {
+                                const dessertLi = document.createElement('li');
+                                dessertLi.textContent = `Dessert: ${guest.selectedDessert}`;
+                                mealInfo.appendChild(dessertLi);
+                            }
+                            li.appendChild(mealInfo);
+                        }
+
                         guestList.appendChild(li);
                     });
 
                     clearList(giftList);
-                    clearList(confirmedGiftList);
                     if (event.giftList) {
                         event.giftList.forEach(gift => {
                             const li = document.createElement('li');
-                            li.textContent = gift.name; // Access the name property of the gift object
+                            li.textContent = gift.name; // Only show gift name, not who claimed it
                             giftList.appendChild(li);
-
-                            if (gift.claimedBy) {
-                                const claimedLi = document.createElement('li');
-                                claimedLi.textContent = `${gift.name} (Claimed)`; // Display the name of the claimed gift
-                                confirmedGiftList.appendChild(claimedLi);
-                            }
                         });
                     }
 
