@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             if (allEvents.length === 0) {
                 alert('You are not associated with any weddings.');
+                window.location.href = '/dashboard-page';
                 return;
             }
 

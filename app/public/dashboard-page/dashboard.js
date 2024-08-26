@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 posts.forEach(post => {
                     const postElement = createPostElement(post);
-                    postsContainer.appendChild(postElement);
+                    postsContainer.insertBefore(postElement, postsContainer.firstChild); // Add post to the top
                 });
             }
         } catch (error) {
@@ -84,35 +84,60 @@ document.addEventListener('DOMContentLoaded', async () => {
     function createPostElement(post) {
         const postCard = document.createElement('div');
         postCard.className = 'post-card';
-
+    
         const postTop = document.createElement('div');
         postTop.className = 'post-top';
-
+    
         const postInfo = document.createElement('div');
         postInfo.className = 'post-info';
-        postInfo.textContent = `${post.posterName} posted in ${post.weddingName}`;
-
+    
+        const posterName = document.createElement('span');
+        posterName.className = 'poster-name';
+        posterName.textContent = post.posterName;
+    
+        const postedInText = document.createElement('span');
+        postedInText.className = 'posted-in-text';
+        postedInText.textContent = ' posted in ';
+    
+        const weddingName = document.createElement('span');
+        weddingName.className = 'wedding-name';
+        weddingName.textContent = post.weddingName;
+    
+        postInfo.appendChild(posterName);
+        postInfo.appendChild(postedInText);
+        postInfo.appendChild(weddingName);
+    
         postTop.appendChild(postInfo);
+    
+        // Create the new div for date and time
+        const postTime = document.createElement('div');
+        postTime.className = 'post-time';
+        const postDateTime = new Date(post.createdAt['_seconds'] * 1000);
+        postTime.textContent = `${postDateTime.toLocaleDateString()} ${postDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    
         postCard.appendChild(postTop);
-
+        postCard.appendChild(postTime); // Append the new date and time div
+    
         const postMiddle = document.createElement('div');
         postMiddle.className = 'post-middle';
         postMiddle.textContent = post.postContent;
-
+    
         postCard.appendChild(postMiddle);
-
+    
         if (post.imageUrl) {
             const postBottom = document.createElement('div');
             postBottom.className = 'post-bottom';
-
+    
             const postImage = document.createElement('img');
             postImage.src = post.imageUrl;
             postImage.alt = 'Post Image';
-
+    
             postBottom.appendChild(postImage);
             postCard.appendChild(postBottom);
         }
-
+    
         return postCard;
     }
+    
+    
 });
