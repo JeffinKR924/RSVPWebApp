@@ -74,7 +74,7 @@ app.post('/save-meal', async (req, res) => {
   }
 
   try {
-      const eventRef = db.collection('users').doc(userId).collection('events').doc(eventId);
+      const eventRef = db.collection('userAccounts').doc(userId).collection('eventsOwner').doc(eventId);
       await eventRef.set({
           mealOptions: {
               appetizers,
