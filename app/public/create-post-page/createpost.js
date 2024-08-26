@@ -122,3 +122,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 });
+
+document.getElementById('close-button').addEventListener('click', function() {
+    window.location.href = '/dashboard-page';
+});
