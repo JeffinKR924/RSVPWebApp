@@ -1,10 +1,19 @@
+body {
+  font-family: 'Arial', sans-serif;
+  background: url('../assets/loginpage/background2.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
 #calendar {
     max-width: 800px;
     margin: 40px auto;
     padding: 0 10px;
-  }
+    background-color: #fde4eb; /* Light pink background to match the theme */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
 
-  .close-button {
+.close-button {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -12,9 +21,9 @@
     border: none;
     font-size: 50px;
     cursor: pointer;
-    color: #888;
+    color: #b32d60; /* Darker pink for the close button */
 }
 
 .close-button:hover {
-    color: red;
+    color: #e63980; /* Lighter pink on hover */
 }

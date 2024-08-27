@@ -19,7 +19,21 @@ body {
     top: 0;
     z-index: 10;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 34px;
 }
+
+.logo-container {
+    position: fixed; /* Fixes the logo in a specific position on the screen */
+    top: 7px; /* Adjusts the distance from the top of the screen */
+    left: 20px; /* Adjusts the distance from the left of the screen */
+    z-index: 10; /* Ensures it stays on top of other elements */
+}
+
+#logo-icon {
+    width: 37px; /* Adjust width as necessary */
+    height: auto; /* Maintain aspect ratio */
+}
+
 
 .nav-left {
     display: flex;
@@ -44,7 +58,7 @@ body {
     justify-content: center;
     align-items: center;
     flex-grow: 1;
-    margin-right: 150px;
+    margin-right: -210px;
 }
 
 .nav-center .nav-icon {
