@@ -1,3 +1,41 @@
+window.submitPoll = async function(pollId) {
+    const form = document.getElementById(`poll-form-${pollId}`);
+    const selectedOption = form.querySelector('input[name="poll-option"]:checked');
+    
+    if (!selectedOption) {
+        alert('Please select an option before submitting.');
+        return;
+    }
+    
+    const optionValue = selectedOption.value;
+    
+    try {
+        const response = await fetch('/submit-poll-response', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: localStorage.getItem('userId'),
+                pollId: pollId,
+                selectedOption: optionValue
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to submit poll response');
+        }
+        
+        const result = await response.json();
+        alert(result.message);
+        
+        form.querySelector('button').disabled = true;
+    } catch (error) {
+        console.error('Error submitting poll response:', error);
+        alert('Error submitting poll response.');
+    }
+};
+
 document.addEventListener('DOMContentLoaded', async function () {
     const eventSelect = document.getElementById('eventSelect');
     const pollsContainer = document.getElementById('pollsContainer');
@@ -57,7 +95,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
-    //Add method to submit poll
 
     async function populateEventDropdown(userId) {
         try {

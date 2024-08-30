@@ -70,10 +70,6 @@ app.get('/create-post-page', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', "create-post-page", "createpost.html"));
 });
 
-app.get('/meal-creation-page', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', "meal-creation-page", "meal-creation.html"));
-});
-
 app.post('/save-meal', async (req, res) => {
   const { userId, eventId, appetizers, mainCourses, desserts } = req.body;
 
@@ -103,30 +99,129 @@ app.post('/save-poll', async (req, res) => {
   const { userId, eventId, pollQuestion, pollOptions } = req.body;
 
   if (!userId || !eventId || !pollQuestion || !pollOptions || !Array.isArray(pollOptions) || pollOptions.length === 0) {
-      return res.status(400).json({ message: 'User ID, Event ID, poll question, and poll options are required.' });
+    return res.status(400).json({ message: 'User ID, Event ID, poll question, and poll options are required.' });
   }
 
   try {
-      const eventRef = db.collection('userAccounts').doc(userId).collection('eventsOwner').doc(eventId);
-      
-      // Generate a new document ID for the poll
-      const pollsRef = eventRef.collection('polls');
-      const newPollRef = pollsRef.doc(); // Automatically generate a unique ID
-      
-      await newPollRef.set({
-          question: pollQuestion,
-          options: pollOptions
-      });
+    const optionsCount = pollOptions.reduce((acc, option) => {
+      acc[option] = 0;
+      return acc;
+    }, {});
 
-      res.status(200).send('Poll saved successfully');
+    // Step 1: Save the poll to the owner's event in the 'eventsOwner' collection
+    const eventOwnerRef = db.collection('userAccounts').doc(userId).collection('eventsOwner').doc(eventId);
+    const pollsRef = eventOwnerRef.collection('polls');
+    const newPollRef = pollsRef.doc();
+    
+    await newPollRef.set({
+      question: pollQuestion,
+      options: pollOptions,
+      optionsCount: optionsCount,
+      voters: []
+    });
+
+    // Step 2: Update polls for all attendees of the event
+    const userAccountsRef = db.collection('userAccounts');
+    const usersSnapshot = await userAccountsRef.get();
+    
+    const newPollData = {
+      id: newPollRef.id,
+      question: pollQuestion,
+      options: pollOptions,
+    };
+
+    // Loop through all users to update attendee events
+    usersSnapshot.forEach(async (userDoc) => {
+      const userId = userDoc.id; // Get user ID
+      const eventsAttendeeRef = db.collection('userAccounts').doc(userId).collection('eventsAttendee').doc(eventId);
+      const eventDoc = await eventsAttendeeRef.get();
+
+      if (eventDoc.exists) {
+        // If the event exists in the attendee's collection, update the polls array
+        await eventsAttendeeRef.update({
+          polls: admin.firestore.FieldValue.arrayUnion(newPollData) // Add new poll to polls array
+        });
+      }
+    });
+
+    res.status(200).send('Poll saved successfully and attendee events updated.');
   } catch (error) {
-      console.error('Error saving poll:', error);
-      res.status(500).send('Server Error');
+    console.error('Error saving poll or updating attendees:', error);
+    res.status(500).send('Server Error');
   }
-  
 });
 
 
+app.post('/submit-poll-response', async (req, res) => {
+  const { userId, pollId, selectedOption } = req.body;
+
+  if (!userId || !pollId || !selectedOption) {
+      return res.status(400).json({ message: 'User ID, poll ID, and selected option are required.' });
+  }
+
+  try {
+      const userRef = db.collection('userAccounts').doc(userId);
+      const userDoc = await userRef.get();
+
+      if (!userDoc.exists) {
+          return res.status(404).json({ message: 'User not found.' });
+      }
+
+      // Check if the user is an event owner for the poll
+      const userEventsOwnerRef = userRef.collection('eventsOwner');
+      const userEventsSnapshot = await userEventsOwnerRef.get();
+      let isEventOwner = false;
+      let eventId = null;
+
+      for (const eventDoc of userEventsSnapshot.docs) {
+          eventId = eventDoc.id;
+          const pollsRef = eventDoc.ref.collection('polls');
+          const pollDoc = await pollsRef.doc(pollId).get();
+
+          if (pollDoc.exists) {
+              isEventOwner = true;
+              break;
+          }
+      }
+
+      if (!isEventOwner) {
+          return res.status(403).json({ message: 'User is not authorized to update this poll.' });
+      }
+
+      const pollRef = db.collection('userAccounts').doc(userId)
+          .collection('eventsOwner').doc(eventId)
+          .collection('polls').doc(pollId);
+          
+      const pollDoc = await pollRef.get();
+
+      if (!pollDoc.exists) {
+          return res.status(404).json({ message: 'Poll not found.' });
+      }
+
+      const pollData = pollDoc.data();
+      const { optionsCount, voters } = pollData;
+
+      if (!(selectedOption in optionsCount)) {
+          return res.status(400).json({ message: 'Invalid option selected.' });
+      }
+
+      if (voters.includes(userId)) {
+          return res.status(400).json({ message: 'User has already voted on this poll.' });
+      }
+
+      optionsCount[selectedOption] += 1;
+
+      await pollRef.update({
+          optionsCount: optionsCount,
+          voters: admin.firestore.FieldValue.arrayUnion(userId)
+      });
+
+      res.status(200).json({ message: 'Poll response submitted successfully.' });
+  } catch (error) {
+      console.error('Error submitting poll response:', error);
+      res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+});
 
 
 app.post('/signup', async (req, res) => {
@@ -254,7 +349,6 @@ app.get('/get-attendee-event', async (req, res) => {
   try {
       const eventRef = db.collection('userAccounts').doc(userId).collection('eventsAttendee').doc(eventId);
       const eventDoc = await eventRef.get();
-      console.log('eventDoc:', eventDoc);
 
       if (!eventDoc.exists) {
           return res.status(404).json({ message: 'Event not found.' });
@@ -263,17 +357,35 @@ app.get('/get-attendee-event', async (req, res) => {
       const event = eventDoc.data();
 
       const polls = event.polls || [];
-      
+      const filteredPolls = [];
+
+      for (const poll of polls) {
+          const pollRef = db.collection('userAccounts').doc(userId)
+              .collection('eventsOwner').doc(eventId)
+              .collection('polls').doc(poll.id);
+
+          const pollDoc = await pollRef.get();
+
+          if (pollDoc.exists) {
+              const pollData = pollDoc.data();
+              const { voters } = pollData;
+
+              if (!voters.includes(userId)) {
+                  filteredPolls.push(poll);
+              }
+          }
+      }
+
       const mealOptions = event.mealOptions || {
           appetizers: [],
           mainCourses: [],
           desserts: []
       };
-      
+
       res.status(200).json({
           ...event,
           mealOptions,
-          polls
+          polls: filteredPolls
       });
   } catch (error) {
       console.error('Error fetching event:', error);
@@ -389,8 +501,6 @@ app.post('/add-event-attendee', async (req, res) => {
       const userRef = db.collection('userAccounts').doc(userId);
       console.log('event id:', eventId);
       
-      // Create a document in the eventsAttendee sub-collection with the eventId as its ID
-      // and include the full event details
       await userRef.collection('eventsAttendee').doc(eventId).set(eventData);
 
       res.status(200).json({ message: 'Event added to attendee list successfully!' });
