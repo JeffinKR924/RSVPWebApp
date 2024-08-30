@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Organizer - Create Poll</title>
+    <link rel="stylesheet" href="/polls-page/polls.css">
+</head>
+<body>
+    <!-- Close Button -->
+    <button id="close-button" class="close-button">&times;</button>
+
+    <!-- Poll Creation Form -->
+    <div class="poll-container">
+        <h2>Create a New Poll</h2>
+        <form id="poll-creation-form">
+            <div class="form-group">
+                <label for="eventSelect">Select Event</label>
+                <select id="eventSelect" name="eventSelect">
+                    <option value="">Select an event</option>
+                </select>
+            </div>
+            <label for="poll-question">Poll Question:</label>
+            <input type="text" id="poll-question" name="poll-question" required>
+            <div id="poll-options">
+                <div class="poll-option">
+                    <label for="option1">Option 1:</label>
+                    <input type="text" id="option1" name="options[]" required>
+                    <button type="button" class="remove-option" style="display: none;">Remove</button>
+                </div>
+                <div class="poll-option">
+                    <label for="option2">Option 2:</label>
+                    <input type="text" id="option2" name="options[]" required>
+                    <button type="button" class="remove-option" style="display: none;">Remove</button>
+                </div>
+            </div>
+            <button type="button" id="add-option">Add Option</button>
+            <button type="button" id="create-poll">Create Poll</button>
+        </form>
+        <div id="poll-results"></div>
+    </div>
+
+    <script src="/polls-page/polls.js"></script>
+</body>
+</html>

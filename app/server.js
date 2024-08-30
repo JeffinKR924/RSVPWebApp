@@ -45,6 +45,14 @@ app.get('/calendar-page', (req, res) => {
   res.sendFile(path.join(__dirname, "public", "calendar-page", "calendar.html"));
 });
 
+app.get('/polls-page', (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "polls-page", "polls.html"));
+});
+
+app.get('/take-poll-page', (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "take-poll-page", "take-poll.html"));
+});
+
 // Serve event-form-guest-view page
 app.get('/event-form-guest-view.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'event-form-guest-view', 'event-form-guest-view.html'));
@@ -89,6 +97,35 @@ app.post('/save-meal', async (req, res) => {
       res.status(500).send('Server Error');
   }
 });
+
+
+app.post('/save-poll', async (req, res) => {
+  const { userId, eventId, pollQuestion, pollOptions } = req.body;
+
+  if (!userId || !eventId || !pollQuestion || !pollOptions || !Array.isArray(pollOptions) || pollOptions.length === 0) {
+      return res.status(400).json({ message: 'User ID, Event ID, poll question, and poll options are required.' });
+  }
+
+  try {
+      const eventRef = db.collection('userAccounts').doc(userId).collection('eventsOwner').doc(eventId);
+      
+      // Generate a new document ID for the poll
+      const pollsRef = eventRef.collection('polls');
+      const newPollRef = pollsRef.doc(); // Automatically generate a unique ID
+      
+      await newPollRef.set({
+          question: pollQuestion,
+          options: pollOptions
+      });
+
+      res.status(200).send('Poll saved successfully');
+  } catch (error) {
+      console.error('Error saving poll:', error);
+      res.status(500).send('Server Error');
+  }
+  
+});
+
 
 
 
@@ -185,8 +222,10 @@ app.get('/get-event', async (req, res) => {
       }
 
       const event = eventDoc.data();
+
+      const pollsSnapshot = await eventRef.collection('polls').get();
+      const polls = pollsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       
-      // Ensure meal options are included in the response
       const mealOptions = event.mealOptions || {
           appetizers: [],
           mainCourses: [],
@@ -195,7 +234,8 @@ app.get('/get-event', async (req, res) => {
       
       res.status(200).json({
           ...event,
-          mealOptions
+          mealOptions,
+          polls
       });
   } catch (error) {
       console.error('Error fetching event:', error);
@@ -204,6 +244,42 @@ app.get('/get-event', async (req, res) => {
 });
 
 
+app.get('/get-attendee-event', async (req, res) => {
+  const { userId, eventId } = req.query;
+
+  if (!userId || !eventId) {
+      return res.status(400).json({ message: 'User ID and event ID are required.' });
+  }
+
+  try {
+      const eventRef = db.collection('userAccounts').doc(userId).collection('eventsAttendee').doc(eventId);
+      const eventDoc = await eventRef.get();
+      console.log('eventDoc:', eventDoc);
+
+      if (!eventDoc.exists) {
+          return res.status(404).json({ message: 'Event not found.' });
+      }
+
+      const event = eventDoc.data();
+
+      const polls = event.polls || [];
+      
+      const mealOptions = event.mealOptions || {
+          appetizers: [],
+          mainCourses: [],
+          desserts: []
+      };
+      
+      res.status(200).json({
+          ...event,
+          mealOptions,
+          polls
+      });
+  } catch (error) {
+      console.error('Error fetching event:', error);
+      res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+});
 
 
 // Updates an event

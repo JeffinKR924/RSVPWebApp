@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const viewEventsButton = document.getElementById('view-events-link');
     const createPostButton = document.getElementById('createPostButton');
     const postsContainer = document.getElementById('postsContainer');
+    const pollsButton = document.getElementById('polls-link');
+    const takePollsButton = document.getElementById('take-polls-link');
+
 
     calendarButton.addEventListener('click', (event) => {
         event.preventDefault(); 
@@ -39,6 +42,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     viewEventsButton.addEventListener('click', (event) => {
         event.preventDefault(); 
         window.location.href = '/get-event-form-page'; 
+    });
+
+    pollsButton.addEventListener('click', (event) => {
+        event.preventDefault(); 
+        window.location.href = '/polls-page'; 
+    });
+
+    takePollsButton.addEventListener('click', (event) => {
+        event.preventDefault(); 
+        window.location.href = '/take-poll-page'; 
     });
 
     logoutButton.addEventListener('click', async (event) => {

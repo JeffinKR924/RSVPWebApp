@@ -16,9 +16,9 @@ header {
 }
 
 .logo-container {
-    position: absolute;
-    right: 1177px; /* Align to the right of the screen */
-    top: 13px; /* Adjust to position it relative to the top of the page */
+    position: fixed;
+    left: 0; /* Align to the right of the screen */
+    top: 0; /* Adjust to position it relative to the top of the page */
     z-index: 3; /* Make sure it appears above other elements */
 }
 

@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const appetizersList = document.getElementById('appetizers');
     const mainMealList = document.getElementById('mainMeal');
     const dessertsList = document.getElementById('desserts');
+    const pollsContainer = document.getElementById('pollsContainer');
 
     function clearList(listElement) {
         while (listElement.firstChild) {
@@ -114,6 +115,22 @@ document.addEventListener('DOMContentLoaded', function () {
                             const li = document.createElement('li');
                             li.textContent = option;
                             dessertsList.appendChild(li);
+                        });
+                    }
+
+                    // Display polls
+                    clearList(pollsContainer);
+                    if (event.polls) {
+                        event.polls.forEach(poll => {
+                            const pollDiv = document.createElement('div');
+                            pollDiv.classList.add('poll');
+                            pollDiv.innerHTML = `
+                                <h4>${poll.question}</h4>
+                                <ul>
+                                    ${poll.options.map(option => `<li>${option}</li>`).join('')}
+                                </ul>
+                            `;
+                            pollsContainer.appendChild(pollDiv);
                         });
                     }
 

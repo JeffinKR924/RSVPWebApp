@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Poll</title>
+    <link rel="stylesheet" href="/take-poll-page/take-poll.css">
+</head>
+<body>
+    <div class="poll-container">
+        <button id="close-button" class="close-button">&times;</button>
+        <h1 class="page-title">Take a Poll</h1>
+        <div class="form-group">
+            <label for="eventSelect">Select Event</label>
+            <select id="eventSelect">
+                <option value="">-- Select an Event --</option>
+            </select>
+        </div>
+        <div id="pollsContainer" style="display: none;">
+            <h2>Polls</h2>
+            <!-- Polls will be dynamically added here -->
+        </div>
+    </div>
+    <script src="/take-poll-page/take-poll.js"></script>
+</body>
+</html>
