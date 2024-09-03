@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Poll Results</title>
+    <link rel="stylesheet" href="/view-poll-page/view-poll.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="poll-results-container">
+        <button id="close-button" class="close-button">&times;</button>
+
+        <div class="center-text">
+            <h2>Poll Results</h2>
+        </div>
+
+        <div class="form-group">
+            <label for="eventSelect">Select Event</label>
+            <select id="eventSelect" name="eventSelect">
+                <option value="">Select an event</option>
+            </select>
+        </div>
+
+        <div class="form-group" id="pollSelectGroup" style="display: none;">
+            <label for="pollSelect">Select Poll</label>
+            <select id="pollSelect" name="pollSelect">
+                <option value="">Select a poll</option>
+            </select>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="pollResultsChart"></canvas>
+        </div>
+    </div>
+    <script src="/view-poll-page/view-poll.js"></script>
+</body>
+</html>

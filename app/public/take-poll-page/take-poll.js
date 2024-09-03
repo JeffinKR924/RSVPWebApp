@@ -1,4 +1,4 @@
-window.submitPoll = async function(pollId) {
+window.submitPoll = async function(pollId, eventId) {
     const form = document.getElementById(`poll-form-${pollId}`);
     const selectedOption = form.querySelector('input[name="poll-option"]:checked');
     
@@ -8,6 +8,7 @@ window.submitPoll = async function(pollId) {
     }
     
     const optionValue = selectedOption.value;
+    console.log(eventId);
     
     try {
         const response = await fetch('/submit-poll-response', {
@@ -18,6 +19,7 @@ window.submitPoll = async function(pollId) {
             body: JSON.stringify({
                 userId: localStorage.getItem('userId'),
                 pollId: pollId,
+                eventId: eventId,
                 selectedOption: optionValue
             })
         });
@@ -64,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     }
 
                     console.log(event.polls);
-                    displayPolls(event.polls);
+                    displayPolls(event.polls, eventId);
                 })
                 .catch(error => {
                     console.error('Error fetching event details:', error);
@@ -75,7 +77,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 
-    function displayPolls(polls) {
+    function displayPolls(polls, eventId) {
         pollsContainer.style.display = 'block';
         clearList(pollsContainer);
 
@@ -88,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     <ul>
                         ${poll.options.map(option => `<li><label><input type="radio" name="poll-option" value="${option}"> ${option}</label></li>`).join('')}
                     </ul>
-                    <button type="button" onclick="submitPoll('${poll.id}')">Submit</button>
+                    <button type="button" onclick="submitPoll('${poll.id}', '${eventId}')">Submit</button>
                 </form>
             `;
             pollsContainer.appendChild(pollDiv);
@@ -109,7 +111,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
 
             if (events.length === 0) {
-                alert('You are not associated with any events.');
+                alert('You are not associated with any events or do not have any polls available.');
                 window.location.href = '/dashboard-page';
                 return;
             }

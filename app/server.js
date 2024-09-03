@@ -53,6 +53,10 @@ app.get('/take-poll-page', (req, res) => {
   res.sendFile(path.join(__dirname, "public", "take-poll-page", "take-poll.html"));
 });
 
+app.get('/view-poll-page', (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "view-poll-page", "view-poll.html"));
+});
+
 // Serve event-form-guest-view page
 app.get('/event-form-guest-view.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'event-form-guest-view', 'event-form-guest-view.html'));
@@ -153,9 +157,9 @@ app.post('/save-poll', async (req, res) => {
 
 
 app.post('/submit-poll-response', async (req, res) => {
-  const { userId, pollId, selectedOption } = req.body;
+  const { userId, pollId, eventId, selectedOption } = req.body;
 
-  if (!userId || !pollId || !selectedOption) {
+  if (!userId || !pollId || !eventId || !selectedOption) {
       return res.status(400).json({ message: 'User ID, poll ID, and selected option are required.' });
   }
 
@@ -167,32 +171,35 @@ app.post('/submit-poll-response', async (req, res) => {
           return res.status(404).json({ message: 'User not found.' });
       }
 
-      // Check if the user is an event owner for the poll
-      const userEventsOwnerRef = userRef.collection('eventsOwner');
-      const userEventsSnapshot = await userEventsOwnerRef.get();
-      let isEventOwner = false;
-      let eventId = null;
+      const usersRef = db.collection('userAccounts');
+      const usersSnapshot = await usersRef.get();
 
-      for (const eventDoc of userEventsSnapshot.docs) {
-          eventId = eventDoc.id;
-          const pollsRef = eventDoc.ref.collection('polls');
-          const pollDoc = await pollsRef.doc(pollId).get();
+      let eventPollRef = null;
 
-          if (pollDoc.exists) {
-              isEventOwner = true;
+      for (const userDoc of usersSnapshot.docs) {
+          const eventsOwnerRef = userDoc.ref.collection('eventsOwner');
+          const eventsOwnerSnapshot = await eventsOwnerRef.get();
+
+          for (const eventDoc of eventsOwnerSnapshot.docs) {
+            console.log(eventDoc.id);
+            console.log(eventId);
+              if (eventDoc.id === eventId) {
+                  eventPollRef = eventDoc.ref.collection('polls').doc(pollId);
+                  break;
+              }
+          }
+
+          if (eventPollRef) {
               break;
           }
       }
 
-      if (!isEventOwner) {
-          return res.status(403).json({ message: 'User is not authorized to update this poll.' });
+      if (!eventPollRef) {
+          return res.status(404).json({ message: 'Event or poll not found.' });
       }
 
-      const pollRef = db.collection('userAccounts').doc(userId)
-          .collection('eventsOwner').doc(eventId)
-          .collection('polls').doc(pollId);
-          
-      const pollDoc = await pollRef.get();
+      // Fetch and update the poll
+      const pollDoc = await eventPollRef.get();
 
       if (!pollDoc.exists) {
           return res.status(404).json({ message: 'Poll not found.' });
@@ -211,7 +218,7 @@ app.post('/submit-poll-response', async (req, res) => {
 
       optionsCount[selectedOption] += 1;
 
-      await pollRef.update({
+      await eventPollRef.update({
           optionsCount: optionsCount,
           voters: admin.firestore.FieldValue.arrayUnion(userId)
       });
@@ -222,6 +229,63 @@ app.post('/submit-poll-response', async (req, res) => {
       res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
+
+
+
+app.get('/get-polls', async (req, res) => {
+  const { userId, eventId } = req.query;
+
+  if (!userId || !eventId) {
+      return res.status(400).json({ message: 'User ID and Event ID are required.' });
+  }
+
+  try {
+      const pollsRef = db.collection('userAccounts').doc(userId)
+          .collection('eventsOwner').doc(eventId)
+          .collection('polls');
+
+      const pollsSnapshot = await pollsRef.get();
+      const polls = pollsSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+      }));
+
+      res.status(200).json(polls);
+  } catch (error) {
+      console.error('Error fetching polls:', error);
+      res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+});
+
+
+app.get('/get-poll', async (req, res) => {
+  const { userId, eventId, pollId } = req.query;
+
+  if (!userId || !eventId || !pollId) {
+      return res.status(400).json({ message: 'User ID, Event ID, and Poll ID are required.' });
+  }
+
+  try {
+      const pollRef = db.collection('userAccounts').doc(userId)
+          .collection('eventsOwner').doc(eventId)
+          .collection('polls').doc(pollId);
+
+      const pollDoc = await pollRef.get();
+
+      if (!pollDoc.exists) {
+          return res.status(404).json({ message: 'Poll not found.' });
+      }
+
+      const pollData = pollDoc.data();
+
+      res.status(200).json({ ...pollData});
+  } catch (error) {
+      console.error('Error fetching poll data:', error);
+      res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+});
+
+
 
 
 app.post('/signup', async (req, res) => {
@@ -347,6 +411,7 @@ app.get('/get-attendee-event', async (req, res) => {
   }
 
   try {
+      // Fetch event details from the attendee's collection
       const eventRef = db.collection('userAccounts').doc(userId).collection('eventsAttendee').doc(eventId);
       const eventDoc = await eventRef.get();
 
@@ -356,31 +421,48 @@ app.get('/get-attendee-event', async (req, res) => {
 
       const event = eventDoc.data();
 
-      const polls = event.polls || [];
-      const filteredPolls = [];
-
-      for (const poll of polls) {
-          const pollRef = db.collection('userAccounts').doc(userId)
-              .collection('eventsOwner').doc(eventId)
-              .collection('polls').doc(poll.id);
-
-          const pollDoc = await pollRef.get();
-
-          if (pollDoc.exists) {
-              const pollData = pollDoc.data();
-              const { voters } = pollData;
-
-              if (!voters.includes(userId)) {
-                  filteredPolls.push(poll);
-              }
-          }
-      }
-
       const mealOptions = event.mealOptions || {
           appetizers: [],
           mainCourses: [],
           desserts: []
       };
+
+      const usersRef = db.collection('userAccounts');
+      const usersSnapshot = await usersRef.get();
+
+      let ownerId;
+      for (const userDoc of usersSnapshot.docs) {
+          const ownerRef = userDoc.ref.collection('eventsOwner').doc(eventId);
+          const ownerDoc = await ownerRef.get();
+
+          if (ownerDoc.exists) {
+              ownerId = userDoc.id;
+              break;
+          }
+      }
+
+      if (!ownerId) {
+          return res.status(404).json({ message: 'Event owner not found.' });
+      }
+
+      const filteredPolls = [];
+
+      const pollsRef = db.collection('userAccounts').doc(ownerId)
+          .collection('eventsOwner').doc(eventId)
+          .collection('polls');
+      const pollsSnapshot = await pollsRef.get();
+
+      pollsSnapshot.forEach(pollDoc => {
+          const pollData = pollDoc.data();
+          const { voters } = pollData;
+
+          if (!voters.includes(userId)) {
+              filteredPolls.push({
+                  id: pollDoc.id,
+                  ...pollData
+              });
+          }
+      });
 
       res.status(200).json({
           ...event,
@@ -392,6 +474,7 @@ app.get('/get-attendee-event', async (req, res) => {
       res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
+
 
 
 // Updates an event

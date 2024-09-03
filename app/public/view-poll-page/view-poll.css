@@ -1,0 +1,81 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: url('../assets/loginpage/background2.jpg') no-repeat center center fixed;
+    background-size: cover;
+    text-align: left;
+}
+
+.poll-results-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: 40%;
+    min-width: 400px;
+    text-align: center;
+    border: 2px solid #b32d60; /* Darker pink border */
+    margin: 20px auto;
+    position: relative;
+}
+
+.poll-container button {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 1em;
+    background-color: #b32d60;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.poll-container button:hover {
+    background-color: #e63980;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+select {
+    width: 95%;
+    padding: 10px;
+    border: 1px solid darkgray;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    margin: 0 auto;
+    display: block;
+}
+
+
+h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.chart-container {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.center-text {
+    text-align: center;
+    margin: 20px;
+}
+
+.close-button {
+    position: absolute;
+    top: -8px;
+    right: 1px;
+    background-color: transparent;
+    border: none;
+    font-size: 40px;
+    padding: 10px;
+    cursor: pointer;
+    color: #888;
+}
+
+.close-button:hover {
+    color: #e63980;
+}
