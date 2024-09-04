@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Guest View</title>
     <link rel="stylesheet" href="event-form-guest-view/event-form-guest-view.css">
+    <style>
+        #map {
+            height: 400px; 
+            width: 100%; 
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="event-form-container">
@@ -51,6 +58,10 @@
             </div>
             <button id="submitResponse" class="submit-button">Submit Response</button>
         </div>
+
+        <!-- Map section -->
+        <h3>Event Location</h3>
+        <div id="map"></div>
     </div>
     <script src="event-form-guest-view/event-form-guest-view.js"></script>
 </body>

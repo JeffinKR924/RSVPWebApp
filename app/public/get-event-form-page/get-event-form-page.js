@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const totalGuests = document.getElementById('totalGuests');
     const guestList = document.getElementById('guestList');
     const giftList = document.getElementById('giftList');
+    const confirmedGiftList = document.getElementById('confirmedGiftList');
     const appetizersList = document.getElementById('appetizers');
     const mainMealList = document.getElementById('mainMeal');
     const dessertsList = document.getElementById('desserts');
@@ -41,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
             fetch(`/get-event?userId=${encodeURIComponent(localStorage.getItem('userId'))}&eventId=${encodeURIComponent(eventId)}`)
                 .then(response => response.json())
                 .then(event => {
-                    console.log('Fetched event:', event);  // Debugging line
+                    console.log('Fetched event:', event);
 
                     if (!event || !Array.isArray(event.guestList)) {
                         alert('Event data is missing or invalid.');
@@ -64,36 +65,44 @@ document.addEventListener('DOMContentLoaded', function () {
                         // Show confirmation status based on the 'confirmed' field
                         li.textContent = `${guest.name} - ${guest.confirmed ? 'Confirmed' : 'Not Confirmed'}`;
 
-                        // Append meal choice if available
-                        if (guest.selectedAppetizer || guest.selectedMainCourse || guest.selectedDessert) {
-                            const mealInfo = document.createElement('ul');
-                            if (guest.selectedAppetizer) {
-                                const appetizerLi = document.createElement('li');
-                                appetizerLi.textContent = `Appetizer: ${guest.selectedAppetizer}`;
-                                mealInfo.appendChild(appetizerLi);
+                        if (guest.confirmed) {
+                            // Append meal choice if available
+                            if (guest.mealSelection) {
+                                const mealInfo = document.createElement('span');
+                                let mealText = ' | Meal Selection: ';
+
+                                const selections = [];
+                                if (guest.mealSelection.appetizer) {
+                                    selections.push(`Appetizer: ${guest.mealSelection.appetizer}`);
+                                }
+                                if (guest.mealSelection.mainCourse) {
+                                    selections.push(`Main Course: ${guest.mealSelection.mainCourse}`);
+                                }
+                                if (guest.mealSelection.dessert) {
+                                    selections.push(`Dessert: ${guest.mealSelection.dessert}`);
+                                }
+
+                                mealText += selections.join(', ');
+                                mealInfo.textContent = mealText;
+                                li.appendChild(mealInfo);
                             }
-                            if (guest.selectedMainCourse) {
-                                const mainCourseLi = document.createElement('li');
-                                mainCourseLi.textContent = `Main Course: ${guest.selectedMainCourse}`;
-                                mealInfo.appendChild(mainCourseLi);
-                            }
-                            if (guest.selectedDessert) {
-                                const dessertLi = document.createElement('li');
-                                dessertLi.textContent = `Dessert: ${guest.selectedDessert}`;
-                                mealInfo.appendChild(dessertLi);
-                            }
-                            li.appendChild(mealInfo);
                         }
 
                         guestList.appendChild(li);
                     });
 
+                    // Gift List (Available Gifts)
                     clearList(giftList);
+                    clearList(confirmedGiftList); // For claimed gifts
                     if (event.giftList) {
                         event.giftList.forEach(gift => {
                             const li = document.createElement('li');
-                            li.textContent = gift.name; // Only show gift name, not who claimed it
-                            giftList.appendChild(li);
+                            li.textContent = `${gift.name} - ${gift.claimedBy ? 'Claimed' : 'Available'}`;
+                            if (gift.claimedBy) {
+                                confirmedGiftList.appendChild(li); // Append to claimed list
+                            } else {
+                                giftList.appendChild(li); // Append to available gift list
+                            }
                         });
                     }
 
