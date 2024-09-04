@@ -332,15 +332,16 @@ app.post('/save-event', async (req, res) => {
   }
 
   try {
+      event.eventOwnerId = userId;
 
       const eventRef = await db.collection('userAccounts').doc(userId).collection('eventsOwner').add(event);
-      console.log('eventRef:', eventRef);
       res.status(200).json({ message: 'Event saved successfully', event: event, id: eventRef.id });
   } catch (error) {
       console.error('Error saving event:', error);
       res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
+
 
 
 
@@ -524,79 +525,109 @@ app.get('/get-event', async (req, res) => {
 });
 
 app.post('/update-guest-response', async (req, res) => {
-  const { eventId } = req.query;
-  const { guestName, bringGift, selectedGift, selectedAppetizer, selectedMainCourse, selectedDessert } = req.body;
+  const { userId, eventId, guestName, bringGift, selectedGift, selectedAppetizer, selectedMainCourse, selectedDessert, confirmed, claimedGift } = req.body;
 
-  const [userId, eventTitle] = eventId.split('-');
-
-  if (!userId || !eventTitle || !guestName) {
-      return res.status(400).json({ message: 'Event ID, event title, user ID, and guest name are required.' });
+  if (!userId || !eventId || !guestName) {
+    console.error("Missing userId, eventId, or guestName in request body");
+    return res.status(400).send('Missing required fields (userId, eventId, guestName)');
   }
 
   try {
-      const eventsRef = db.collection('userAccounts').doc(userId).collection('eventsOwner');
-      const snapshot = await eventsRef.where('eventTitle', '==', eventTitle).get();
+    console.log(`Received guest response: ${JSON.stringify(req.body)}`);
 
-      if (snapshot.empty) {
-          return res.status(404).json({ message: 'Event not found.' });
+    const usersRef = db.collection('userAccounts');
+    let eventDocRef = null;
+
+    const usersSnapshot = await usersRef.get();
+    for (const userDoc of usersSnapshot.docs) {
+      const eventsOwnerRef = userDoc.ref.collection('eventsOwner').doc(eventId);
+      const eventDoc = await eventsOwnerRef.get();
+
+      if (eventDoc.exists) {
+        eventDocRef = eventsOwnerRef;
+        break;
       }
+    }
 
-      const eventDoc = snapshot.docs[0];
-      const eventData = eventDoc.data();
+    if (!eventDocRef) {
+      console.error(`Event with ID ${eventId} not found in owner's collection.`);
+      return res.status(404).send('Event not found');
+    }
 
-      const guestIndex = eventData.guestList.findIndex(guest => guest.name === guestName);
-      if (guestIndex === -1) {
-          return res.status(404).json({ message: 'Guest not found.' });
+    const eventDoc = await eventDocRef.get();
+    const eventData = eventDoc.data();
+
+    let guestUpdated = false;
+    const updatedGuestList = eventData.guestList.map(guest => {
+      if (guest.name === guestName) {
+        guestUpdated = true;
+        return {
+          ...guest,
+          bringGift,
+          selectedGift,
+          mealSelection: {
+            appetizer: selectedAppetizer,
+            mainCourse: selectedMainCourse,
+            dessert: selectedDessert
+          },
+          confirmed: confirmed !== undefined ? confirmed : guest.confirmed,
+          claimedGift: claimedGift !== undefined ? claimedGift : guest.claimedGift
+        };
       }
+      return guest;
+    });
 
-      // Update the guest's response
-      eventData.guestList[guestIndex].bringingGift = bringGift;
-      eventData.guestList[guestIndex].selectedAppetizer = selectedAppetizer;
-      eventData.guestList[guestIndex].selectedMainCourse = selectedMainCourse;
-      eventData.guestList[guestIndex].selectedDessert = selectedDessert;
+    if (!guestUpdated) {
+      console.error(`Guest ${guestName} not found in the guest list for event ${eventId}`);
+      return res.status(404).send('Guest not found');
+    }
 
-      // Mark the selected gift as claimed, but hide who claimed it
-      if (bringGift && selectedGift) {
-          const giftIndex = eventData.giftList.findIndex(gift => gift.name === selectedGift);
-          if (giftIndex !== -1) {
-              eventData.giftList[giftIndex].claimedBy = "Claimed";
-          }
-      }
+    await eventDocRef.update({
+      guestList: updatedGuestList
+    });
 
-      // Update the event document with the new guest, gift, and meal data
-      await eventsRef.doc(eventDoc.id).update({ 
-          guestList: eventData.guestList, 
-          giftList: eventData.giftList 
-      });
+    console.log(`Guest response for ${guestName} successfully updated in the event owner's collection.`);
 
-      res.status(200).json({ success: true });
+    const attendeeEventDocRef = db.collection('userAccounts').doc(userId).collection('eventsAttendee').doc(eventId);
+    const attendeeEventDoc = await attendeeEventDocRef.get();
+
+    if (!attendeeEventDoc.exists) {
+      console.error(`Attendee's event with ID ${eventId} not found.`);
+      return res.status(404).send('Attendee event not found');
+    }
+
+    await attendeeEventDocRef.update({
+      guestList: updatedGuestList
+    });
+
+    console.log(`Guest response for ${guestName} successfully updated in the attendee's collection.`);
+
+    res.status(200).send('Guest response updated successfully for both owner and attendee.');
   } catch (error) {
-      console.error('Error updating guest response:', error);
-      res.status(500).json({ message: 'Server Error', error: error.message });
+    console.error('Error updating guest response:', error);
+    res.status(500).send('Error updating guest response');
   }
 });
-
 
 app.post('/add-event-attendee', async (req, res) => {
   const { userId, eventId, eventData } = req.body;
 
   if (!userId || !eventId || !eventData) {
-      return res.status(400).json({ message: 'User ID, Event ID, and Event Data are required.' });
+    return res.status(400).json({ message: 'User ID, Event ID, and Event Data are required.' });
   }
 
   try {
-      const userRef = db.collection('userAccounts').doc(userId);
-      console.log('event id:', eventId);
-      
-      await userRef.collection('eventsAttendee').doc(eventId).set(eventData);
+    const userRef = db.collection('userAccounts').doc(userId);
+    console.log('event id:', eventId);
 
-      res.status(200).json({ message: 'Event added to attendee list successfully!' });
+    await userRef.collection('eventsAttendee').doc(eventId).set(eventData);
+
+    res.status(200).json({ message: 'Event added to attendee list successfully!' });
   } catch (error) {
-      console.error('Error adding event to attendee list:', error);
-      res.status(500).json({ message: 'Server Error', error: error.message });
+    console.error('Error adding event to attendee list:', error);
+    res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
-
 
 app.get('/get-user-events', async (req, res) => {
   const { userId, type } = req.query;

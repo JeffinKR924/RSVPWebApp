@@ -52,7 +52,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     eventDate.textContent = event.eventDate;
                     eventLocation.textContent = event.eventLocation;
 
-                    const confirmedGuestsCount = event.guestList.filter(guest => guest.bringingGift === true).length;
+                    // Use the 'confirmed' field to calculate confirmed guests
+                    const confirmedGuestsCount = event.guestList.filter(guest => guest.confirmed === true).length;
                     confirmedGuests.textContent = confirmedGuestsCount;
 
                     totalGuests.textContent = event.guestList.length;
@@ -60,7 +61,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     clearList(guestList);
                     event.guestList.forEach(guest => {
                         const li = document.createElement('li');
-                        li.textContent = `${guest.name} - Confirmed${guest.bringingGift ? ', Bringing Gift' : ''}`;
+                        // Show confirmation status based on the 'confirmed' field
+                        li.textContent = `${guest.name} - ${guest.confirmed ? 'Confirmed' : 'Not Confirmed'}`;
 
                         // Append meal choice if available
                         if (guest.selectedAppetizer || guest.selectedMainCourse || guest.selectedDessert) {

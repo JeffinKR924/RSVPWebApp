@@ -24,8 +24,13 @@ getById('eventForm').addEventListener('submit', function (event) {
         return;
     }
 
-    const giftList = getById('giftList').value ?
+    // Add the confirmation status to each guest (set to false initially)
+    const guestList = getGuestList().map(guest => ({
+        ...guest,
+        confirmed: false, // Initialize the confirmation field
+    }));
 
+    const giftList = getById('giftList').value ?
         getById('giftList').value.split('\n').map(giftName => {
             return { name: giftName.trim(), claimedBy: null };
         }) : [];
@@ -34,7 +39,7 @@ getById('eventForm').addEventListener('submit', function (event) {
         eventTitle: getById('eventTitle').value,
         eventDate: getById('eventDate').value,
         eventLocation: getById('eventLocation').value,
-        guestList: getGuestList(),
+        guestList: guestList,
         giftList: giftList
     };
 
@@ -72,44 +77,6 @@ getById('eventForm').addEventListener('submit', function (event) {
                 console.error('Error:', error);
                 alert('Error saving event data.');
             });
-    } else if (action === 'modify') {
-        const eventId = getById('eventSelect').value;
-        if (!eventId) {
-            alert('Please select an event to modify.');
-            return;
-        }
-
-        fetch(`/update-event?id=${encodeURIComponent(eventId)}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId, event: eventData })
-        }).then(response => response.json()).then(data => {
-            if (data.message === 'Event updated successfully!') {
-                const guestLink = `${window.location.origin}/event-form-guest-view.html?userId=${encodeURIComponent(userId)}&eventId=${encodeURIComponent(eventId)}`;
-                getById('guestLink').value = guestLink;
-
-                fetch(`/update-event?id=${encodeURIComponent(eventId)}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId, event: { guestLink } })
-                }).then(response => response.json())
-                    .then(updateData => {
-                        if (updateData.message === 'Event updated successfully!') {
-                            alert('Event data updated successfully!');
-                        } else {
-                            alert('Error updating event data.');
-                        }
-                    }).catch(error => {
-                        console.error('Error updating event data:', error);
-                        alert('Error updating event data.');
-                    });
-            } else {
-                alert('Error updating event data.');
-            }
-        }).catch(error => {
-            console.error('Error updating event data:', error);
-            alert('Error updating event data.');
-        });
     }
 });
 
