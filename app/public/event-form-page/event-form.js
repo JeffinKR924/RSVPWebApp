@@ -8,11 +8,20 @@ document.querySelectorAll('input[name="action"]').forEach(radio => {
 
 getById('eventSelect').addEventListener('change', fillEventData);
 
-getById('eventForm').addEventListener('submit', function (event) {
+getById('eventForm').addEventListener('submit', async function (event) {
     event.preventDefault(); 
+
+    const address = getById('eventLocation').value;
 
     if (!validateForm()) {
         alert('Please correct the errors in the form.');
+        return;
+    }
+
+    // Step 1: Validate address before proceeding
+    const isValidAddress = await validateAddress(address);
+    if (!isValidAddress) {
+        alert('Please enter a valid address.');
         return;
     }
 
@@ -38,7 +47,7 @@ getById('eventForm').addEventListener('submit', function (event) {
     const eventData = {
         eventTitle: getById('eventTitle').value,
         eventDate: getById('eventDate').value,
-        eventLocation: getById('eventLocation').value,
+        eventLocation: address, // Use validated address
         guestList: guestList,
         giftList: giftList
     };
@@ -79,6 +88,19 @@ getById('eventForm').addEventListener('submit', function (event) {
             });
     }
 });
+
+// Validate address using the server-side endpoint
+async function validateAddress(address) {
+    try {
+        const response = await fetch(`/validate-address?address=${encodeURIComponent(address)}`);
+        const data = await response.json();
+        return data.valid;
+    } catch (error) {
+        console.error('Error validating address:', error);
+        return false;
+    }
+}
+
 
 function toggleAction() {
     const action = document.querySelector('input[name="action"]:checked').value;

@@ -4,6 +4,8 @@ const path = require('path');
 const admin = require('firebase-admin');
 const fs = require('fs');
 const bodyParser = require('body-parser');
+const https = require('https');
+
 
 let hostname = "0.0.0.0";
 let port = 3000;
@@ -740,6 +742,62 @@ app.get('/get-wedding-posts', async (req, res) => {
       res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
+
+// Load Google Maps API key from the config file
+const googleMapsConfigPath = path.join(__dirname, 'google-maps-config.json');
+const googleMapsConfig = JSON.parse(fs.readFileSync(googleMapsConfigPath, 'utf8'));
+const googleMapsApiKey = googleMapsConfig.maps_api_key;
+
+// API route to validate addresses
+app.get('/validate-address', (req, res) => {
+    const address = req.query.address;
+
+    if (!address) {
+        return res.status(400).json({ message: 'Address is required.' });
+    }
+
+    const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${googleMapsApiKey}`;
+
+    // Make the request to the Google Maps API
+    https.get(geocodeUrl, (response) => {
+        let data = '';
+
+        // Collect the data from the response
+        response.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        // Once the response is complete
+        response.on('end', () => {
+            try {
+                const result = JSON.parse(data);
+
+                if (result.status === 'OK' && result.results.length > 0) {
+                    // Address is valid, return the location
+                    return res.json({ valid: true, location: result.results[0].geometry.location });
+                } else {
+                    // Address is invalid
+                    return res.json({ valid: false, message: 'Invalid address.' });
+                }
+            } catch (error) {
+                console.error('Error parsing response:', error);
+                res.status(500).json({ message: 'Error processing address validation response.' });
+            }
+        });
+    }).on('error', (error) => {
+        console.error('Error validating address:', error);
+        res.status(500).json({ message: 'Error validating address.' });
+    });
+});
+
+app.get('/load-google-maps', (req, res) => {
+  // Load the API key from the google-maps-config.json file
+  const apiKey = googleMapsConfig.maps_api_key;
+
+  // Send the Google Maps API script URL with the API key
+  res.json({ googleMapsScript: `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=places` });
+});
+
 
 
 app.listen(port, hostname, () => {

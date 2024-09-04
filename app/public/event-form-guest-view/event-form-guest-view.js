@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const appetizersSelect = document.getElementById('appetizersSelect');
     const mainCoursesSelect = document.getElementById('mainCoursesSelect');
     const dessertsSelect = document.getElementById('dessertsSelect');
+    const mapContainer = document.getElementById('map');
 
     console.log('Event form guest view script loaded.');
     if (!eventId) {
@@ -36,75 +37,113 @@ document.addEventListener('DOMContentLoaded', async function () {
     rsvpSection.style.display = 'block';
 
     console.log(`Fetching event data for eventId: ${eventId} and userId: ${userId}`);
-    fetch(`/get-event?userId=${encodeURIComponent(userId)}&eventId=${encodeURIComponent(eventId)}`)
-        .then(response => {
-            console.log('Event data response received.');
-            return response.json();
-        })
-        .then(event => {
-            if (!event) {
-                console.error('Event not found.');
-                alert('Event not found.');
-                return;
-            }
+    const response = await fetch(`/get-event?userId=${encodeURIComponent(userId)}&eventId=${encodeURIComponent(eventId)}`);
+    const event = await response.json();
 
-            console.log('Event data:', event);
+    if (!event) {
+        console.error('Event not found.');
+        alert('Event not found.');
+        return;
+    }
 
-            if (event.guestList && event.guestList.length > 0) {
-                console.log('Populating guest list dropdown.');
-                event.guestList.forEach(guest => {
-                    console.log(`Adding guest to dropdown: ${guest.name}`);
-                    const option = document.createElement('option');
-                    option.value = guest.name;
-                    option.textContent = guest.name;
-                    guestSelect.appendChild(option);
-                });
-            } else {
-                console.error('No guests found for this event.');
-                alert('No guests found for this event.');
-            }
+    console.log('Event data:', event);
 
-            if (event.giftList) {
-                console.log('Populating gift list dropdown.');
-                event.giftList.forEach(gift => {
-                    if (!gift.claimedBy) {
-                        console.log(`Adding gift to dropdown: ${gift.name}`);
-                        const option = document.createElement('option');
-                        option.value = gift.name;
-                        option.textContent = gift.name;
-                        giftSelect.appendChild(option);
-                    }
-                });
-            }
-
-            if (event.mealOptions) {
-                console.log('Populating meal options.');
-                event.mealOptions.appetizers.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.textContent = option;
-                    appetizersSelect.appendChild(opt);
-                });
-
-                event.mealOptions.mainCourses.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.textContent = option;
-                    mainCoursesSelect.appendChild(opt);
-                });
-
-                event.mealOptions.desserts.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.textContent = option;
-                    dessertsSelect.appendChild(opt);
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching event data:', error);
-            alert('Error fetching event data.');
+    // Populating guest list
+    if (event.guestList && event.guestList.length > 0) {
+        console.log('Populating guest list dropdown.');
+        event.guestList.forEach(guest => {
+            console.log(`Adding guest to dropdown: ${guest.name}`);
+            const option = document.createElement('option');
+            option.value = guest.name;
+            option.textContent = guest.name;
+            guestSelect.appendChild(option);
         });
+    } else {
+        console.error('No guests found for this event.');
+        alert('No guests found for this event.');
+    }
+
+    // Populating gift list
+    if (event.giftList) {
+        console.log('Populating gift list dropdown.');
+        event.giftList.forEach(gift => {
+            if (!gift.claimedBy) {
+                console.log(`Adding gift to dropdown: ${gift.name}`);
+                const option = document.createElement('option');
+                option.value = gift.name;
+                option.textContent = gift.name;
+                giftSelect.appendChild(option);
+            }
+        });
+    }
+
+    // Populating meal options
+    if (event.mealOptions) {
+        console.log('Populating meal options.');
+        event.mealOptions.appetizers.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option;
+            opt.textContent = option;
+            appetizersSelect.appendChild(opt);
+        });
+
+        event.mealOptions.mainCourses.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option;
+            opt.textContent = option;
+            mainCoursesSelect.appendChild(opt);
+        });
+
+        event.mealOptions.desserts.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option;
+            opt.textContent = option;
+            dessertsSelect.appendChild(opt);
+        });
+    }
+
+    // Initializing Google Maps
+    const loadGoogleMaps = async () => {
+        const mapResponse = await fetch('/load-google-maps');
+        const mapData = await mapResponse.json();
+        const script = document.createElement('script');
+        script.src = mapData.googleMapsScript;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    };
+
+    window.initMap = async function () {
+        if (event.eventLocation) {
+            const geocoder = new google.maps.Geocoder();
+
+            // Use Google Maps Geocoding to get the location from the address
+            geocoder.geocode({ address: event.eventLocation }, (results, status) => {
+                if (status === 'OK') {
+                    const location = results[0].geometry.location;
+
+                    // Initialize the map with the event's location
+                    const map = new google.maps.Map(mapContainer, {
+                        center: location,
+                        zoom: 15
+                    });
+
+                    // Place a marker on the event's location
+                    new google.maps.Marker({
+                        position: location,
+                        map: map,
+                        title: event.eventTitle
+                    });
+                } else {
+                    console.error('Geocode was not successful for the following reason:', status);
+                    alert('Failed to load the map. Please try again later.');
+                }
+            });
+        }
+    };
+
+    // Load Google Maps API and initialize the map
+    await loadGoogleMaps();
 
     guestSelect.addEventListener('change', function () {
         console.log(`Guest selected: ${guestSelect.value}`);
@@ -168,7 +207,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     selectedMainCourse: selectedMainCourse,
                     selectedDessert: selectedDessert,
                     confirmed: confirmed,
-                    claimedGift: claimedGift 
+                    claimedGift: claimedGift
                 })
             });
 
