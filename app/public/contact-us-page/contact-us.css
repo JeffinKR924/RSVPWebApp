@@ -27,7 +27,7 @@ body {
     color: #b32d60; /* Change hover color to pink */
 }
 
-.about-us-container {
+.contact-us-container {
     background-color: #ffffff;
     padding: 30px;
     border-radius: 10px;
@@ -36,48 +36,53 @@ body {
     text-align: center;
 }
 
-.about-us-container h1 {
+.contact-us-container h1 {
     color: #b32d60; /* Pink color */
     margin-bottom: 20px;
 }
 
-.about-us-container p {
+.contact-us-container p {
     color: #707070;
     margin-bottom: 30px;
     font-size: 16px;
     line-height: 1.5;
 }
 
-.developers-section {
-    margin-top: 40px;
+.contact-info {
+    text-align: left; /* Align text to the left for better readability */
 }
 
-.developers-section h2 {
+.contact-info h2 {
     color: #b32d60; /* Pink color */
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
-.developer-card {
-    background-color: #fde4eb; /* Light pink for developer card background */
+.info-item {
+    background-color: #fde4eb; /* Light pink for contact item background */
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: left;
 }
 
-.developer-card h3 {
+.info-item h3 {
     margin: 0;
     color: #b32d60; /* Pink color for the heading */
     margin-bottom: 10px;
 }
 
-.developer-card p {
+.info-item p {
     margin: 5px 0;
     font-size: 16px;
     color: #555; /* Darker grey for text */
 }
 
-.developer-card p strong {
-    color: #b32d60; /* Pink color for labels */
+.info-item a {
+    color: #e63980; /* Pink color for links */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.info-item a:hover {
+    text-decoration: underline;
 }

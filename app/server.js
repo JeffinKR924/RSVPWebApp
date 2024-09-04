@@ -74,6 +74,10 @@ app.get('/create-post-page', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', "create-post-page", "createpost.html"));
 });
 
+app.get('/contact-us-page', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', "contact-us-page", "contact-us.html"));
+});
+
 app.post('/save-meal', async (req, res) => {
   const { userId, eventId, appetizers, mainCourses, desserts } = req.body;
 
