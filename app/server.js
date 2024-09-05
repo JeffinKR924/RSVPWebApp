@@ -530,21 +530,18 @@ app.post('/update-guest-response', async (req, res) => {
   const { userId, eventId, guestName, bringGift, selectedGift, selectedAppetizer, selectedMainCourse, selectedDessert, confirmed, claimedGift } = req.body;
 
   if (!userId || !eventId || !guestName) {
-    console.error("Missing userId, eventId, or guestName in request body");
     return res.status(400).send('Missing required fields (userId, eventId, guestName)');
   }
 
   try {
-    console.log(`Received guest response: ${JSON.stringify(req.body)}`);
-
     const usersRef = db.collection('userAccounts');
     let eventDocRef = null;
 
+    // Find event owner
     const usersSnapshot = await usersRef.get();
     for (const userDoc of usersSnapshot.docs) {
       const eventsOwnerRef = userDoc.ref.collection('eventsOwner').doc(eventId);
       const eventDoc = await eventsOwnerRef.get();
-
       if (eventDoc.exists) {
         eventDocRef = eventsOwnerRef;
         break;
@@ -552,7 +549,6 @@ app.post('/update-guest-response', async (req, res) => {
     }
 
     if (!eventDocRef) {
-      console.error(`Event with ID ${eventId} not found in owner's collection.`);
       return res.status(404).send('Event not found');
     }
 
@@ -560,6 +556,9 @@ app.post('/update-guest-response', async (req, res) => {
     const eventData = eventDoc.data();
 
     let guestUpdated = false;
+    let giftClaimed = false;
+
+    // Update guest list and claim the gift
     const updatedGuestList = eventData.guestList.map(guest => {
       if (guest.name === guestName) {
         guestUpdated = true;
@@ -570,41 +569,38 @@ app.post('/update-guest-response', async (req, res) => {
           mealSelection: {
             appetizer: selectedAppetizer,
             mainCourse: selectedMainCourse,
-            dessert: selectedDessert
+            dessert: selectedDessert,
           },
           confirmed: confirmed !== undefined ? confirmed : guest.confirmed,
-          claimedGift: claimedGift !== undefined ? claimedGift : guest.claimedGift
+          claimedGift: claimedGift !== undefined ? claimedGift : guest.claimedGift,
         };
       }
       return guest;
     });
 
-    if (!guestUpdated) {
-      console.error(`Guest ${guestName} not found in the guest list for event ${eventId}`);
-      return res.status(404).send('Guest not found');
+    // Update gift list to mark the selected gift as claimed
+    const updatedGiftList = eventData.giftList.map(gift => {
+      if (gift.name === selectedGift) {
+        giftClaimed = true;
+        return {
+          ...gift,
+          claimedBy: true, // Mark as claimed
+        };
+      }
+      return gift;
+    });
+
+    if (!guestUpdated || (bringGift && !giftClaimed)) {
+      return res.status(404).send('Guest or gift not found');
     }
 
+    // Update event data in Firestore
     await eventDocRef.update({
-      guestList: updatedGuestList
+      guestList: updatedGuestList,
+      giftList: updatedGiftList, // Update the gift list in the event document
     });
 
-    console.log(`Guest response for ${guestName} successfully updated in the event owner's collection.`);
-
-    const attendeeEventDocRef = db.collection('userAccounts').doc(userId).collection('eventsAttendee').doc(eventId);
-    const attendeeEventDoc = await attendeeEventDocRef.get();
-
-    if (!attendeeEventDoc.exists) {
-      console.error(`Attendee's event with ID ${eventId} not found.`);
-      return res.status(404).send('Attendee event not found');
-    }
-
-    await attendeeEventDocRef.update({
-      guestList: updatedGuestList
-    });
-
-    console.log(`Guest response for ${guestName} successfully updated in the attendee's collection.`);
-
-    res.status(200).send('Guest response updated successfully for both owner and attendee.');
+    res.status(200).send('Guest response and gift claim updated successfully');
   } catch (error) {
     console.error('Error updating guest response:', error);
     res.status(500).send('Error updating guest response');
