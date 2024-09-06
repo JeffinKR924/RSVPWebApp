@@ -11,3 +11,5 @@
 4. run ```npm start ``` to start the node server
 
 5. Go to localhost:3000 to see the webpage
+
+6. If you want to use the remotely hosted application, enter this url into your browser: http://ec2-3-138-184-248.us-east-2.compute.amazonaws.com:3000/
