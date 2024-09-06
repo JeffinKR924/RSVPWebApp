@@ -5,7 +5,8 @@
         "chart.js": "^4.4.4",
         "cookie-parser": "^1.4.6",
         "express": "^4.19.2",
-        "firebase-admin": "^12.3.0"
+        "firebase-admin": "^12.3.0",
+        "body-parser": "^1.20.2"
     },
     "scripts": {
         "start": "node app/server.js"
