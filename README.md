@@ -6,7 +6,7 @@
 
 2. Get firebaseConfig.js file that contains api keys and add that to public directory
 
-3. Get the service-account-key.json file that contains the api keys and add it to the app directory.
+3. Get the service-account-key.json and google-maps-config.json files that contain api keys and add them to the app directory.
 
 4. run ```npm start ``` to start the node server
 
