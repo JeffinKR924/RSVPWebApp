@@ -13,3 +13,5 @@
 5. Go to localhost:3000 to see the webpage
 
 6. If you want to use the remotely hosted application, enter this url into your browser: http://ec2-3-138-184-248.us-east-2.compute.amazonaws.com:3000/
+
+7. Note: Application is hosted on an EC2 instance using AWS, and a Jenkins job is running that is connected to the main git branch. So ANY pushes to main will immediately reflect on the hosted application.
