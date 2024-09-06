@@ -18,11 +18,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const pollsButton = document.getElementById('polls-link');
     const takePollsButton = document.getElementById('take-polls-link');
     const viewPollsButton = document.getElementById('view-polls-link');
+    const profileButton = document.getElementById('profileButton');
 
 
     calendarButton.addEventListener('click', (event) => {
         event.preventDefault(); 
         window.location.href = '/calendar-page'; 
+    });
+
+    profileButton.addEventListener('click', (event) => {
+        event.preventDefault(); 
+        window.location.href = '/profile-page'; 
     });
 
     homeButton.addEventListener('click', (event) => {

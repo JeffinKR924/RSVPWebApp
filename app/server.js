@@ -47,6 +47,10 @@ app.get('/calendar-page', (req, res) => {
   res.sendFile(path.join(__dirname, "public", "calendar-page", "calendar.html"));
 });
 
+app.get('/profile-page', (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "profile-page", "profile.html"));
+});
+
 app.get('/polls-page', (req, res) => {
   res.sendFile(path.join(__dirname, "public", "polls-page", "polls.html"));
 });
@@ -792,6 +796,34 @@ app.get('/load-google-maps', (req, res) => {
 
   // Send the Google Maps API script URL with the API key
   res.json({ googleMapsScript: `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=places` });
+});
+
+app.get('/get-user-info', async (req, res) => {
+  const { userId } = req.query;
+
+  if (!userId) {
+    return res.status(400).json({ message: 'User ID is required.' });
+  }
+
+  try {
+    const userRef = db.collection('userAccounts').doc(userId);
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const userData = userDoc.data();
+    res.status(200).json({
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      email: userData.email,
+      createdAt: userData.createdAt.toDate().toISOString() // Convert Firestore timestamp to ISO string
+    });
+  } catch (error) {
+    console.error('Error fetching user info:', error);
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
 });
 
 
