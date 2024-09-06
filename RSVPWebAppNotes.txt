@@ -1,4 +1,0 @@
-ssh into aws server:
-
-ssh -i "my-ec2-key.pem" ec2-user@3.138.184.248
-
