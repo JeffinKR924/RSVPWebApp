@@ -7,10 +7,9 @@
     <link rel="stylesheet" href="/profile-page/profile.css">
     <script type="module" src="/profile-page/profile.js"></script>
 </head>
-<body>
-    <header class="navbar">
-        <!-- Add your navigation elements here -->
-    </header>
+<body> 
+    <!-- Close Button to return to the dashboard -->
+    <button class="close-button" id="close-button">&times;</button>
     
     <div class="profile-container">
         <h1>My Profile</h1>
@@ -21,5 +20,12 @@
             <p><strong>Member Since:</strong> <span id="createdAt"></span></p>
         </div>
     </div>
+
+    <script>
+        // Script to handle the "X" button click to redirect back to the dashboard
+        document.getElementById('close-button').addEventListener('click', function() {
+            window.location.href = '/dashboard-page';
+        });
+    </script>
 </body>
 </html>

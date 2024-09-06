@@ -43,3 +43,19 @@ body {
 .profile-details p strong {
     color: #e63980; /* Brighter pink for labels */
 }
+
+.close-button {
+    position: absolute;
+    top: 20px;  /* Adjust for desired spacing */
+    right: 20px;  /* Adjust for desired spacing */
+    background-color: transparent;
+    border: none;
+    font-size: 40px; /* Size of the "X" */
+    cursor: pointer;
+    color: #888; /* Initial color */
+    z-index: 10; /* Ensure it's above other elements */
+}
+
+.close-button:hover {
+    color: #e63980; /* Pink color on hover */
+}
