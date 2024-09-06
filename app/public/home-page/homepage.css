@@ -204,15 +204,6 @@ footer .social-media a:hover {
     text-align: left; /* Align text to the left */
 }
 
-.learn-more-image {
-    width: 35%; /* Right side for image */
-}
-
-.learn-more-image img {
-    width: 100%;
-    border-radius: 10px;
-}
-
 .learn-more-content ul {
     list-style: none;
     padding-left: 0;
