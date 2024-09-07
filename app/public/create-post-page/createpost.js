@@ -1,5 +1,5 @@
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
-import { storage } from "../firebaseConfig.js"; // Import storage from your config
+import { storage } from "../firebaseConfig.js"; 
 
 document.addEventListener('DOMContentLoaded', async function () {
     const weddingSelect = document.getElementById('weddingSelect');
@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         return;
     }
 
-    // Fetch the user's full name using the endpoint
     const loggedInUserName = await fetchUserName(loggedInUserId);
 
     if (!loggedInUserName) {
@@ -38,23 +37,19 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         try {
             if (postImage) {
-                // Create a storage reference
                 const imageRef = ref(storage, `weddingPosts/${selectedWeddingId}/${loggedInUserId}/${postImage.name}`);
                 
-                // Upload the file
                 await uploadBytes(imageRef, postImage);
                 
-                // Get the download URL
                 imageUrl = await getDownloadURL(imageRef);
             }
 
-            // Prepare the JSON data
             const postData = {
                 weddingId: selectedWeddingId,
                 weddingName: selectedWeddingName,
                 postContent: postText,
                 posterName: loggedInUserName,
-                imageUrl: imageUrl // Add image URL if exists
+                imageUrl: imageUrl 
             };
 
             const response = await fetch('/save-post', {
@@ -62,14 +57,14 @@ document.addEventListener('DOMContentLoaded', async function () {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(postData) // Send as JSON
+                body: JSON.stringify(postData) 
             });
 
             const result = await response.json();
 
             if (response.ok) {
                 alert('Post created successfully!');
-                window.location.href = '/dashboard-page'; // Redirect to dashboard
+                window.location.href = '/dashboard-page'; 
             } else {
                 throw new Error(result.message || 'Failed to create post.');
             }
@@ -116,10 +111,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                 throw new Error('Failed to fetch user name');
             }
             const data = await response.json();
-            return data.fullName; // Return the full name
+            return data.fullName; 
         } catch (error) {
             console.error('Error fetching user name:', error);
-            return null; // Return null if there's an error
+            return null; 
         }
     }
 });
