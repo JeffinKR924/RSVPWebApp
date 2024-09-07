@@ -8,8 +8,8 @@ body {
     height: 100vh;
     margin: 0;
     color: #333;
-    padding: 230px; /* Added padding to avoid content being cut off */
-    overflow-y: auto; /* Allow scrolling */
+    padding: 230px; 
+    overflow-y: auto; 
 }
 
 .close-button {
@@ -24,7 +24,7 @@ body {
 }
 
 .close-button:hover {
-    color: #b32d60; /* Change hover color to pink */
+    color: #b32d60;
 }
 
 .contact-us-container {
@@ -37,7 +37,7 @@ body {
 }
 
 .contact-us-container h1 {
-    color: #b32d60; /* Pink color */
+    color: #b32d60;
     margin-bottom: 20px;
 }
 
@@ -49,16 +49,16 @@ body {
 }
 
 .contact-info {
-    text-align: left; /* Align text to the left for better readability */
+    text-align: left; 
 }
 
 .contact-info h2 {
-    color: #b32d60; /* Pink color */
+    color: #b32d60; 
     margin-bottom: 15px;
 }
 
 .info-item {
-    background-color: #fde4eb; /* Light pink for contact item background */
+    background-color: #fde4eb; 
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 10px;
@@ -67,18 +67,18 @@ body {
 
 .info-item h3 {
     margin: 0;
-    color: #b32d60; /* Pink color for the heading */
+    color: #b32d60; 
     margin-bottom: 10px;
 }
 
 .info-item p {
     margin: 5px 0;
     font-size: 16px;
-    color: #555; /* Darker grey for text */
+    color: #555; 
 }
 
 .info-item a {
-    color: #e63980; /* Pink color for links */
+    color: #e63980; 
     text-decoration: none;
     font-weight: bold;
 }

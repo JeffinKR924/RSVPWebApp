@@ -134,14 +134,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     
         postTop.appendChild(postInfo);
     
-        // Create the new div for date and time
         const postTime = document.createElement('div');
         postTime.className = 'post-time';
         const postDateTime = new Date(post.createdAt['_seconds'] * 1000);
         postTime.textContent = `${postDateTime.toLocaleDateString()} ${postDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
     
         postCard.appendChild(postTop);
-        postCard.appendChild(postTime); // Append the new date and time div
+        postCard.appendChild(postTime);
     
         const postMiddle = document.createElement('div');
         postMiddle.className = 'post-middle';
