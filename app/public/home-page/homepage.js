@@ -12,7 +12,6 @@ document.getElementById('get-started-btn').addEventListener('click', () => {
     window.location.href = "/login-page";
 });
 
-// Smooth scroll to "Learn More" section
 document.getElementById('learn-more-btn').addEventListener('click', (e) => {
     e.preventDefault();
     document.getElementById('learn-more-section').scrollIntoView({ behavior: 'smooth' });

@@ -155,9 +155,7 @@ body {
 
 .posts-section {
     padding: 20px;
-    /* background-color: #b32d60;  */
     border-radius: 10px;
-    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
 
 .posts-section h3 {
@@ -193,7 +191,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 15px;
     margin-bottom: 20px;
-    max-width: 600px; /* Adjusts the maximum width of the post card */
+    max-width: 600px; 
     margin-left: auto;
     margin-right: 400px;
 }
@@ -210,15 +208,15 @@ body {
 }
 
 .post-card .poster-name {
-    font-size: 14px; /* Larger font size */
-    font-weight: bold; /* Bold text */
-    color: black; /* Black color for the name */
+    font-size: 14px; 
+    font-weight: bold; 
+    color: black; /
 }
 
 .post-card .posted-in-text {
-    font-size: 10px; /* Smaller font size for "posted in" */
-    color: #e63980; /* Pink color for "posted in" text */
-    margin-left: 5px; /* Add a small margin to the left */
+    font-size: 10px; 
+    color: #e63980; 
+    margin-left: 5px; 
 }
 
 .post-card .wedding-name {
@@ -245,8 +243,8 @@ body {
 .post-card .post-bottom img {
     max-width: 100%;
     height: auto;
-    max-height: 400px; /* Control the maximum height of the image */
-    object-fit: cover; /* Ensures the image scales nicely */
+    max-height: 400px; 
+    object-fit: cover; 
     border-radius: 10px;
 }
 

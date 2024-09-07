@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: #fef4f8; /* Light pink background */
+    background-color: #fef4f8; 
 }
 
 header {
@@ -13,7 +13,7 @@ header {
     padding: 20px;
     background-color: #ffffff;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    height: 40px; /* Fixed height for the header */
+    height: 40px; 
 }
 
 .logo-container {
@@ -34,19 +34,19 @@ nav ul {
     list-style: none;
     display: flex;
     gap: 20px;
-    padding-left: 470px; /* Using padding instead of margin */
-    position: relative; /* Allow left positioning */
-    left: 30px; /* Move the entire nav section to the right */
+    padding-left: 470px; 
+    position: relative; 
+    left: 30px; 
 }
 
 nav ul li a {
     text-decoration: none;
-    color: #b32d60; /* Darker pink for the navigation links */
+    color: #b32d60; 
     font-weight: bold;
 }
 
 .get-started-btn {
-    background-color: #b32d60; /* Darker pink for the button */
+    background-color: #b32d60; 
     color: #ffffff;
     padding: 10px 20px;
     border: none;
@@ -55,7 +55,7 @@ nav ul li a {
 }
 
 .get-started-btn:hover {
-    background-color: #e63980; /* Slightly lighter pink on hover */
+    background-color: #e63980; 
 }
 
 .hero {
@@ -64,17 +64,16 @@ nav ul li a {
     align-items: center;
     justify-content: space-between;
     padding: 50px;
-    background-color: #fde4eb; /* Light pink for the hero background */
-    height: 345px; /* Fixed height for the hero section */
-    overflow: hidden; /* Ensure circles and other elements don’t overflow outside the hero section */
+    background-color: #fde4eb; 
+    height: 345px; 
+    overflow: hidden; 
 }
 
-/* Circle Design */
 .circle-design {
     position: absolute;
     top: 20px;
-    left: -100px; /* Move circles slightly off-screen */
-    z-index: 1; /* Ensure circles are behind the content */
+    left: -100px; 
+    z-index: 1; 
 }
 
 .circle-design::before,
@@ -99,21 +98,20 @@ nav ul li a {
     left: 150px;
 }
 
-/* Ensure content is above the circle design */
 .hero-content {
     max-width: 50%;
-    z-index: 2; /* Ensure content is above the circle design */
+    z-index: 2; 
     position: relative;
 }
 
 .hero-content h1 {
     font-size: 48px;
-    color: #b32d60; /* Darker pink for the heading */
+    color: #b32d60; 
     margin-bottom: 20px;
 }
 
 .learn-more-btn {
-    background-color: #e63980; /* Darker pink for the "Learn More" button */
+    background-color: #e63980;
     color: #ffffff;
     padding: 10px 20px;
     text-decoration: none;
@@ -122,29 +120,27 @@ nav ul li a {
 }
 
 .learn-more-btn:hover {
-    background-color: #ff66a1; /* Lighter pink on hover */
+    background-color: #ff66a1;
 }
 
-/* Wedding Image Container */
 .wedding-image-container {
     position: absolute;
-    right: 100px; /* Align to the right of the screen */
-    top: 60px; /* Adjust to position it relative to the top of the page */
-    z-index: 3; /* Make sure it appears above other elements */
+    right: 100px; 
+    top: 60px; 
+    z-index: 3; 
 }
 
 #wedding-icon {
-    width: auto; /* Maintain the aspect ratio */
-    height: 490px; /* Set the height independently */
+    width: auto; 
+    height: 490px; 
 }
 
 #heart1-icon, #heart2-icon, #heart3-icon, #heart4-icon {
-    width: 25px; /* Adjust the size of the heart icon */
-    height: auto; /* Maintain the aspect ratio */
+    width: 25px; 
+    height: auto; 
     position: absolute;
 }
 
-/* Position for hearts */
 #heart1-icon { top: 50px; right: 700px; }
 #heart2-icon { top: 320px; right: 900px; }
 #heart3-icon { top: 50px; right: 50px; }
@@ -158,50 +154,49 @@ footer {
 }
 
 footer .social-media a {
-    color: #b32d60; /* Darker pink for footer links */
+    color: #b32d60; 
     text-decoration: none;
     margin: 0 10px;
 }
 
 footer .social-media a:hover {
-    color: #e63980; /* Slightly lighter pink on hover */
+    color: #e63980; 
 }
 
 .app-title {
     font-size: 52px;
-    color: #b32d60; /* Darker pink for the app title */
+    color: #b32d60; 
 }
 
 .subtitle {
     font-size: 28px;
-    color: #e07591; /* Lighter shade of pink for the subtitle */
+    color: #e07591; 
     margin-bottom: 50px;
     margin-top: 3px;
 }
 
 .description {
-    font-size: 15px; /* Decreased font size for better compression */
-    color: #e63980; /* Pink color for the description */
+    font-size: 15px; 
+    color: #e63980; 
     margin-bottom: 45px;
-    line-height: 1.5em; /* Adjust line height for better readability */
-    max-width: 330px; /* Limit the width to force text to wrap */
+    line-height: 1.5em; 
+    max-width: 330px; 
     font-weight: bold;
 }
 
-/* Learn More Section Styling */
 .learn-more-section {
-    background-color: #e63980; /* Pink background */
+    background-color: #e63980; 
     padding: 60px 40px;
-    color: white; /* Text color */
+    color: white; 
     display: flex;
-    justify-content: space-between; /* Align text to the left and image to the right */
+    justify-content: space-between; 
     align-items: center;
-    margin-top: 50vh; /* Further down the page */
+    margin-top: 50vh; 
 }
 
 .learn-more-content {
-    width: 60%; /* Left side text */
-    text-align: left; /* Align text to the left */
+    width: 60%; 
+    text-align: left; 
 }
 
 .learn-more-content ul {
@@ -216,7 +211,7 @@ footer .social-media a:hover {
 }
 
 .learn-more-section h2 {
-    color: white; /* Darker pink for section heading */
+    color: white; 
     margin-bottom: 20px;
     font-size: 32px;
 }
