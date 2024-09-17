@@ -83,3 +83,17 @@ ul li {
 .close-button:hover {
     color: #e63980; /* Lighter pink on hover */
 }
+
+#eventLink {
+    font-size: 14px; /* Make the link text smaller */
+    color: #b32d60; /* Darker pink */
+    word-wrap: break-word; /* Break long links to the next line if necessary */
+    overflow-wrap: break-word; /* Ensure text wraps within the container */
+    border: 1px solid #ccc; /* Optional: Add a border to visually separate it */
+    padding: 5px; /* Add some padding for better appearance */
+    background-color: #f9f9f9; /* Light background for contrast */
+    display: block; /* Ensure the link is displayed as a block */
+    width: 100%; /* Ensure it fits within the container width */
+    margin-top: 10px; /* Add some margin above */
+    border-radius: 5px; /* Rounded corners for better appearance */
+}

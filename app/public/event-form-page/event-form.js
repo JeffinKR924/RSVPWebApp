@@ -52,6 +52,8 @@ getById('eventForm').addEventListener('submit', async function (event) {
         giftList: giftList
     };
 
+    console.log("action", action);
+
     if (action === 'create') {
         fetch('/save-event', {
             method: 'POST',
@@ -87,6 +89,31 @@ getById('eventForm').addEventListener('submit', async function (event) {
                 alert('Error saving event data.');
             });
     }
+    else if (action === 'modify') {
+        const selectedEventId = getById('eventSelect').value; // Get the selected event ID
+        if (!selectedEventId) {
+            alert('Please select an event to modify.');
+            return;
+        }
+    
+        fetch(`/update-event?id=${encodeURIComponent(selectedEventId)}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId, event: eventData })
+        })
+        .then(response => response.json())
+        .then(updateData => {
+            if (updateData.message === 'Event updated successfully!') {
+                alert('Event data updated successfully!');
+            } else {
+                alert('Error updating event data.');
+            }
+        })
+        .catch(error => {
+            console.error('Error updating event data:', error);
+            alert('Error updating event data.');
+        });
+    }    
 });
 
 // Validate address using the server-side endpoint
@@ -155,7 +182,6 @@ function fillEventData() {
     fetch(`/get-event?userId=${encodeURIComponent(userId)}&eventId=${encodeURIComponent(selectedEventId)}`)
         .then(response => response.json())
         .then(event => {
-            console.log(event);
             if (event) {
                 populateFormWithEventData(event);
                 getById('guestLink').value = event.guestLink || ''; 

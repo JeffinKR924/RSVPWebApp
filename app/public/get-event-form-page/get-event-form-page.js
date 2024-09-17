@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const confirmedGuests = document.getElementById('confirmedGuests');
     const totalGuests = document.getElementById('totalGuests');
     const guestList = document.getElementById('guestList');
+    let eventLink = document.getElementById('eventLink');
     const giftList = document.getElementById('giftList');
     const confirmedGiftList = document.getElementById('confirmedGiftList');
     const appetizersList = document.getElementById('appetizers');
@@ -52,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     eventTitle.textContent = event.eventTitle;
                     eventDate.textContent = event.eventDate;
                     eventLocation.textContent = event.eventLocation;
+                    eventLink.textContent = event.guestLink;
 
                     // Use the 'confirmed' field to calculate confirmed guests
                     const confirmedGuestsCount = event.guestList.filter(guest => guest.confirmed === true).length;

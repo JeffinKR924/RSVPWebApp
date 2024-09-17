@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const takePollsButton = document.getElementById('take-polls-link');
     const viewPollsButton = document.getElementById('view-polls-link');
     const profileButton = document.getElementById('profileButton');
+    const rsvpmanagerButton = document.getElementById('rsvpmanager-link');
 
 
     calendarButton.addEventListener('click', (event) => {
@@ -64,6 +65,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     viewPollsButton.addEventListener('click', (event) => {
         event.preventDefault(); 
         window.location.href = '/view-poll-page'; 
+    });
+
+    rsvpmanagerButton.addEventListener('click', (event) => {
+        event.preventDefault(); 
+        window.location.href = '/rsvpmanager-page'; 
     });
 
     logoutButton.addEventListener('click', async (event) => {

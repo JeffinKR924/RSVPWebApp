@@ -1,0 +1,209 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: url('../assets/loginpage/background2.jpg') no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+}
+
+.navbar {
+    background-color: white; 
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 50px;
+}
+
+.logo-container {
+    position: fixed; 
+    top: 7px; 
+    left: 20px; 
+    z-index: 10; 
+}
+
+#logo-icon {
+    width: 37px; 
+    height: auto; 
+}
+
+.nav-left, .nav-right {
+    display: flex;
+    align-items: center;
+}
+
+.nav-icon {
+    width: 30px;
+    margin: 0 15px;
+    cursor: pointer;
+    filter: invert(35%) sepia(55%) saturate(3000%) hue-rotate(310deg) brightness(90%) contrast(95%);
+}
+
+.nav-icon:hover {
+    filter: invert(25%) sepia(65%) saturate(1500%) hue-rotate(310deg) brightness(105%) contrast(85%);
+}
+
+.main-content {
+    padding: 20px;
+    margin-top: 70px;
+}
+
+.event-selection {
+    margin-bottom: 20px;
+}
+
+.event-selection label {
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.event-selection select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.chart-container {
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.chart-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#searchBar {
+    padding: 8px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    width: 250px;
+}
+
+.statistics {
+    display: flex;
+    gap: 20px;
+}
+
+.statistics span {
+    font-size: 16px;
+    color: #555;
+}
+
+#rsvpTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#rsvpTable th, #rsvpTable td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+#rsvpTable th {
+    background-color: #e63980;
+    color: white;
+    position: sticky;
+    top: 0;
+}
+
+#rsvpTable tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#rsvpTable tr:hover {
+    background-color: #f1f1f1;
+}
+
+#rsvpTable td {
+    vertical-align: middle;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    background-color: #ccc;
+    transition: 0.4s;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #e63980;
+}
+
+input:checked + .slider:before {
+    transform: translateX(16px);
+}
+
+/* Status circle */
+/* ... existing styles ... */
+
+/* Status circle */
+.status-circle {
+    width: 100px;
+    height: 30px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+.status-accepted {
+    background-color: #e63980; /* Pink */
+}
+
+.status-declined {
+    background-color: red;
+}
+
+.status-undecided {
+    background-color: lightblue;
+    color: black;
+}
+
+.status-noresponse {
+    background-color: gray;
+}
+

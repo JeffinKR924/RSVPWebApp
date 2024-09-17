@@ -193,7 +193,7 @@ body {
     margin-bottom: 20px;
     max-width: 600px; 
     margin-left: auto;
-    margin-right: 400px;
+    margin-right: 300px;
 }
 
 .post-card .post-top {
@@ -246,42 +246,6 @@ body {
     max-height: 400px; 
     object-fit: cover; 
     border-radius: 10px;
-}
-
-.right-sidebar {
-    width: 250px;
-    padding: 20px;
-    height: 100vh; 
-    position: fixed;
-    top: 0;
-    right: 0;
-    margin-top: 60px; 
-    background-color: #fef4f8; 
-    overflow-y: auto;
-}
-
-.upcoming-events, .contacts-section {
-    background-color: white;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-}
-
-.upcoming-events h4, .contacts-section h4 {
-    margin-bottom: 10px;
-    color: #b32d60; 
-}
-
-.contacts-section .contact {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-}
-
-.contacts-section .contact img {
-    width: 30px;
-    border-radius: 50%;
-    margin-right: 10px;
 }
 
 .sidebar::-webkit-scrollbar,

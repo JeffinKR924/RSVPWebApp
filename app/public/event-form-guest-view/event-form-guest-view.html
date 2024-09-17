@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Guest View</title>
-    <link rel="stylesheet" href="event-form-guest-view/event-form-guest-view.css">
+    <link rel="stylesheet" href="event-form-guest-view.css">
     <style>
         #map {
             height: 400px; 
@@ -25,7 +24,16 @@
             <select id="guestSelect">
                 <option value="">-- Select Your Name --</option>
             </select>
-        </div>        
+        </div>
+        <div id="responseSection" class="form-group" style="display:none;">
+            <label for="responseSelect">Your Response</label>
+            <select id="responseSelect">
+                <option value="">-- Select Your Response --</option>
+                <option value="accepted">Confirm</option>
+                <option value="declined">Decline</option>
+                <option value="undecided">Undecided</option>
+            </select>
+        </div>
         <div id="giftOption" style="display: none;">
             <h3>Will you bring a gift?</h3>
             <label>
@@ -56,13 +64,13 @@
                     <option value="">-- Select a Dessert --</option>
                 </select>
             </div>
-            <button id="submitResponse" class="submit-button">Submit Response</button>
         </div>
+        <button id="submitResponse" class="submit-button" style="display:none;">Submit Response</button>
 
         <!-- Map section -->
         <h3>Event Location</h3>
         <div id="map"></div>
     </div>
-    <script src="event-form-guest-view/event-form-guest-view.js"></script>
+    <script src="event-form-guest-view.js"></script>
 </body>
 </html>

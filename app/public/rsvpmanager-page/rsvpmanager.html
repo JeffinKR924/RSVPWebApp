@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RSVP Manager</title>
+    <link rel="stylesheet" href="rsvpmanager.css">
+</head>
+<body>
+    <div class="navbar">
+        <!-- Include navigation bar similar to dashboard -->
+        <div class="logo-container">
+            <img id="logo-icon" src="logo.png" alt="Logo">
+        </div>
+        <div class="nav-left">
+            <button id="homeButton"><img class="nav-icon" src="home-icon.png" alt="Home"></button>
+            <button id="calendarButton"><img class="nav-icon" src="calendar-icon.png" alt="Calendar"></button>
+            <button id="profileButton"><img class="nav-icon" src="profile-icon.png" alt="Profile"></button>
+        </div>
+        <div class="nav-right">
+            <button id="logoutButton"><img class="nav-icon" src="logout-icon.png" alt="Logout"></button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1>RSVP Manager</h1>
+
+        <div class="event-selection">
+            <label for="weddingSelect">Select a Wedding:</label>
+            <select id="weddingSelect">
+                <option value="">-- Select a Wedding --</option>
+                <!-- Options will be populated dynamically -->
+            </select>
+        </div>
+
+        <div id="rsvpManagerContent" style="display:none;">
+            <div class="chart-container">
+                <div class="chart-controls">
+                    <input type="text" id="searchBar" placeholder="Search by name...">
+                    <div class="statistics">
+                        <span>Accepted: <span id="acceptedCount">0</span></span>
+                        <span>Declined: <span id="declinedCount">0</span></span>
+                        <span>Undecided: <span id="undecidedCount">0</span></span>
+                        <span>Total: <span id="totalCount">0</span></span>
+                    </div>
+                </div>
+
+                <table id="rsvpTable">
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Invitation Sent</th>
+                            <th>Status</th>
+                            <th>Thank You Sent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Guest data will be populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="rsvpmanager.js"></script>
+</body>
+</html>
