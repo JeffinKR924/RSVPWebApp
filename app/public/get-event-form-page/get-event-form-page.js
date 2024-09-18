@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const eventDate = document.getElementById('eventDate');
     const eventLocation = document.getElementById('eventLocation');
     const confirmedGuests = document.getElementById('confirmedGuests');
+    const declinedGuests = document.getElementById('declinedGuests');
+    const undecidedGuests = document.getElementById('undecidedGuests');
     const totalGuests = document.getElementById('totalGuests');
     const guestList = document.getElementById('guestList');
     let eventLink = document.getElementById('eventLink');
@@ -55,39 +57,41 @@ document.addEventListener('DOMContentLoaded', function () {
                     eventLocation.textContent = event.eventLocation;
                     eventLink.textContent = event.guestLink;
 
-                    // Use the 'confirmed' field to calculate confirmed guests
-                    const confirmedGuestsCount = event.guestList.filter(guest => guest.confirmed === true).length;
-                    confirmedGuests.textContent = confirmedGuestsCount;
+                    // Calculate confirmed, declined, and undecided guests
+                    const confirmedGuestsCount = event.guestList.filter(guest => guest.attendanceStatus === 'confirm').length;
+                    const declinedGuestsCount = event.guestList.filter(guest => guest.attendanceStatus === 'decline').length;
+                    const undecidedGuestsCount = event.guestList.filter(guest => guest.attendanceStatus === 'undecided').length;
 
+                    confirmedGuests.textContent = confirmedGuestsCount;
+                    declinedGuests.textContent = declinedGuestsCount;
+                    undecidedGuests.textContent = undecidedGuestsCount;
                     totalGuests.textContent = event.guestList.length;
 
                     clearList(guestList);
                     event.guestList.forEach(guest => {
                         const li = document.createElement('li');
-                        // Show confirmation status based on the 'confirmed' field
-                        li.textContent = `${guest.name} - ${guest.confirmed ? 'Confirmed' : 'Not Confirmed'}`;
+                        // Show attendance status based on the 'attendanceStatus' field
+                        li.textContent = `${guest.name} - ${guest.attendanceStatus ? guest.attendanceStatus.charAt(0).toUpperCase() + guest.attendanceStatus.slice(1) : 'No Response'}`;
 
-                        if (guest.confirmed) {
+                        if (guest.attendanceStatus === 'confirm' && guest.mealSelection) {
                             // Append meal choice if available
-                            if (guest.mealSelection) {
-                                const mealInfo = document.createElement('span');
-                                let mealText = ' | Meal Selection: ';
+                            const mealInfo = document.createElement('span');
+                            let mealText = ' | Meal Selection: ';
 
-                                const selections = [];
-                                if (guest.mealSelection.appetizer) {
-                                    selections.push(`Appetizer: ${guest.mealSelection.appetizer}`);
-                                }
-                                if (guest.mealSelection.mainCourse) {
-                                    selections.push(`Main Course: ${guest.mealSelection.mainCourse}`);
-                                }
-                                if (guest.mealSelection.dessert) {
-                                    selections.push(`Dessert: ${guest.mealSelection.dessert}`);
-                                }
-
-                                mealText += selections.join(', ');
-                                mealInfo.textContent = mealText;
-                                li.appendChild(mealInfo);
+                            const selections = [];
+                            if (guest.mealSelection.appetizer) {
+                                selections.push(`Appetizer: ${guest.mealSelection.appetizer}`);
                             }
+                            if (guest.mealSelection.mainCourse) {
+                                selections.push(`Main Course: ${guest.mealSelection.mainCourse}`);
+                            }
+                            if (guest.mealSelection.dessert) {
+                                selections.push(`Dessert: ${guest.mealSelection.dessert}`);
+                            }
+
+                            mealText += selections.join(', ');
+                            mealInfo.textContent = mealText;
+                            li.appendChild(mealInfo);
                         }
 
                         guestList.appendChild(li);
@@ -159,6 +163,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-document.getElementById('close-button').addEventListener('click', function() {
+document.getElementById('close-button').addEventListener('click', function () {
     window.location.href = '/dashboard-page';
 });

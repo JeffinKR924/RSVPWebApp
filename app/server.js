@@ -537,7 +537,6 @@ app.post('/update-guest-response', async (req, res) => {
     eventId,
     guestName,
     bringGift,
-    selectedGift,
     selectedAppetizer,
     selectedMainCourse,
     selectedDessert,
@@ -574,7 +573,6 @@ app.post('/update-guest-response', async (req, res) => {
       const eventData = eventDoc.data();
 
       let guestUpdated = false;
-      let giftClaimed = false;
 
       // Helper function to remove undefined fields
       const removeUndefined = (obj) => {
@@ -588,7 +586,6 @@ app.post('/update-guest-response', async (req, res) => {
               return removeUndefined({
                   ...guest,
                   bringGift: bringGift !== undefined ? bringGift : guest.bringGift,
-                  selectedGift: selectedGift !== undefined ? selectedGift : guest.selectedGift,
                   mealSelection: {
                       appetizer: selectedAppetizer !== undefined ? selectedAppetizer : guest.mealSelection?.appetizer,
                       mainCourse: selectedMainCourse !== undefined ? selectedMainCourse : guest.mealSelection?.mainCourse,
@@ -604,7 +601,7 @@ app.post('/update-guest-response', async (req, res) => {
 
       // Update gift list to mark the selected gift as claimed
       const updatedGiftList = eventData.giftList.map(gift => {
-          if (gift.name === selectedGift) {
+          if (gift.name === claimedGift) {
               giftClaimed = true;
               return {
                   ...gift,

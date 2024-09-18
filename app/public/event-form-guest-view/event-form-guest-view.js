@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     guestName: guestSelect.value,
                     attendanceStatus: attendance,  // Ensure this is passed
                     bringGift: bringGift,
-                    selectedGift: selectedGift,
+                    claimedGift: selectedGift,
                     selectedAppetizer: selectedAppetizer,
                     selectedMainCourse: selectedMainCourse,
                     selectedDessert: selectedDessert
