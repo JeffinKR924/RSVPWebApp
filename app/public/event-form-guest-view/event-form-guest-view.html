@@ -25,7 +25,19 @@
             <select id="guestSelect">
                 <option value="">-- Select Your Name --</option>
             </select>
-        </div>        
+        </div>
+        
+        <div id="attendanceOption" class="form-group" style="display: none;">
+            <label for="attendanceSelect">Select Attendance Status</label>
+            <select id="attendanceSelect">
+                <option value="">-- Select Attendance Status --</option>
+                <option value="confirm">Confirm Attendance</option>
+                <option value="decline">Decline Attendance</option>
+                <option value="undecided">Undecided</option>
+            </select>
+        </div>
+
+        <!-- Show only if Confirm is selected -->
         <div id="giftOption" style="display: none;">
             <h3>Will you bring a gift?</h3>
             <label>
@@ -56,8 +68,13 @@
                     <option value="">-- Select a Dessert --</option>
                 </select>
             </div>
-            <button id="submitResponse" class="submit-button">Submit Response</button>
         </div>
+
+        <!-- Submit Button for Decline and Undecided -->
+        <button id="submitAttendance" class="submit-button" style="display: none;">Submit Response</button>
+
+        <!-- Submit Button for Confirm -->
+        <button id="submitResponse" class="submit-button" style="display: none;">Submit Response</button>
 
         <!-- Map section -->
         <h3>Event Location</h3>

@@ -5,9 +5,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     const giftSelectContainer = document.getElementById('giftSelectContainer');
     const giftSelect = document.getElementById('giftSelect');
     const submitButton = document.getElementById('submitResponse');
+    const submitAttendanceButton = document.getElementById('submitAttendance');
     const userStatus = document.getElementById('userStatus');
     const rsvpSection = document.getElementById('rsvpSection');
     const guestSelect = document.getElementById('guestSelect');
+    const attendanceSelect = document.getElementById('attendanceSelect');
     const giftOption = document.getElementById('giftOption');
     const appetizersSelect = document.getElementById('appetizersSelect');
     const mainCoursesSelect = document.getElementById('mainCoursesSelect');
@@ -148,9 +150,26 @@ document.addEventListener('DOMContentLoaded', async function () {
     guestSelect.addEventListener('change', function () {
         console.log(`Guest selected: ${guestSelect.value}`);
         if (guestSelect.value) {
+            document.getElementById('attendanceOption').style.display = 'block';
+        } else {
+            document.getElementById('attendanceOption').style.display = 'none';
+        }
+    });
+
+    attendanceSelect.addEventListener('change', function () {
+        const selectedOption = attendanceSelect.value;
+        if (selectedOption === 'confirm') {
             giftOption.style.display = 'block';
+            submitButton.style.display = 'block';
+            submitAttendanceButton.style.display = 'none';
+        } else if (selectedOption === 'decline' || selectedOption === 'undecided') {
+            giftOption.style.display = 'none';
+            submitAttendanceButton.style.display = 'block';
+            submitButton.style.display = 'none';
         } else {
             giftOption.style.display = 'none';
+            submitAttendanceButton.style.display = 'none';
+            submitButton.style.display = 'none';
         }
     });
 
@@ -163,75 +182,65 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 
+    submitAttendanceButton.addEventListener('click', async function () {
+        const attendanceStatus = attendanceSelect.value;
+        if (!attendanceStatus) {
+            alert('Please select an attendance status.');
+            return;
+        }
+
+        try {
+            await fetch(`/update-guest-response`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    eventId: eventId,
+                    userId: loggedInUserId,
+                    guestName: guestSelect.value,
+                    attendanceStatus: attendanceStatus  // Ensure this is passed
+                })
+            });
+
+            alert('Response submitted successfully!');
+            window.location.reload();
+        } catch (error) {
+            console.error('Error submitting guest response:', error);
+            alert('Error submitting response.');
+        }
+    });
+
     submitButton.addEventListener('click', async function () {
         const bringGift = bringGiftCheckbox.checked;
         const selectedGift = giftSelect.value || null;
         const selectedAppetizer = appetizersSelect.value || null;
         const selectedMainCourse = mainCoursesSelect.value || null;
         const selectedDessert = dessertsSelect.value || null;
+        const attendance = attendanceSelect.value;
+
+        if (!attendance) {
+            alert('Please select an attendance status.');
+            return;
+        }
 
         if (bringGift && !selectedGift) {
-            console.warn('No gift selected when bring gift checkbox is checked.');
             alert('Please select a gift to bring.');
             return;
         }
 
-        const confirmed = true;
-        const claimedGift = !!selectedGift;
-
-        console.log('Submitting guest response with the following data:');
-        console.log({
-            guestName: guestSelect.value,
-            bringGift: bringGift,
-            selectedGift: selectedGift,
-            selectedAppetizer: selectedAppetizer,
-            selectedMainCourse: selectedMainCourse,
-            selectedDessert: selectedDessert,
-            confirmed: confirmed,
-            claimedGift: claimedGift
-        });
-
         try {
             await fetch(`/update-guest-response`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     eventId: eventId,
                     userId: loggedInUserId,
                     guestName: guestSelect.value,
+                    attendanceStatus: attendance,  // Ensure this is passed
                     bringGift: bringGift,
                     selectedGift: selectedGift,
                     selectedAppetizer: selectedAppetizer,
                     selectedMainCourse: selectedMainCourse,
-                    selectedDessert: selectedDessert,
-                    confirmed: confirmed,
-                    claimedGift: claimedGift
-                })
-            });
-
-            console.log('Guest response successfully submitted.');
-
-            const eventResponse = await fetch(`/get-event?userId=${encodeURIComponent(userId)}&eventId=${encodeURIComponent(eventId)}`);
-            const eventData = await eventResponse.json();
-
-            if (!eventData) {
-                console.error('Event not found after response submission.');
-                alert('Event not found.');
-                return;
-            }
-
-            console.log('Updating event attendee data.');
-            await fetch(`/add-event-attendee`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    userId: loggedInUserId,
-                    eventId: eventId,
-                    eventData: eventData
+                    selectedDessert: selectedDessert
                 })
             });
 

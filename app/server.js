@@ -532,8 +532,21 @@ app.get('/get-event', async (req, res) => {
 });
 
 app.post('/update-guest-response', async (req, res) => {
-  const { userId, eventId, guestName, bringGift, selectedGift, selectedAppetizer, selectedMainCourse, selectedDessert, confirmed, claimedGift } = req.body;
+  const {
+    userId,
+    eventId,
+    guestName,
+    bringGift,
+    selectedGift,
+    selectedAppetizer,
+    selectedMainCourse,
+    selectedDessert,
+    confirmed,
+    claimedGift,
+    attendanceStatus
+  } = req.body;
 
+  // Check required fields
   if (!userId || !eventId || !guestName) {
       return res.status(400).send('Missing required fields (userId, eventId, guestName)');
   }
@@ -563,22 +576,28 @@ app.post('/update-guest-response', async (req, res) => {
       let guestUpdated = false;
       let giftClaimed = false;
 
+      // Helper function to remove undefined fields
+      const removeUndefined = (obj) => {
+          return JSON.parse(JSON.stringify(obj, (key, value) => (value === undefined ? null : value)));
+      };
+
       // Update guest list and claim the gift
       const updatedGuestList = eventData.guestList.map(guest => {
           if (guest.name === guestName) {
               guestUpdated = true;
-              return {
+              return removeUndefined({
                   ...guest,
-                  bringGift,
-                  selectedGift,
+                  bringGift: bringGift !== undefined ? bringGift : guest.bringGift,
+                  selectedGift: selectedGift !== undefined ? selectedGift : guest.selectedGift,
                   mealSelection: {
-                      appetizer: selectedAppetizer,
-                      mainCourse: selectedMainCourse,
-                      dessert: selectedDessert,
+                      appetizer: selectedAppetizer !== undefined ? selectedAppetizer : guest.mealSelection?.appetizer,
+                      mainCourse: selectedMainCourse !== undefined ? selectedMainCourse : guest.mealSelection?.mainCourse,
+                      dessert: selectedDessert !== undefined ? selectedDessert : guest.mealSelection?.dessert,
                   },
-                  confirmed: confirmed,
+                  confirmed: confirmed !== undefined ? confirmed : guest.confirmed,
+                  attendanceStatus: attendanceStatus !== undefined ? attendanceStatus : guest.attendanceStatus,
                   claimedGift: claimedGift !== undefined ? claimedGift : guest.claimedGift,
-              };
+              });
           }
           return guest;
       });
@@ -611,6 +630,7 @@ app.post('/update-guest-response', async (req, res) => {
       res.status(500).send('Error updating guest response');
   }
 });
+
 
 
 app.post('/add-event-attendee', async (req, res) => {
