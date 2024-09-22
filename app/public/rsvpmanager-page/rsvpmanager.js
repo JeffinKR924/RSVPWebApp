@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error updating guest data:', error);
-            alert('Error updating guest data');
+            alert('Error updating guest data.');
         });
     }
 });
