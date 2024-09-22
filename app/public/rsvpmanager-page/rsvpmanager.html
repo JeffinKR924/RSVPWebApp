@@ -7,17 +7,15 @@
 </head>
 <body>
     <div class="navbar">
-        <!-- Include navigation bar similar to dashboard -->
-        <div class="logo-container">
-            <img id="logo-icon" src="logo.png" alt="Logo">
-        </div>
         <div class="nav-left">
-            <button id="homeButton"><img class="nav-icon" src="home-icon.png" alt="Home"></button>
-            <button id="calendarButton"><img class="nav-icon" src="calendar-icon.png" alt="Calendar"></button>
-            <button id="profileButton"><img class="nav-icon" src="profile-icon.png" alt="Profile"></button>
+        </div>
+        <div class="nav-center">
+            <img src="/assets/dashboardpage/home-icon.svg" alt="Home" class="nav-icon" id="homeButton">
+            <img src="/assets/dashboardpage/calendar-icon.svg" alt="Calendar" class="nav-icon" id="calendarButton">
+            <img src="/assets/dashboardpage/profile-icon.svg" alt="Profile" class="nav-icon" id="profileButton">
         </div>
         <div class="nav-right">
-            <button id="logoutButton"><img class="nav-icon" src="logout-icon.png" alt="Logout"></button>
+            <img src="/assets/dashboardpage/logout-icon.svg" alt="Logout" class="nav-icon" id="logoutButton">
         </div>
     </div>
 
@@ -40,6 +38,7 @@
                         <span>Accepted: <span id="acceptedCount">0</span></span>
                         <span>Declined: <span id="declinedCount">0</span></span>
                         <span>Undecided: <span id="undecidedCount">0</span></span>
+                        <span>No Response: <span id="noResponseCount">0</span></span>
                         <span>Total: <span id="totalCount">0</span></span>
                     </div>
                 </div>
@@ -61,6 +60,9 @@
                 </table>
             </div>
         </div>
+    </div>
+    <div class="logo-container">
+        <img id="logo-icon" src="../assets/dashboardpage/logo.png" alt="Logo">
     </div>
 
     <script src="rsvpmanager.js"></script>

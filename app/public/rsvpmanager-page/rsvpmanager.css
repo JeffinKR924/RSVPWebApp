@@ -16,7 +16,7 @@ body {
     top: 0;
     z-index: 10;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    height: 50px;
+    height: 34px;
 }
 
 .logo-container {
@@ -31,19 +31,50 @@ body {
     height: auto; 
 }
 
-.nav-left, .nav-right {
+
+.nav-left {
     display: flex;
     align-items: center;
 }
 
-.nav-icon {
+.navbar-logo {
+    width: 40px;
+    margin-right: 20px;
+}
+
+.nav-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    margin-right: -210px;
+}
+
+.nav-center .nav-icon {
     width: 30px;
-    margin: 0 15px;
+    margin: 0 20px;
     cursor: pointer;
     filter: invert(35%) sepia(55%) saturate(3000%) hue-rotate(310deg) brightness(90%) contrast(95%);
 }
 
-.nav-icon:hover {
+.nav-center .nav-icon:hover {
+    filter: invert(25%) sepia(65%) saturate(1500%) hue-rotate(310deg) brightness(105%) contrast(85%);
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    margin-right: 45px; 
+}
+
+.nav-right .nav-icon {
+    width: 30px;
+    margin-left: 15px;
+    cursor: pointer;
+    filter: invert(35%) sepia(55%) saturate(3000%) hue-rotate(310deg) brightness(90%) contrast(95%);
+}
+
+.nav-right .nav-icon:hover {
     filter: invert(25%) sepia(65%) saturate(1500%) hue-rotate(310deg) brightness(105%) contrast(85%);
 }
 
@@ -176,9 +207,6 @@ input:checked + .slider:before {
 }
 
 /* Status circle */
-/* ... existing styles ... */
-
-/* Status circle */
 .status-circle {
     width: 100px;
     height: 30px;
@@ -199,11 +227,14 @@ input:checked + .slider:before {
 }
 
 .status-undecided {
-    background-color: lightblue;
-    color: black;
+    background-color: #1987ff;
+    color: white;
+    /* font-size: 13px; */
+    text-align: center;
 }
 
 .status-noresponse {
     background-color: gray;
+    font-size: 12px;
+    text-align: center;
 }
-

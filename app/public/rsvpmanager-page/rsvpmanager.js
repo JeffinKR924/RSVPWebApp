@@ -7,9 +7,37 @@ document.addEventListener('DOMContentLoaded', function() {
     const undecidedCount = document.getElementById('undecidedCount');
     const totalCount = document.getElementById('totalCount');
     const rsvpTableBody = document.querySelector('#rsvpTable tbody');
+    const calendarButton = document.getElementById('calendarButton');
+    const homeButton = document.getElementById('homeButton');
+    const logoutButton = document.getElementById('logoutButton');
+    const profileButton = document.getElementById('profileButton');
 
     let guestsData = [];
     let currentEventId = null;
+
+    calendarButton.addEventListener('click', (event) => {
+        event.preventDefault(); 
+        window.location.href = '/calendar-page'; 
+    });
+
+    profileButton.addEventListener('click', (event) => {
+        event.preventDefault(); 
+        window.location.href = '/profile-page'; 
+    });
+
+    homeButton.addEventListener('click', (event) => {
+        event.preventDefault(); 
+        window.location.href = '/dashboard-page'; 
+    });
+
+    logoutButton.addEventListener('click', async (event) => {
+        event.preventDefault(); 
+    
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userId');
+    
+        window.location.href = '/';
+    });
 
     // Fetch weddings for the dropdown
     fetch('/get-events?userId=' + encodeURIComponent(localStorage.getItem('userId')))
@@ -66,14 +94,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function updateStatistics() {
-        const accepted = guestsData.filter(guest => guest.confirmed === true).length;
-        const declined = guestsData.filter(guest => guest.confirmed === false).length;
-        const undecided = guestsData.filter(guest => typeof guest.confirmed === 'undefined').length;
+        const accepted = guestsData.filter(guest => guest.attendanceStatus === 'confirm').length;
+        const declined = guestsData.filter(guest => guest.attendanceStatus === 'decline').length;
+        const undecided = guestsData.filter(guest => guest.attendanceStatus === 'undecided').length;
+        const noResponse = guestsData.filter(guest => typeof guest.attendanceStatus === 'undefined').length;
         const total = guestsData.length;
 
         acceptedCount.textContent = accepted;
         declinedCount.textContent = declined;
         undecidedCount.textContent = undecided;
+        noResponseCount.textContent = noResponse;
         totalCount.textContent = total;
     }
 
@@ -111,18 +141,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Status
             const statusTd = document.createElement('td');
-            const statusCircle = document.createElement('span');
+            const statusCircle = document.createElement('div');
             statusCircle.classList.add('status-circle');
 
-            if (guest.confirmed === true) {
+            const statusText = document.createElement('span');
+            statusText.classList.add('status-text');
+
+            // Use attendanceStatus field for determining status
+            if (guest.attendanceStatus === 'confirm') {
                 statusCircle.classList.add('status-accepted');
-            } else if (guest.confirmed === false) {
+                statusText.textContent = 'Accepted';
+            } else if (guest.attendanceStatus === 'decline') {
                 statusCircle.classList.add('status-declined');
-            } else if (typeof guest.confirmed === 'undefined') {
-                statusCircle.classList.add('status-noresponse');
-            } else {
+                statusText.textContent = 'Declined';
+            } else if (guest.attendanceStatus === 'undecided') {
                 statusCircle.classList.add('status-undecided');
+                statusText.textContent = 'Undecided';
+            } else {
+                statusCircle.classList.add('status-noresponse');
+                statusText.textContent = 'No Response';
             }
+
+            statusCircle.appendChild(statusText);
             statusTd.appendChild(statusCircle);
             tr.appendChild(statusTd);
 
