@@ -96,24 +96,59 @@ getById('eventForm').addEventListener('submit', async function (event) {
             return;
         }
     
-        fetch(`/update-event?id=${encodeURIComponent(selectedEventId)}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId, event: eventData })
-        })
-        .then(response => response.json())
-        .then(updateData => {
-            if (updateData.message === 'Event updated successfully!') {
-                alert('Event data updated successfully!');
-            } else {
-                alert('Error updating event data.');
-            }
-        })
-        .catch(error => {
-            console.error('Error updating event data:', error);
-            alert('Error updating event data.');
-        });
-    }    
+        // Fetch the current event data
+        fetch(`/get-event?userId=${encodeURIComponent(userId)}&eventId=${encodeURIComponent(selectedEventId)}`)
+            .then(response => response.json())
+            .then(existingEventData => {
+                if (!existingEventData) {
+                    alert('Error fetching existing event data.');
+                    return;
+                }
+    
+                // Merge existing data with the new data
+                const updatedGuestList = [
+                    ...existingEventData.guestList, // Preserve the existing guest list
+                    ...guestList.filter(newGuest => !existingEventData.guestList.some(existingGuest => existingGuest.name === newGuest.name))
+                ];
+    
+                const updatedGiftList = [
+                    ...existingEventData.giftList, // Preserve the existing gift list
+                    ...giftList.filter(newGift => !existingEventData.giftList.some(existingGift => existingGift.name === newGift.name))
+                ];
+    
+                const updatedEventData = {
+                    ...existingEventData, // Keep the existing event data
+                    eventTitle: getById('eventTitle').value,
+                    eventDate: getById('eventDate').value,
+                    eventLocation: address, // Use validated address
+                    guestList: updatedGuestList, // Update the guest list
+                    giftList: updatedGiftList // Update the gift list
+                };
+    
+                // Update the event data in the database
+                fetch(`/update-event?id=${encodeURIComponent(selectedEventId)}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, event: updatedEventData })
+                })
+                .then(response => response.json())
+                .then(updateData => {
+                    if (updateData.message === 'Event updated successfully!') {
+                        alert('Event data updated successfully!');
+                    } else {
+                        alert('Error updating event data.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating event data:', error);
+                    alert('Error updating event data.');
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching existing event data:', error);
+                alert('Error fetching existing event data.');
+            });
+    }
 });
 
 // Validate address using the server-side endpoint
@@ -237,8 +272,12 @@ function addGuestEntry(guest = {}) {
     removeButton.type = 'button';
     removeButton.className = 'remove-guest-button';
     removeButton.textContent = 'Remove';
+    
     removeButton.addEventListener('click', function () {
-        guestListContainer.removeChild(guestEntry);
+        if (guest.name) {
+            removeGuestFromDb(guest.name); // Remove guest from DB if it exists
+        }
+        guestListContainer.removeChild(guestEntry); // Remove from the DOM
         updateRemoveButtonsVisibility();
     });
 
@@ -250,6 +289,56 @@ function addGuestEntry(guest = {}) {
 
     highlightElement(guestEntry, 'success');
     updateRemoveButtonsVisibility();
+}
+
+function removeGuestFromDb(guestName) {
+    const selectedEventId = getById('eventSelect').value; // Get the selected event ID
+    const userId = localStorage.getItem('userId');
+
+    if (!selectedEventId || !userId) {
+        console.error('User ID or Event ID is missing.');
+        return;
+    }
+
+    // Fetch the current event data from Firestore
+    fetch(`/get-event?userId=${encodeURIComponent(userId)}&eventId=${encodeURIComponent(selectedEventId)}`)
+        .then(response => response.json())
+        .then(existingEventData => {
+            if (!existingEventData) {
+                console.error('Error fetching existing event data.');
+                return;
+            }
+
+            // Filter the guest list to remove the guest
+            const updatedGuestList = existingEventData.guestList.filter(guest => guest.name !== guestName);
+
+            // Update the event data in the database with the new guest list
+            const updatedEventData = {
+                ...existingEventData,
+                guestList: updatedGuestList
+            };
+
+            // Send the updated event data to the server
+            fetch(`/update-event?id=${encodeURIComponent(selectedEventId)}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, event: updatedEventData })
+            })
+            .then(response => response.json())
+            .then(updateData => {
+                if (updateData.message === 'Event updated successfully!') {
+                    console.log('Guest removed successfully.');
+                } else {
+                    console.error('Error updating event data.');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating event data:', error);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching existing event data:', error);
+        });
 }
 
 function getGuestList() {
