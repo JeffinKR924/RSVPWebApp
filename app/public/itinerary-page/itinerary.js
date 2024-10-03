@@ -19,6 +19,30 @@ document.addEventListener('DOMContentLoaded', function () {
     let selectedDay = null;
     let editingEventId = null;
 
+    calendarButton.addEventListener('click', (event) => {
+        event.preventDefault(); 
+        window.location.href = '/calendar-page'; 
+    });
+
+    profileButton.addEventListener('click', (event) => {
+        event.preventDefault(); 
+        window.location.href = '/profile-page'; 
+    });
+
+    homeButton.addEventListener('click', (event) => {
+        event.preventDefault(); 
+        window.location.href = '/dashboard-page'; 
+    });
+
+    logoutButton.addEventListener('click', async (event) => {
+        event.preventDefault(); 
+    
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userId');
+    
+        window.location.href = '/';
+    });
+
     // Fetch weddings for the dropdown
     fetch('/get-events?userId=' + encodeURIComponent(localStorage.getItem('userId')))
         .then(response => response.json())
