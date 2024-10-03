@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const viewPollsButton = document.getElementById('view-polls-link');
     const profileButton = document.getElementById('profileButton');
     const rsvpmanagerButton = document.getElementById('rsvpmanager-link');
+    const itineraryButton = document.getElementById('itinerary-link');
 
 
     calendarButton.addEventListener('click', (event) => {
@@ -70,6 +71,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     rsvpmanagerButton.addEventListener('click', (event) => {
         event.preventDefault(); 
         window.location.href = '/rsvpmanager-page'; 
+    });
+
+    itineraryButton.addEventListener('click', (event) => {
+        event.preventDefault(); 
+        window.location.href = '/itinerary-page'; 
     });
 
     logoutButton.addEventListener('click', async (event) => {

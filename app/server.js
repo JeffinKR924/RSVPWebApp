@@ -88,6 +88,10 @@ app.get('/rsvpmanager-page', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', "rsvpmanager-page", "rsvpmanager.html"));
 });
 
+app.get('/itinerary-page', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', "itinerary-page", "itinerary.html"));
+});
+
 app.post('/save-meal', async (req, res) => {
   const { userId, eventId, appetizers, mainCourses, desserts } = req.body;
 
@@ -888,6 +892,61 @@ app.post('/modify-event-rsvp', async (req, res) => {
       res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
+
+app.get('/get-itinerary', async (req, res) => {
+  const { userId, eventId } = req.query;
+
+  if (!userId || !eventId) {
+    return res.status(400).json({ message: 'User ID and Event ID are required.' });
+  }
+
+  try {
+    // Retrieve the itinerary data from the attendee's collection
+    const attendeeEventRef = db.collection('userAccounts').doc(userId).collection('eventsAttendee').doc(eventId);
+    const attendeeEventDoc = await attendeeEventRef.get();
+
+    if (!attendeeEventDoc.exists) {
+      return res.status(404).json({ message: 'Event not found in the attendee collection.' });
+    }
+
+    // Check if itinerary data is present for the given event
+    const eventData = attendeeEventDoc.data();
+    const itinerary = eventData.itinerary || [];
+
+    res.status(200).json({ itinerary: itinerary });
+  } catch (error) {
+    console.error('Error fetching itinerary:', error);
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+});
+
+app.post('/save-itinerary', async (req, res) => {
+  const { userId, eventId, itinerary } = req.body;
+
+  if (!userId || !eventId || !Array.isArray(itinerary)) {
+    return res.status(400).json({ message: 'User ID, Event ID, and a valid itinerary array are required.' });
+  }
+
+  try {
+    // Create a reference to the user's event in the `eventsAttendee` collection
+    const attendeeEventRef = db.collection('userAccounts').doc(userId).collection('eventsAttendee').doc(eventId);
+
+    // Check if the event exists for the attendee
+    const attendeeEventDoc = await attendeeEventRef.get();
+    if (!attendeeEventDoc.exists) {
+      return res.status(404).json({ message: 'Event not found in the attendee collection.' });
+    }
+
+    // Update the itinerary data in the event document
+    await attendeeEventRef.update({ itinerary: itinerary });
+
+    res.status(200).json({ message: 'Itinerary saved successfully.' });
+  } catch (error) {
+    console.error('Error saving itinerary:', error);
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+});
+
 
 app.listen(port, hostname, () => {
   console.log(`http://${hostname}:${port}`);
