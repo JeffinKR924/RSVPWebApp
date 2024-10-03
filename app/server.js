@@ -599,18 +599,6 @@ app.post('/update-guest-response', async (req, res) => {
           return guest;
       });
 
-      // Update gift list to mark the selected gift as claimed
-      const updatedGiftList = eventData.giftList.map(gift => {
-          if (gift.name === claimedGift) {
-              giftClaimed = true;
-              return {
-                  ...gift,
-                  claimedBy: true,
-              };
-          }
-          return gift;
-      });
-
       if (!guestUpdated) {
           return res.status(404).send('Guest not found');
       }
@@ -618,10 +606,21 @@ app.post('/update-guest-response', async (req, res) => {
       // Update event data in Firestore
       await eventDocRef.update({
           guestList: updatedGuestList,
-          giftList: updatedGiftList,
       });
 
-      res.status(200).send('Guest response and gift claim updated successfully');
+      // Create a reference to the event in the attendee's collection
+      const userRef = db.collection('userAccounts').doc(userId);
+      await userRef.collection('eventsAttendee').doc(eventId).set({
+          eventReference: eventDocRef, // Store as a Firestore reference object, not a string
+          eventName: eventData.eventTitle,
+          attendanceStatus: attendanceStatus,
+          bringGift: bringGift,
+          selectedAppetizer: selectedAppetizer,
+          selectedMainCourse: selectedMainCourse,
+          selectedDessert: selectedDessert
+      });
+
+      res.status(200).send('Guest response and attendee event collection updated successfully');
   } catch (error) {
       console.error('Error updating guest response:', error);
       res.status(500).send('Error updating guest response');
@@ -629,25 +628,31 @@ app.post('/update-guest-response', async (req, res) => {
 });
 
 
-
 app.post('/add-event-attendee', async (req, res) => {
-  const { userId, eventId, eventData } = req.body;
+  const { userId, eventId, ownerUserId } = req.body;
 
-  if (!userId || !eventId || !eventData) {
-    return res.status(400).json({ message: 'User ID, Event ID, and Event Data are required.' });
+  if (!userId || !eventId || !ownerUserId) {
+    return res.status(400).json({ message: 'User ID, Event ID, and Owner User ID are required.' });
   }
 
   try {
     const userRef = db.collection('userAccounts').doc(userId);
+    const ownerEventRef = db.collection('userAccounts').doc(ownerUserId).collection('eventsOwner').doc(eventId);  // Create a reference object
 
-    await userRef.collection('eventsAttendee').doc(eventId).set(eventData);
+    // Store the reference object instead of a string
+    await userRef.collection('eventsAttendee').doc(eventId).set({
+      eventReference: ownerEventRef,  // This stores a Firestore DocumentReference, not a string
+      eventName: "Event Name Here",  // Add any other required fields
+      attendanceStatus: "confirm"   // Placeholder values - update as needed
+    });
 
-    res.status(200).json({ message: 'Event added to attendee list successfully!' });
+    res.status(200).json({ message: 'Event reference added to attendee list successfully!' });
   } catch (error) {
     console.error('Error adding event to attendee list:', error);
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
+
 
 app.get('/get-user-events', async (req, res) => {
   const { userId, type } = req.query;
@@ -883,7 +888,6 @@ app.post('/modify-event-rsvp', async (req, res) => {
       res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
-
 
 app.listen(port, hostname, () => {
   console.log(`http://${hostname}:${port}`);

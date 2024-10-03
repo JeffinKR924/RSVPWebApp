@@ -216,17 +216,17 @@ document.addEventListener('DOMContentLoaded', async function () {
         const selectedMainCourse = mainCoursesSelect.value || null;
         const selectedDessert = dessertsSelect.value || null;
         const attendance = attendanceSelect.value;
-
+    
         if (!attendance) {
             alert('Please select an attendance status.');
             return;
         }
-
+    
         if (bringGift && !selectedGift) {
             alert('Please select a gift to bring.');
             return;
         }
-
+    
         try {
             await fetch(`/update-guest-response`, {
                 method: 'POST',
@@ -235,20 +235,21 @@ document.addEventListener('DOMContentLoaded', async function () {
                     eventId: eventId,
                     userId: loggedInUserId,
                     guestName: guestSelect.value,
-                    attendanceStatus: attendance,  // Ensure this is passed
+                    attendanceStatus: attendance,
                     bringGift: bringGift,
                     claimedGift: selectedGift,
                     selectedAppetizer: selectedAppetizer,
                     selectedMainCourse: selectedMainCourse,
-                    selectedDessert: selectedDessert
+                    selectedDessert: selectedDessert,
+                    confirmed: true // Set confirmed to true when the user confirms their attendance
                 })
             });
-
-            alert('Response submitted successfully!');
+    
+            alert('Response submitted successfully! A new attendee record has been created.');
             window.location.reload();
         } catch (error) {
             console.error('Error submitting guest response:', error);
             alert('Error submitting response.');
         }
-    });
+    });    
 });
