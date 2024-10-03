@@ -91,8 +91,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const option = document.createElement('option');
             option.value = day;
             option.textContent = formatDateDisplay(day);
+            console.log("option: ", option);
             daySelect.appendChild(option);
         });
+        console.log("days: ", days);
         if (days.length > 0) {
             selectedDay = days[0];
             daySelect.value = selectedDay;
@@ -202,10 +204,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function formatDateDisplay(dateString) {
-        const date = new Date(dateString);
-        return date.toDateString();
+        const year = dateString.slice(0, 4);
+        const month = dateString.slice(5, 7) - 1; // Month is 0-based for the Date object
+        const day = dateString.slice(8, 10);
+        
+        const date = new Date(year, month, day); // Construct a Date object
+        const dayOfWeek = date.toLocaleString('en-US', { weekday: 'short' }); // "Thu"
+        const monthName = date.toLocaleString('en-US', { month: 'short' });   // "Oct"
+        
+        return `${dayOfWeek} ${monthName} ${day} ${year}`;
     }
-
+    
     addEventButton.addEventListener('click', function () {
         openAddModal();
     });
