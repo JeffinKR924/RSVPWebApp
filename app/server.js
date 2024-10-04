@@ -640,14 +640,19 @@ app.post('/add-event-attendee', async (req, res) => {
   }
 
   try {
+    // Reference to the user in `userAccounts`
     const userRef = db.collection('userAccounts').doc(userId);
-    const ownerEventRef = db.collection('userAccounts').doc(ownerUserId).collection('eventsOwner').doc(eventId);  // Create a reference object
 
-    // Store the reference object instead of a string
+    // Reference to the owner's event document in `eventsOwner`
+    const ownerEventRef = db.collection('userAccounts').doc(ownerUserId).collection('eventsOwner').doc(eventId);
+
+    // Store the document path as a string instead of a `DocumentReference` object
+    const ownerEventPath = ownerEventRef.path;
+
     await userRef.collection('eventsAttendee').doc(eventId).set({
-      eventReference: ownerEventRef,  // This stores a Firestore DocumentReference, not a string
-      eventName: "Event Name Here",  // Add any other required fields
-      attendanceStatus: "confirm"   // Placeholder values - update as needed
+      eventReference: ownerEventPath,  // Save the path as a string
+      eventName: "Event Name Here",    // Placeholder values - update as needed
+      attendanceStatus: "confirm"      // Placeholder values - update as needed
     });
 
     res.status(200).json({ message: 'Event reference added to attendee list successfully!' });
@@ -656,6 +661,7 @@ app.post('/add-event-attendee', async (req, res) => {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
+
 
 
 app.get('/get-user-events', async (req, res) => {
@@ -903,7 +909,7 @@ app.get('/get-itinerary', async (req, res) => {
   try {
     let fullItinerary = [];
 
-    // Fetch itinerary from `eventsOwner`
+    // Step 1: Fetch itinerary from `eventsOwner` collection
     const ownerEventRef = db.collection('userAccounts').doc(userId).collection('eventsOwner').doc(eventId);
     const ownerEventDoc = await ownerEventRef.get();
 
@@ -912,23 +918,19 @@ app.get('/get-itinerary', async (req, res) => {
       fullItinerary = [...fullItinerary, ...(ownerEventData.itinerary || [])];
     }
 
-    // Fetch itinerary from `eventsAttendee`
+    // Step 2: Fetch itinerary from `eventsAttendee` collection
     const attendeeEventRef = db.collection('userAccounts').doc(userId).collection('eventsAttendee').doc(eventId);
     const attendeeEventDoc = await attendeeEventRef.get();
 
     if (attendeeEventDoc.exists) {
       const attendeeEventData = attendeeEventDoc.data();
 
-      // Convert the eventReference string into a Firestore reference object
+      // Step 3: Use the `eventReference` path to fetch the original event document
       if (attendeeEventData.eventReference) {
-        let eventReference = attendeeEventData.eventReference;
+        const eventReferencePath = attendeeEventData.eventReference; // This should be a string path
+        const eventReference = db.doc(eventReferencePath); // Convert string path to DocumentReference
 
-        // Check if the eventReference is a string, convert it to a DocumentReference if needed
-        if (typeof eventReference === 'string') {
-          eventReference = db.doc(eventReference);
-        }
-
-        // Fetch the original event using the DocumentReference
+        // Fetch the referenced event's itinerary data
         const eventDoc = await eventReference.get();
 
         if (eventDoc.exists) {
@@ -938,7 +940,7 @@ app.get('/get-itinerary', async (req, res) => {
       }
     }
 
-    // Remove duplicate events by ID
+    // Step 4: Remove duplicate events based on event ID
     const uniqueItinerary = fullItinerary.reduce((acc, event) => {
       if (!acc.some(existingEvent => existingEvent.id === event.id)) {
         acc.push(event);
@@ -952,7 +954,6 @@ app.get('/get-itinerary', async (req, res) => {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
-
 
 app.post('/save-itinerary', async (req, res) => {
   const { userId, eventId, itinerary } = req.body;

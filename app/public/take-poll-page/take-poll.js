@@ -100,34 +100,38 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     async function populateEventDropdown(userId) {
         try {
-            const response = await fetch(`/get-user-events?userId=${encodeURIComponent(userId)}&type=attendee`); // Ensure type is correct
+            const response = await fetch(`/get-user-events?userId=${encodeURIComponent(userId)}&type=attendee`);
             if (!response.ok) {
                 throw new Error('Failed to fetch events');
             }
             const events = await response.json();
-
+    
             if (!Array.isArray(events)) {
                 throw new TypeError('Expected events to be an array');
             }
-
+    
             if (events.length === 0) {
                 alert('You are not associated with any events or do not have any polls available.');
                 window.location.href = '/dashboard-page';
                 return;
             }
-
+    
             events.forEach(event => {
                 const option = document.createElement('option');
                 option.value = event.id;
-                option.textContent = event.eventTitle;
+    
+                // Use a fallback if eventTitle is undefined or empty
+                option.textContent = event.eventName || 'Unnamed Event';
+                
                 eventSelect.appendChild(option);
             });
-
+    
         } catch (error) {
             console.error('Error fetching events:', error);
             alert('Error fetching events.');
         }
     }
+    
 
     function clearList(listElement) {
         while (listElement.firstChild) {
