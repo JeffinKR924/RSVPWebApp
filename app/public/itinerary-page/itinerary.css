@@ -167,8 +167,9 @@ body {
     overflow: hidden;
     text-align: center;
     z-index: 1;
-    top: 80px;
+    top: 80px; /* Ensure base top offset is respected */
 }
+
 
 .event-block:hover {
     background-color: #d2286a;

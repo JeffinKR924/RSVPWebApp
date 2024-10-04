@@ -110,84 +110,123 @@ document.addEventListener('DOMContentLoaded', function () {
     function renderItinerary() {
         scheduleContainer.innerHTML = '';
         if (!selectedDay) return;
-
+    
         // Create time slots for 2-hour increments
         const timeLabels = [
             '12 - 2', '2 - 4', '4 - 6', '6 - 8', '8 - 10', '10 - 12',
             '12 - 2', '2 - 4', '4 - 6', '6 - 8', '8 - 10', '10 - 12'
         ];
-
+    
         // Creating columns for each time slot and adding a middle divider
         timeLabels.forEach(label => {
             const timeSlot = document.createElement('div');
             timeSlot.classList.add('time-slot');
             timeSlot.textContent = label;
-
+    
             // Add middle dashed line to separate each hour
             const middleDivider = document.createElement('div');
             middleDivider.classList.add('middle-divider');
             timeSlot.appendChild(middleDivider);
-
+    
             scheduleContainer.appendChild(timeSlot);
         });
-
+    
         const formattedSelectedDay = new Date(selectedDay).toISOString().split('T')[0];
-
+    
         const eventsForDay = itineraryData.filter(event => formatDateToUTC(event.date) === formattedSelectedDay);
         eventsForDay.sort((a, b) => {
             return new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`);
         });
-
+    
+        // Create an array to hold overlapping groups
+        let eventGroups = [];
+    
         eventsForDay.forEach(event => {
             const eventStart = new Date(`${event.date}T${event.time}`);
             const eventEnd = new Date(eventStart.getTime() + event.duration * 60 * 60 * 1000);
-
-            const startHour = eventStart.getHours() + eventStart.getMinutes() / 60;
-            const endHour = eventEnd.getHours() + eventEnd.getMinutes() / 60;
-
-            const startColumn = Math.floor(startHour / 2) + 1;
-            const endColumn = Math.ceil(endHour / 2) + 1;
-
-            const isOddStartHour = Math.floor(startHour) % 2 !== 0;
-            const isOddEndHour = Math.floor(endHour) % 2 !== 0;
-
-            const startBaseMargin = isOddStartHour ? 25 : 0;
-            const startMinuteOffset = (eventStart.getMinutes() / 60) * 25;
-            const startPercentage = startBaseMargin + startMinuteOffset;
-
-            const endBaseMargin = isOddEndHour ? 25 : 0;
-            const endMinuteOffset = (eventEnd.getMinutes() / 60) * 25;
-            const endPercentage = endBaseMargin + endMinuteOffset;
-
-            const eventBlock = document.createElement('div');
-            eventBlock.classList.add('event-block');
-
-            const durationMinutes = ((eventEnd - eventStart) / 60000); // Get total duration in minutes
-            const pixelsPerMinute = 0.55; // Each minute is 0.55 pixels
-            const width = (durationMinutes * pixelsPerMinute) + 'px';
-
-            eventBlock.style.gridColumn = `${startColumn} / ${endColumn}`;
-            eventBlock.style.marginLeft = `${startPercentage}%`;
-            eventBlock.style.width = width;
-
-            const eventTitle = document.createElement('div');
-            eventTitle.classList.add('event-title');
-            eventTitle.textContent = event.title;
-
-            const eventTime = document.createElement('div');
-            eventTime.classList.add('event-time');
-            eventTime.textContent = `${formatTime(eventStart)} - ${formatTime(eventEnd)}`;
-
-            eventBlock.appendChild(eventTitle);
-            eventBlock.appendChild(eventTime);
-
-            eventBlock.addEventListener('click', function () {
-                openEditModal(event);
-            });
-
-            scheduleContainer.appendChild(eventBlock);
+    
+            // Check which group this event fits in
+            let placed = false;
+            for (let group of eventGroups) {
+                const lastEventInGroup = group[group.length - 1];
+                const lastEventEnd = new Date(`${lastEventInGroup.date}T${lastEventInGroup.time}`);
+                lastEventEnd.setMinutes(lastEventEnd.getMinutes() + lastEventInGroup.duration * 60);
+    
+                // If the event overlaps with the last event in this group, add it to the group
+                if (eventStart < lastEventEnd) {
+                    group.push(event);
+                    placed = true;
+                    break;
+                }
+            }
+    
+            // If it didn't fit into any group, create a new group
+            if (!placed) {
+                eventGroups.push([event]);
+            }
         });
-    }
+    
+        // Render each group with vertical and horizontal stacking
+        eventGroups.forEach((group, groupIndex) => {
+            group.forEach((event, eventIndex) => {
+                const eventStart = new Date(`${event.date}T${event.time}`);
+                const eventEnd = new Date(eventStart.getTime() + event.duration * 60 * 60 * 1000);
+    
+                const startHour = eventStart.getHours() + eventStart.getMinutes() / 60;
+                const endHour = eventEnd.getHours() + eventEnd.getMinutes() / 60;
+    
+                const startColumn = Math.floor(startHour / 2) + 1;
+                const endColumn = Math.ceil(endHour / 2) + 1;
+    
+                const isOddStartHour = Math.floor(startHour) % 2 !== 0;
+                const isOddEndHour = Math.floor(endHour) % 2 !== 0;
+    
+                const startBaseMargin = isOddStartHour ? 25 : 0;
+                const startMinuteOffset = (eventStart.getMinutes() / 60) * 25;
+                const startPercentage = startBaseMargin + startMinuteOffset;
+    
+                const endBaseMargin = isOddEndHour ? 25 : 0;
+                const endMinuteOffset = (eventEnd.getMinutes() / 60) * 25;
+                const endPercentage = endBaseMargin + endMinuteOffset;
+    
+                const eventBlock = document.createElement('div');
+                eventBlock.classList.add('event-block');
+    
+                const durationMinutes = ((eventEnd - eventStart) / 60000); // Get total duration in minutes
+                const pixelsPerMinute = 0.55; // Each minute is 0.55 pixels
+                const width = (durationMinutes * pixelsPerMinute) + 'px';
+    
+                // Set gridColumn and position for overlapping events
+                eventBlock.style.gridColumn = `${startColumn} / ${endColumn}`;
+                eventBlock.style.marginLeft = `${startPercentage}%`;
+                eventBlock.style.width = width;
+    
+                // Calculate vertical and horizontal offsets based on the group and event index
+                const horizontalOffset = groupIndex * 10; // Adjust horizontal positioning for groups
+                const verticalOffset = eventIndex * 80;   // Adjust vertical positioning for each event within a group
+                eventBlock.style.top = `${verticalOffset + 80}px`; // Base offset plus stack adjustment
+                eventBlock.style.left = `${horizontalOffset}px`;   // Horizontal offset for separation
+    
+                const eventTitle = document.createElement('div');
+                eventTitle.classList.add('event-title');
+                eventTitle.textContent = event.title;
+    
+                const eventTime = document.createElement('div');
+                eventTime.classList.add('event-time');
+                eventTime.textContent = `${formatTime(eventStart)} - ${formatTime(eventEnd)}`;
+    
+                eventBlock.appendChild(eventTitle);
+                eventBlock.appendChild(eventTime);
+    
+                eventBlock.addEventListener('click', function () {
+                    openEditModal(event);
+                });
+    
+                scheduleContainer.appendChild(eventBlock);
+            });
+        });
+    }    
+    
 
     function formatTime(date) {
         let hours = date.getHours();
