@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     weddingSelect.addEventListener('change', function () {
         const eventId = weddingSelect.value;
-        currentEventId = eventId;
+        currentEventId = eventId; 
         if (eventId) {
             fetchItineraryData(eventId);
             itineraryContent.style.display = 'block';
@@ -91,10 +91,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const option = document.createElement('option');
             option.value = day;
             option.textContent = formatDateDisplay(day);
-            console.log("option: ", option);
             daySelect.appendChild(option);
         });
-        console.log("days: ", days);
         if (days.length > 0) {
             selectedDay = days[0];
             daySelect.value = selectedDay;
