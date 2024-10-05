@@ -88,6 +88,10 @@ app.get('/rsvpmanager-page', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', "rsvpmanager-page", "rsvpmanager.html"));
 });
 
+app.get('/itinerary-page', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', "itinerary-page", "itinerary.html"));
+});
+
 app.post('/save-meal', async (req, res) => {
   const { userId, eventId, appetizers, mainCourses, desserts } = req.body;
 
@@ -358,23 +362,63 @@ app.get('/get-events', async (req, res) => {
   const userId = req.query.userId;
 
   if (!userId) {
-      return res.status(400).json({ message: 'User ID is required.' });
+    return res.status(400).json({ message: 'User ID is required.' });
   }
 
   try {
-      const eventsSnapshot = await db.collection('userAccounts').doc(userId).collection('eventsOwner').get();
-      if (eventsSnapshot.empty) {
-          return res.json([]);
+    let events = [];
+
+    // Get events from `eventsOwner` collection
+    const ownerEventsSnapshot = await db.collection('userAccounts').doc(userId).collection('eventsOwner').get();
+    if (!ownerEventsSnapshot.empty) {
+      const ownerEvents = ownerEventsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), type: 'owner' }));
+      events = [...events, ...ownerEvents];
+    }
+
+    // Get events from `eventsAttendee` collection
+    const attendeeEventsSnapshot = await db.collection('userAccounts').doc(userId).collection('eventsAttendee').get();
+    if (!attendeeEventsSnapshot.empty) {
+      const attendeeEvents = await Promise.all(
+        attendeeEventsSnapshot.docs.map(async (doc) => {
+          const attendeeEventData = doc.data();
+          if (attendeeEventData.eventReference) {
+            try {
+              // Use Firestore `DocumentReference` to get the event directly
+              const referencedEventDoc = await attendeeEventData.eventReference.get();
+
+              if (referencedEventDoc.exists) {
+                const eventDetails = referencedEventDoc.data();
+                return { id: referencedEventDoc.id, ...eventDetails, type: 'attendee' };
+              }
+            } catch (error) {
+              console.error(`Error retrieving event data for attendee event: ${doc.id}`, error);
+            }
+          }
+          return null;
+        })
+      );
+
+      // Filter out any null values from the attendeeEvents array
+      const resolvedAttendeeEvents = attendeeEvents.filter(event => event !== null);
+      events = [...events, ...resolvedAttendeeEvents];
+    }
+
+    // Remove duplicate events by comparing their IDs
+    const uniqueEvents = events.reduce((acc, event) => {
+      if (!acc.some(existingEvent => existingEvent.id === event.id)) {
+        acc.push(event);
       }
+      return acc;
+    }, []);
 
-      const events = eventsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-      res.json(events);
+    res.json(uniqueEvents);
   } catch (error) {
-      console.error('Error retrieving events:', error);
-      res.status(500).send('Server Error');
+    console.error('Error retrieving events:', error);
+    res.status(500).send('Server Error');
   }
 });
+
+
 
 // Returns a single event to be modified
 app.get('/get-event', async (req, res) => {
@@ -636,14 +680,19 @@ app.post('/add-event-attendee', async (req, res) => {
   }
 
   try {
+    // Reference to the user in `userAccounts`
     const userRef = db.collection('userAccounts').doc(userId);
-    const ownerEventRef = db.collection('userAccounts').doc(ownerUserId).collection('eventsOwner').doc(eventId);  // Create a reference object
 
-    // Store the reference object instead of a string
+    // Reference to the owner's event document in `eventsOwner`
+    const ownerEventRef = db.collection('userAccounts').doc(ownerUserId).collection('eventsOwner').doc(eventId);
+
+    // Store the document path as a string instead of a `DocumentReference` object
+    const ownerEventPath = ownerEventRef.path;
+
     await userRef.collection('eventsAttendee').doc(eventId).set({
-      eventReference: ownerEventRef,  // This stores a Firestore DocumentReference, not a string
-      eventName: "Event Name Here",  // Add any other required fields
-      attendanceStatus: "confirm"   // Placeholder values - update as needed
+      eventReference: ownerEventPath,  // Save the path as a string
+      eventName: "Event Name Here",    // Placeholder values - update as needed
+      attendanceStatus: "confirm"      // Placeholder values - update as needed
     });
 
     res.status(200).json({ message: 'Event reference added to attendee list successfully!' });
@@ -652,6 +701,7 @@ app.post('/add-event-attendee', async (req, res) => {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
+
 
 
 app.get('/get-user-events', async (req, res) => {
@@ -886,6 +936,119 @@ app.post('/modify-event-rsvp', async (req, res) => {
   } catch (error) {
       console.error('Error updating guest RSVP information:', error);
       res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+});
+
+// Existing get-itinerary endpoint
+app.get('/get-itinerary', async (req, res) => {
+  const { userId, eventId } = req.query;
+
+  if (!userId || !eventId) {
+    return res.status(400).json({ message: 'User ID and Event ID are required.' });
+  }
+
+  try {
+    let fullItinerary = [];
+
+    // Fetch itinerary from `eventsOwner`
+    const ownerEventRef = db.collection('userAccounts').doc(userId).collection('eventsOwner').doc(eventId);
+    const ownerEventDoc = await ownerEventRef.get();
+
+    if (ownerEventDoc.exists) {
+      const ownerEventData = ownerEventDoc.data();
+      fullItinerary = [...fullItinerary, ...(ownerEventData.itinerary || [])];
+    }
+
+    // Fetch itinerary from `eventsAttendee`
+    const attendeeEventRef = db.collection('userAccounts').doc(userId).collection('eventsAttendee').doc(eventId);
+    const attendeeEventDoc = await attendeeEventRef.get();
+
+    if (attendeeEventDoc.exists) {
+      const attendeeEventData = attendeeEventDoc.data();
+
+      // Use the Firestore reference object directly to get the document
+      const eventReference = attendeeEventData.eventReference;
+
+      if (eventReference) {
+        // Directly use `get()` on the `DocumentReference`
+        const referencedEventDoc = await eventReference.get();
+
+        if (referencedEventDoc.exists) {
+          const eventData = referencedEventDoc.data();
+
+          // Add the referenced event's itinerary if it exists
+          if (eventData && eventData.itinerary) {
+            fullItinerary = [...fullItinerary, ...eventData.itinerary];
+          }
+        }
+      }
+    }
+
+    // Remove duplicate events by ID
+    const uniqueItinerary = fullItinerary.reduce((acc, event) => {
+      if (!acc.some(existingEvent => existingEvent.id === event.id)) {
+        acc.push(event);
+      }
+      return acc;
+    }, []);
+
+    res.status(200).json({ itinerary: uniqueItinerary });
+  } catch (error) {
+    console.error('Error fetching itinerary:', error);
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+});
+
+
+
+app.post('/save-itinerary', async (req, res) => {
+  const { userId, eventId, itinerary } = req.body;
+
+  if (!userId || !eventId || !Array.isArray(itinerary)) {
+    return res.status(400).json({ message: 'User ID, Event ID, and a valid itinerary array are required.' });
+  }
+
+  try {
+    // Reference to the event in `eventsOwner` collection of the user
+    const ownerEventRef = db.collection('userAccounts').doc(userId).collection('eventsOwner').doc(eventId);
+
+    // Check if the event exists in the owner's collection
+    const ownerEventDoc = await ownerEventRef.get();
+
+    if (ownerEventDoc.exists) {
+      // If the event is found in `eventsOwner`, update the itinerary there
+      await ownerEventRef.update({ itinerary: itinerary });
+      console.log(`Itinerary saved successfully in the owner's event collection for event ID: ${eventId}`);
+      return res.status(200).json({ message: 'Itinerary saved successfully in the owner\'s event collection.' });
+    }
+
+    // If not found in `eventsOwner`, check `eventsAttendee`
+    const attendeeEventRef = db.collection('userAccounts').doc(userId).collection('eventsAttendee').doc(eventId);
+    const attendeeEventDoc = await attendeeEventRef.get();
+
+    if (attendeeEventDoc.exists) {
+      const attendeeEventData = attendeeEventDoc.data();
+      const eventReference = attendeeEventData.eventReference;
+
+      if (eventReference && eventReference instanceof admin.firestore.DocumentReference) {
+        // Use the DocumentReference directly to update the original owner event document
+        console.log(`Navigating to the owner's event using reference path: ${eventReference.path}`);
+
+        // Update the itinerary in the original owner's event document
+        await eventReference.update({ itinerary: itinerary });
+        console.log(`Itinerary saved successfully in the referenced owner's event collection at path: ${eventReference.path}`);
+        return res.status(200).json({ message: 'Itinerary saved successfully in the referenced owner\'s event collection.' });
+      } else {
+        console.error(`Invalid or missing DocumentReference in attendee document for event ID: ${eventId}`);
+        return res.status(404).json({ message: 'Invalid or missing DocumentReference in attendee document.' });
+      }
+    }
+
+    // If neither found, return error
+    return res.status(404).json({ message: 'Event not found in the owner\'s or attendee\'s collection.' });
+  } catch (error) {
+    console.error('Error saving itinerary:', error);
+    res.status(500).json({ message: 'Server Error', error: error.message });
   }
 });
 
